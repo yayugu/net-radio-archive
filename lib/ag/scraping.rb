@@ -1,5 +1,6 @@
 require 'net/http'
 require 'time'
+require 'chronic'
 require 'pp'
 
 module Ag
@@ -17,6 +18,20 @@ module Ag
       end
       self.new(wday, time)
     end
+
+    def next_on_air
+      Chronic.parse(
+        "#{wday_to_s(self[:wday])} #{self[:time].strftime("%H:%M")}",
+        context: :future,
+        ambiguous_time_range: :none,
+        hours24: true,
+        guess: :begin
+      )
+    end
+
+    def wday_to_s(wday)
+      %w(Sunday Monday Tuesday Wednesday Thursday Friday Saturday)[wday]
+    end
   end
 
   class Scraping
@@ -25,6 +40,7 @@ module Ag
         scraping_page('http://www.agqr.jp/timetable/digital-ss.php')
       programs = validate_programs(programs)
       pp programs
+      programs
     end
 
     def validate_programs(programs)
