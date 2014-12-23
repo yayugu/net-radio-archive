@@ -33,7 +33,7 @@ namespace :main do
       .where(ch: Job::CH[:ag])
       .where(
         "? <= `start` and `start` <= ?",
-        2.hours.ago,
+        2.minutes.ago,
         1.minutes.from_now
       )
       .where(state: Job::STATE[:scheduled])

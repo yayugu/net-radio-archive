@@ -40,6 +40,5 @@ gem 'spring',        group: :development
 
 gem 'nokogiri'
 gem 'moji'
-gem 'scheman-rails'
 gem 'mysql2'
 gem 'chronic'
