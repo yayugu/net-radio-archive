@@ -4,7 +4,7 @@ require 'chronic'
 require 'pp'
 
 module Ag
-  class Program < Struct.new(:start_time, :minutes_maybe, :title)
+  class Program < Struct.new(:start_time, :minutes, :title)
   end
 
   class ProgramTime < Struct.new(:wday, :time)
@@ -39,7 +39,6 @@ module Ag
       programs = scraping_page('http://www.agqr.jp/timetable/digital-mf.php') +
         scraping_page('http://www.agqr.jp/timetable/digital-ss.php')
       programs = validate_programs(programs)
-      pp programs
       programs
     end
 
@@ -67,7 +66,7 @@ module Ag
 
     def parse_program(dom, wday)
       start_time = ProgramTime.parse(wday, dom.css('strong')[0].text)
-      m = determine_minutes_maybe(dom['class'])
+      m = determine_minutes(dom['class'])
       title = parse_program_title(dom)
       Program.new(start_time, m, title)
     end
@@ -102,7 +101,7 @@ module Ag
     end
 
     # see http://agqr.jp/css/content.css
-    def determine_minutes_maybe(length_css_class)
+    def determine_minutes(length_css_class)
       case length_css_class
       when 't05'
         5
