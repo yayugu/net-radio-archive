@@ -20,13 +20,29 @@ module Ag
     end
 
     def next_on_air
+      time = chronic(wday_for_chronic_include_today(self[:wday]))
+      if time > Time.now
+        return time
+      else
+        chronic(wday_to_s(self[:wday]))
+      end
+    end
+
+    def chronic(day_str)
       Chronic.parse(
-        "#{wday_to_s(self[:wday])} #{self[:time].strftime("%H:%M")}",
+        "#{day_str} #{self[:time].strftime("%H:%M")}",
         context: :future,
         ambiguous_time_range: :none,
         hours24: true,
         guess: :begin
       )
+    end
+
+    def wday_for_chronic_include_today(wday)
+      if Time.now.wday == wday
+        return 'today'
+      end
+      wday_to_s(wday)
     end
 
     def wday_to_s(wday)
