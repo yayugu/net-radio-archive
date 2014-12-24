@@ -21,5 +21,8 @@ module NetRadioArchive
     # config.i18n.default_locale = :de
     config.autoload_paths += %W(#{config.root}/lib)
     config.watchable_dirs['lib'] = [:rb]
+
+    config.time_zone = 'Tokyo'
+    config.active_record.default_timezone = :local
   end
 end
