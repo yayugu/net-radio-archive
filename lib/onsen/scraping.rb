@@ -4,10 +4,10 @@ require 'pp'
 require 'digest/md5'
 
 module Onsen
-  class Scraping
-    class Program < Struct.new(:title, :number, :update_date, :file_url, :personality)
-    end
+  class Program < Struct.new(:title, :number, :update_date, :file_url, :personality)
+  end
 
+  class Scraping
     def main
       get_program_list
     end
