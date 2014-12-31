@@ -65,6 +65,7 @@ namespace :main do
   task :scraping_onsen => :environment do
     Rails.logger = Logger.new(STDOUT)
 
-    ret = Onsen::Scraping.new.main
+    program_list = Onsen::Scraping.new.main
+    pp program_list
   end
 end
