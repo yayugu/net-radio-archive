@@ -53,7 +53,7 @@ namespace :main do
       succeed = Ag::Recording.new.record(job)
       job.state =
         if succeed
-          Job::STATE[:succeed]
+          Job::STATE[:done]
         else
           Job::STATE[:failed]
         end

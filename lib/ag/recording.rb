@@ -30,7 +30,7 @@ module Ag
     def exec_convert(job)
       flv_path = filepath(job, 'flv')
       mp4_path = filepath(job, 'mp4')
-      command = "ffmpeg -loglevel error -y -i #{Shellwords.escape(flv_path)} -vcodec copy -acodec copy #{Shellwords.escape(mp4_path)}"
+      command = "avconv -loglevel error -y -i #{Shellwords.escape(flv_path)} -vcodec copy -acodec copy #{Shellwords.escape(mp4_path)}"
       exit_status, output = shell_exec(command)
       unless exit_status.success?
         Rails.logger.error "convert failed. job:#{job}, exit_status:#{exit_status}, output:#{output}"
