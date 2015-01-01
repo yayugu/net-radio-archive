@@ -2,6 +2,7 @@ require 'net/http'
 require 'time'
 require 'chronic'
 require 'pp'
+require 'moji'
 
 module Ag
   class Program < Struct.new(:start_time, :minutes, :title)

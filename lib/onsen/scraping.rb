@@ -2,6 +2,7 @@ require 'net/http'
 require 'time'
 require 'pp'
 require 'digest/md5'
+require 'moji'
 
 module Onsen
   class Program < Struct.new(:title, :number, :update_date, :file_url, :personality)
@@ -28,14 +29,14 @@ module Onsen
     end
 
     def parse_program(dom, wday)
-      title = dom.css('title').text
+      title = Moji.normalize_zen_han(dom.css('title').text)
       number = dom.css('number').text
       update_date = parse_date(dom.css('update').text)
 
       # well known file type: mp3, mp4(movie)
       file_url = dom.css('fileUrlIphone').text
 
-      personality = dom.css('personality').text
+      personality = Moji.normalize_zen_han(dom.css('personality').text)
       Program.new(title, number, update_date, file_url, personality)
     end
 
