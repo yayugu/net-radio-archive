@@ -1,10 +1,12 @@
 require 'net/http'
+require 'fileutils'
 
 module Onsen
   class Downloading
     def download(program)
       uri = URI(program.file_url)
 
+      FileUtils.mkdir_p(onsen_dir)
       Net::HTTP.start(uri.host, uri.port) do |http|
         request = Net::HTTP::Get.new uri.request_uri
 
@@ -27,7 +29,11 @@ module Onsen
       title_safe = "#{program.title}_#{program.personality}"
         .gsub(/\s/, '_')
         .gsub(/\//, '_')
-      "#{ENV['NET_RADIO_ARCHIVE_DIR']}/onsen/#{date}_#{title_safe}_\##{program.number}.#{ext}"
+      "#{onsen_dir}/#{date}_#{title_safe}_\##{program.number}.#{ext}"
+    end
+
+    def onsen_dir
+      "#{ENV['NET_RADIO_ARCHIVE_DIR']}/onsen"
     end
   end
 end
