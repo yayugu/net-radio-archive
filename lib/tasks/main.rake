@@ -60,4 +60,12 @@ namespace :main do
       job.save
     end
   end
+
+  desc 'scraping onsen'
+  task :scraping_onsen => :environment do
+    Rails.logger = Logger.new(STDOUT)
+
+    program_list = Onsen::Scraping.new.main
+    pp program_list
+  end
 end
