@@ -30,7 +30,7 @@ module Hibiki
     def exec_convert(program)
       flv_path = filepath(program, 'flv')
       aac_path = filepath(program, 'aac')
-      command = "avconv -loglevel warning -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(aac_path)}"
+      command = "avconv -loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(aac_path)}"
       exit_status, output = shell_exec(command)
       unless exit_status.success?
         Rails.logger.error "convert failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
