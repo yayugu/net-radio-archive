@@ -14,10 +14,10 @@ module Onsen
     end
 
     def get_program_list
-      (0..6).inject([]) do |progam_list, wday|
+      (0..6).inject([]) do |program_list, wday|
         sleep(1)
         dom = get_dom(wday)
-        progam_list += parse_dom_wday(dom, wday)
+        program_list += parse_dom_wday(dom, wday)
       end
     end
 

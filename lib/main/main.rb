@@ -51,9 +51,32 @@ module Main
       end
     end
 
+    def hibiki_scrape
+      program_list = Hibiki::Scraping.new.main
+
+      program_list.each do |program|
+        ActiveRecord::Base.transaction do
+          if program.rtmp_url.blank?
+            next
+          end
+          if HibikiProgram.where(rtmp_url: program.rtmp_url).first
+            next
+          end
+
+          p = HibikiProgram.new
+          p.title = program.title
+          p.comment = program.comment
+          p.rtmp_url = program.rtmp_url
+          p.state = HibikiProgram::STATE[:waiting]
+          p.save
+        end
+      end
+    end
+
     def rec_one
       ag_rec
       onsen_download
+      hibiki_download
     end
 
     def ag_rec
@@ -112,6 +135,34 @@ module Main
             OnsenProgram::STATE[:done]
           else
             OnsenProgram::STATE[:failed]
+          end
+        p.save
+      end
+
+      exit 0
+    end
+
+    def hibiki_download
+      p = HibikiProgram
+        .where(state: HibikiProgram::STATE[:waiting])
+        .first
+      unless p
+        return
+      end
+
+      affected_rows_count = nil
+      ActiveRecord::Base.transaction do
+        affected_rows_count = HibikiProgram
+          .where(id: p.id, state: HibikiProgram::STATE[:waiting])
+          .update_all(state: HibikiProgram::STATE[:downloading])
+      end
+      if affected_rows_count == 1
+        succeed = Hibiki::Downloading.new.download(p)
+        p.state =
+          if succeed
+            HibikiProgram::STATE[:done]
+          else
+            HibikiProgram::STATE[:failed]
           end
         p.save
       end
