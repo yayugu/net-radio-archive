@@ -4,6 +4,11 @@ namespace :main do
     Main::Main.new.ag_scrape
   end
 
+  desc 'radiko scrape'
+  task :radiko_scrape => :environment do
+    Main::Main.new.radiko_scrape
+  end
+
   desc 'onsen scrape'
   task :onsen_scrape => :environment do
     Main::Main.new.onsen_scrape
@@ -17,5 +22,16 @@ namespace :main do
   desc 'rec one'
   task :rec_one => :environment do
     Main::Main.new.rec_one
+  end
+
+  desc 'rec ondemand'
+  task :rec_ondemand => :environment do
+    Main::Main.new.rec_ondemand
+  end
+
+  desc 'rec radiko'
+  task :rec_radiko => :environment do
+    #Main::Main.new.rec_one
+    Radiko::Recording.new.record(nil)
   end
 end

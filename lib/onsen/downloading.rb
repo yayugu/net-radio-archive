@@ -7,17 +7,7 @@ module Onsen
       uri = URI(program.file_url)
 
       FileUtils.mkdir_p(onsen_dir)
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        request = Net::HTTP::Get.new uri.request_uri
-
-        http.request request do |response|
-          open filepath(program), 'wb' do |io|
-            response.read_body do |chunk|
-              io.write chunk
-            end
-          end
-        end
-      end
+      Main::download(program.file_url, filepath(program))
 
       true
     end

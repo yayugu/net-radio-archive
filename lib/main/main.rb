@@ -5,25 +5,29 @@ module Main
     end
 
     def ag_scrape
-      ret = Ag::Scraping.new.main
-      now = Time.now
-      ret = ret.delete_if do |r|
-        # only update after 10 minutes form now
-        (r.start_time.next_on_air - Time.now).to_i < 10 * 60
+      programs = Ag::Scraping.new.main
+      programs.each do |p|
+        Job.new(
+          ch: Job::CH[:ag],
+          title: p.title,
+          start: p.start_time.next_on_air,
+          end: p.start_time.next_on_air + p.minutes.minutes
+        ).schedule
       end
-      ret.each do |r|
-        ActiveRecord::Base.transaction do
-          job = Job.find_or_initialize_by(
-            ch: Job::CH[:ag],
-            start: r.start_time.next_on_air
-          )
-          unless r.title == job.title
-            job.title = r.title
-            job.end = r.start_time.next_on_air + r.minutes.minutes
-            job.state = Job::STATE[:scheduled]
-            job.save
-          end
-        end
+    end
+
+    def radiko_scrape
+      ch = 'QRR'
+      programs = Radiko::Scraping.new.get(ch)
+      programs.each do |p|
+        title = p.title
+        title += " #{p.performers}" if p.performers.present?
+        Job.new(
+          ch: ch,
+          title: title,
+          start: p.start_time,
+          end: p.end_time
+        ).schedule
       end
     end
 
@@ -74,14 +78,7 @@ module Main
     end
 
     def rec_one
-      ag_rec
-      onsen_download
-      hibiki_download
-    end
-
-    def ag_rec
       job = Job
-        .where(ch: Job::CH[:ag])
         .where(
           "? <= `start` and `start` <= ?",
           2.minutes.ago,
@@ -101,7 +98,12 @@ module Main
           .update_all(state: Job::STATE[:recording])
       end
       if affected_rows_count == 1
-        succeed = Ag::Recording.new.record(job)
+        succeed = false
+        if job.ch == Job::CH[:ag]
+          succeed = Ag::Recording.new.record(job)
+        else
+          succeed = Radiko::Recording.new.record(job)
+        end
         job.state =
           if succeed
             Job::STATE[:done]
@@ -112,6 +114,11 @@ module Main
       end
 
       exit 0
+    end
+
+    def rec_ondemand
+      onsen_download
+      hibiki_download
     end
 
     def onsen_download

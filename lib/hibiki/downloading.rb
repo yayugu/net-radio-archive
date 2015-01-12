@@ -18,7 +18,7 @@ module Hibiki
       command = "rtmpdump -q -r #{Shellwords.escape(program.rtmp_url)} -o #{Shellwords.escape(flv_path)}"
 
       FileUtils.mkdir_p(hibiki_dir)
-      exit_status, output = shell_exec(command)
+      exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
         Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
         return false
@@ -31,7 +31,7 @@ module Hibiki
       flv_path = filepath(program, 'flv')
       aac_path = filepath(program, 'aac')
       command = "avconv -loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(aac_path)}"
-      exit_status, output = shell_exec(command)
+      exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
         Rails.logger.error "convert failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
         return false
@@ -46,12 +46,6 @@ module Hibiki
         .gsub(/\s/, '_')
         .gsub(/\//, '_')
       "#{hibiki_dir}/#{date}_#{title_safe}.#{ext}"
-    end
-
-    def shell_exec(command)
-      output = `#{command}`
-      exit_status = $?
-      [exit_status, output]
     end
 
     def hibiki_dir
