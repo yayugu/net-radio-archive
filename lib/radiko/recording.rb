@@ -108,7 +108,6 @@ module Radiko
         --live \
         --stop #{length} \
         -o #{Shellwords.escape(flv_path)}"
-      p command
 
       FileUtils.mkdir_p(dir(job.ch))
       exit_status, output = Main::shell_exec(command)
