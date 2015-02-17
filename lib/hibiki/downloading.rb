@@ -20,8 +20,11 @@ module Hibiki
       FileUtils.mkdir_p(hibiki_dir)
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
-        Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
-        return false
+        exit_status, output = Main::shell_exec(command) # retry
+        unless exit_status.success?
+          Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
+          return false
+        end
       end
 
       true
