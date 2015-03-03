@@ -34,4 +34,9 @@ namespace :main do
     #Main::Main.new.rec_one
     Radiko::Recording.new.record(nil)
   end
+
+  desc 'kill zombie process (rtmpdump)'
+  task :kill_zombie_process => :environment do
+    Main::Workaround::kill_zombie_process
+  end
 end
