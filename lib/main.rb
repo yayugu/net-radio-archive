@@ -38,6 +38,7 @@ module Main
       Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
       return false
     end
+    true
   end
 
   def self.convert_ffmpeg_to_m4a(flv_path, m4a_path, debug_obj)
@@ -47,6 +48,7 @@ module Main
       Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
       return false
     end
+    true
   end
 
   def self.prepare_dirs(ch_name)
