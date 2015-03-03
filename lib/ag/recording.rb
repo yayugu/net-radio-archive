@@ -4,6 +4,7 @@ require 'fileutils'
 module Ag
   class Recording
     AGQR_STREAM_URL = 'rtmp://fms-base2.mitene.ad.jp/agqr/aandg22'
+    CH_NAME = 'ag'
 
     def record(job)
       unless exec_rec(job)
@@ -13,14 +14,11 @@ module Ag
     end
 
     def exec_rec(job)
-      filename = job.title
-        .gsub(/\s/, '_')
-        .gsub(/\//, '_')
-      length = job.length_sec + 120
-      flv_path = filepath(job, 'flv')
-      command = "rtmpdump -q -r #{Shellwords.escape(AGQR_STREAM_URL)} --live --stop #{length} -o #{Shellwords.escape(flv_path)}"
+      Main::prepare_dirs(CH_NAME)
 
-      FileUtils.mkdir_p(ag_dir)
+      length = job.length_sec + 120
+      flv_path = Main::file_path_working(CH_NAME, title(job), 'flv')
+      command = "rtmpdump -q -r #{Shellwords.escape(AGQR_STREAM_URL)} --live --stop #{length} -o #{Shellwords.escape(flv_path)}"
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
         Rails.logger.error "rec failed. job:#{job}, exit_status:#{exit_status}, output:#{output}"
@@ -31,28 +29,14 @@ module Ag
     end
 
     def exec_convert(job)
-      flv_path = filepath(job, 'flv')
-      mp4_path = filepath(job, 'mp4')
-      command = "avconv -loglevel error -y -i #{Shellwords.escape(flv_path)} -vcodec copy -acodec copy #{Shellwords.escape(mp4_path)}"
-      exit_status, output = Main::shell_exec(command)
-      unless exit_status.success?
-        Rails.logger.error "convert failed. job:#{job}, exit_status:#{exit_status}, output:#{output}"
-        return false
-      end
-
-      true
+      flv_path = Main::file_path_working(CH_NAME, title(job), 'flv')
+      mp4_path = Main::file_path_archive(CH_NAME, title(job), 'mp4')
+      Main::convert_ffmpeg_to_mp4(flv_path, mp4_path, job)
     end
 
-    def filepath(job, ext)
+    def title(job)
       date = job.start.strftime('%Y_%m_%d_%H%M')
-      title_safe = job.title
-        .gsub(/\s/, '_')
-        .gsub(/\//, '_')
-      "#{ag_dir}/#{date}_#{title_safe}.#{ext}"
-    end
-
-    def ag_dir
-      "#{ENV['NET_RADIO_ARCHIVE_DIR']}/ag"
+      "#{date}_#{job.title}"
     end
   end
 end

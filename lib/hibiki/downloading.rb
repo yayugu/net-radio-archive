@@ -3,6 +3,8 @@ require 'fileutils'
 
 module Hibiki
   class Downloading
+    CH_NAME = 'hibiki'
+
     def download(program)
       unless exec_rec(program)
         return false
@@ -11,15 +13,13 @@ module Hibiki
     end
 
     def exec_rec(program)
-      filename = program.title
-        .gsub(/\s/, '_')
-        .gsub(/\//, '_')
-      flv_path = filepath(program, 'flv')
+      flv_path = Main::file_path_working(CH_NAME, title(program), 'flv')
       command = "rtmpdump -q -r #{Shellwords.escape(program.rtmp_url)} -o #{Shellwords.escape(flv_path)}"
 
-      FileUtils.mkdir_p(hibiki_dir)
+      Main::prepare_dirs(CH_NAME)
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
+        sleep(10)
         exit_status, output = Main::shell_exec(command) # retry
         unless exit_status.success?
           Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
@@ -31,28 +31,14 @@ module Hibiki
     end
 
     def exec_convert(program)
-      flv_path = filepath(program, 'flv')
-      aac_path = filepath(program, 'aac')
-      command = "avconv -loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(aac_path)}"
-      exit_status, output = Main::shell_exec(command)
-      unless exit_status.success?
-        Rails.logger.error "convert failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
-        return false
-      end
-
-      true
+      flv_path = Main::file_path_working(CH_NAME, title(program), 'flv')
+      mp4_path = Main::file_path_archive(CH_NAME, title(program), 'mp4')
+      Main::convert_ffmpeg_to_mp4(flv_path, mp4_path, program)
     end
 
-    def filepath(program, ext)
+    def title(program)
       date = Time.now.strftime('%Y_%m_%d')
-      title_safe = "#{program.title}_#{program.comment}"
-        .gsub(/\s/, '_')
-        .gsub(/\//, '_')
-      "#{hibiki_dir}/#{date}_#{title_safe}.#{ext}"
-    end
-
-    def hibiki_dir
-      "#{ENV['NET_RADIO_ARCHIVE_DIR']}/hibiki"
+      title = "#{date}_#{program.title}_#{program.comment}"
     end
   end
 end

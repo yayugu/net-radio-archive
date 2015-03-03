@@ -1,12 +1,11 @@
-require 'net/http'
-require 'fileutils'
-
 module Onsen
   class Downloading
-    def download(program)
-      uri = URI(program.file_url)
+    CH_NAME = 'onsen'
 
-      FileUtils.mkdir_p(onsen_dir)
+    def download(program)
+      Main::prepare_dirs(CH_NAME)
+
+      uri = URI(program.file_url)
       Main::download(program.file_url, filepath(program))
 
       true
@@ -16,14 +15,8 @@ module Onsen
       url_path = URI.parse(program.file_url).path
       ext = /\.([a-zA-Z0-9]+?)$/.match(url_path)[1]
       date = program.date.strftime('%Y_%m_%d')
-      title_safe = "#{program.title}_#{program.personality}"
-        .gsub(/\s/, '_')
-        .gsub(/\//, '_')
-      "#{onsen_dir}/#{date}_#{title_safe}_\##{program.number}.#{ext}"
-    end
-
-    def onsen_dir
-      "#{ENV['NET_RADIO_ARCHIVE_DIR']}/onsen"
+      title = "#{date}_#{program.title}_#{program.personality}"
+      Main::file_path_archive(CH_NAME, title, ext)
     end
   end
 end

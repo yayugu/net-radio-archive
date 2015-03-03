@@ -18,6 +18,7 @@ module Radiko
     end
 
     def exec_rec(job)
+      Main::prepare_dirs(job.ch)
       auth
       rtmp(job)
     end
@@ -97,7 +98,7 @@ module Radiko
 
     def rtmp(job)
       length = job.length_sec + 120
-      flv_path = filepath(job, 'flv')
+      flv_path = Main::file_path_working(job.ch, title(job), 'flv')
       command = "\
         rtmpdump -q \
         -r #{Shellwords.escape(RTMP_URL)} \
@@ -109,7 +110,6 @@ module Radiko
         --stop #{length} \
         -o #{Shellwords.escape(flv_path)}"
 
-      FileUtils.mkdir_p(dir(job.ch))
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
         Rails.logger.error "rec failed. job:#{job}, exit_status:#{exit_status}, output:#{output}"
@@ -120,28 +120,14 @@ module Radiko
     end
 
     def exec_convert(job)
-      flv_path = filepath(job, 'flv')
-      aac_path = filepath(job, 'aac')
-      command = "avconv -loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(aac_path)}"
-      exit_status, output = Main::shell_exec(command)
-      unless exit_status.success?
-        Rails.logger.error "convert failed. job:#{job}, exit_status:#{exit_status}, output:#{output}"
-        return false
-      end
-
-      true
+      flv_path = Main::file_path_working(job.ch, title(job), 'flv')
+      m4a_path = Main::file_path_archive(job.ch, title(job), 'aac')
+      Main::convert_ffmpeg_to_m4a(flv_path, m4a_path, job)
     end
 
-    def filepath(job, ext)
+    def title(job)
       date = job.start.strftime('%Y_%m_%d_%H%M')
-      title_safe = job.title
-        .gsub(/\s/, '_')
-        .gsub(/\//, '_')
-      "#{dir(job.ch)}/#{date}_#{title_safe}.#{ext}"
-    end
-
-    def dir(ch)
-      "#{ENV['NET_RADIO_ARCHIVE_DIR']}/#{ch}"
+      "#{date}_#{job.title}"
     end
   end
 end

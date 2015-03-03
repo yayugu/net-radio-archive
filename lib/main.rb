@@ -1,3 +1,6 @@
+require 'fileutils'
+require 'net/http'
+
 module Main
   def self.download(url, filename)
     uri = URI(url)
@@ -17,5 +20,51 @@ module Main
     output = `#{command}`
     exit_status = $?
     [exit_status, output]
+  end
+
+  def self.ffmpeg(arg)
+    exit_status, output = shell_exec('hash ffmpeg >/dev/null 2>&1')
+    if exit_status == 0 # found ffmpeg command
+      shell_exec("ffmpeg " + arg)
+    else
+      shell_exec("avconv " + arg)
+    end
+  end
+
+  def self.convert_ffmpeg_to_mp4(flv_path, mp4_path, debug_obj)
+    arg = "-loglevel error -y -i #{Shellwords.escape(flv_path)} -vcodec copy -acodec copy #{Shellwords.escape(mp4_path)}"
+    exit_status, output = ffmpeg(arg)
+    unless exit_status.success?
+      Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
+      return false
+    end
+  end
+
+  def self.convert_ffmpeg_to_m4a(flv_path, m4a_path, debug_obj)
+    arg = "-loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(m4a_path)}"
+    exit_status, output = ffmpeg(arg)
+    unless exit_status.success?
+      Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
+      return false
+    end
+  end
+
+  def self.prepare_dirs(ch_name)
+    FileUtils.mkdir_p("#{ENV['NET_RADIO_ARCHIVE_DIR']}/#{ch_name}")
+    FileUtils.mkdir_p("#{ENV['NET_RADIO_WORKING_DIR']}/#{ch_name}")
+  end
+
+  def self.file_path_archive(ch_name, title, ext)
+    "#{ENV['NET_RADIO_ARCHIVE_DIR']}/#{ch_name}/#{title_escape(title)}.#{ext}"
+  end
+
+  def self.file_path_working(ch_name, title, ext)
+    "#{ENV['NET_RADIO_WORKING_DIR']}/#{ch_name}/#{title_escape(title)}.#{ext}"
+  end
+
+  def self.title_escape(title)
+    title
+      .gsub(/\s/, '_')
+      .gsub(/\//, '_')
   end
 end
