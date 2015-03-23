@@ -35,3 +35,7 @@ end
 every '37 15 * * *' do
   rake_not_silent 'main:kill_zombie_process'
 end
+
+every '7 16 * * *' do
+  rake_not_silent 'main:rm_working_files'
+end
