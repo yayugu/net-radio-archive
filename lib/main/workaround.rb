@@ -12,5 +12,9 @@ module Main
         end
       end
     end
+
+    def rm_working_files
+      `find #{Settings.working_dir} -ctime +30 -name "*.flv" -exec rm {} \;`
+    end
   end
 end

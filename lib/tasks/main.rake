@@ -39,4 +39,9 @@ namespace :main do
   task :kill_zombie_process => :environment do
     Main::Workaround::kill_zombie_process
   end
+
+  desc 'remove old working(temporary) files'
+  task :rm_working_files => :environment do
+    Main::Workaround::rm_working_files
+  end
 end

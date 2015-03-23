@@ -52,16 +52,16 @@ module Main
   end
 
   def self.prepare_dirs(ch_name)
-    FileUtils.mkdir_p("#{ENV['NET_RADIO_ARCHIVE_DIR']}/#{ch_name}")
-    FileUtils.mkdir_p("#{ENV['NET_RADIO_WORKING_DIR']}/#{ch_name}")
+    FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}")
+    FileUtils.mkdir_p("#{Settings.working_dir}/#{ch_name}")
   end
 
   def self.file_path_archive(ch_name, title, ext)
-    "#{ENV['NET_RADIO_ARCHIVE_DIR']}/#{ch_name}/#{title_escape(title)}.#{ext}"
+    "#{Settings.archive_dir}/#{ch_name}/#{title_escape(title)}.#{ext}"
   end
 
   def self.file_path_working(ch_name, title, ext)
-    "#{ENV['NET_RADIO_WORKING_DIR']}/#{ch_name}/#{title_escape(title)}.#{ext}"
+    "#{Settings.working_dir}/#{ch_name}/#{title_escape(title)}.#{ext}"
   end
 
   def self.title_escape(title)

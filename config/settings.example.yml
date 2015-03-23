@@ -1,0 +1,7 @@
+development:
+    archive_dir: /tmp/net-radio-archive
+    working_dir: /tmp/net-radio-working
+
+production:
+    archive_dir: /path/to/archive/dir
+    working_dir: /path/to/working/dir
