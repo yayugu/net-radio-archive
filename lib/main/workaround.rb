@@ -14,6 +14,10 @@ module Main
     end
 
     def rm_working_files
+      if Settings.working_dir.strip.size < 2
+        puts "working dir is maybe wrong: #{Settings.working_dir}"
+        return
+      end
       `find #{Settings.working_dir} -ctime +30 -name "*.flv" -exec rm {} \;`
     end
   end
