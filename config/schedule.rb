@@ -21,15 +21,15 @@ every '0 15 * * *' do
 end
 
 every '4 10-22 * * *' do
-  rake_not_silent 'onsen_scrape'
+  rake_not_silent 'main:onsen_scrape'
 end
 
 every '8 10-22 * * *' do
-  rake_not_silent 'hibiki_scrape'
+  rake_not_silent 'main:hibiki_scrape'
 end
 
 every '12 * * * *' do
-  rake_not_silent 'radiko_scrape'
+  rake_not_silent 'main:radiko_scrape'
 end
 
 every '37 15 * * *' do
