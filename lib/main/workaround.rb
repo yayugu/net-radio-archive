@@ -13,7 +13,7 @@ module Main
       end
     end
 
-    def rm_working_files
+    def self.rm_working_files
       if Settings.working_dir.strip.size < 2
         puts "working dir is maybe wrong: #{Settings.working_dir}"
         return
