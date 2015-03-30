@@ -18,7 +18,7 @@ module Main
         puts "working dir is maybe wrong: #{Settings.working_dir}"
         return
       end
-      `find #{Settings.working_dir} -ctime +30 -name "*.flv" -exec rm {} \;`
+      `find #{Settings.working_dir} -ctime +30 -name "*.flv" -exec rm {} \\;`
     end
   end
 end
