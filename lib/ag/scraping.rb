@@ -9,7 +9,7 @@ module Ag
   end
 
   class ProgramTime < Struct.new(:wday, :time)
-    SAME_DAY_LINE_HOUR = 4
+    SAME_DAY_LINE_HOUR = 5
 
     # convert human friendly time to computer friendly time
     def self.parse(wday, time_str)
@@ -53,94 +53,105 @@ module Ag
 
   class Scraping
     def main
-      programs = scraping_page('http://www.agqr.jp/timetable/digital-mf.php') +
-        scraping_page('http://www.agqr.jp/timetable/digital-ss.php')
+      programs = scraping_page
       programs = validate_programs(programs)
       programs
     end
 
     def validate_programs(programs)
+      if programs.size < 20
+        puts "Error: Number of programs is too few!"
+        exit
+      end
       programs.delete_if do |program|
         program.title == '放送休止'
       end
     end
 
-    def scraping_page(url)
-      html = Net::HTTP.get(URI.parse(url))
+
+    def scraping_page
+      html = Net::HTTP.get(URI.parse('http://www.agqr.jp/timetable/streaming.php'))
       dom = Nokogiri::HTML.parse(html)
-      domsub = dom.css('#timetable2 #timeline')
-      domsub.inject([]) do |programs, week|
-        programs + parse_week_dom(week)
+      trs = dom.css('.timetb-ag tbody tr') # may be 30minutes belt
+      two_dim_array = table_to_two_dim_array(trs)
+      two_dim_array.inject([]) do |programs, belt|
+        programs + parse_belt_dom(belt)
       end
     end
 
-    def parse_week_dom(dom)
-      wday = determine_wday(dom.css('th')[0].text)
-      dom.css('td').map do |program|
-        parse_program(program, wday)
+    def parse_belt_dom(belt)
+      belt.each_with_index.inject([]) do |programs, (td, index)|
+        next programs unless td
+        wday = (index + 1) % 7 # monday start
+        programs << parse_td_dom(td, wday)
       end
     end
 
-    def parse_program(dom, wday)
-      start_time = ProgramTime.parse(wday, dom.css('strong')[0].text)
-      m = determine_minutes(dom['class'])
-      title = parse_program_title(dom)
-      Program.new(start_time, m, title)
-    end
-
-    def parse_program_title(dom)
-      without_time_info = dom.children.dup
-      without_time_info.shift
-      without_time_info.select do |node|
-        !node.text.gsub(/\s/, '').empty?
-      end.map do |node|
-        Moji.normalize_zen_han(node.text).strip
-      end.join(' ')
-    end
-
-    def determine_wday(week_str)
-      case week_str
-      when /日曜/
-        0
-      when /月曜/
-        1
-      when /火曜/
-        2
-      when /水曜/
-        3
-      when /木曜/
-        4
-      when /金曜/
-        5
-      when /土曜/
-        6
+    def table_to_two_dim_array(trs)
+      aa = []
+      span = {}
+      trs.each_with_index do |tr, row_n|
+        a = []
+        col_n = 0
+        tr.css('td').each do |td|
+          while span[[row_n, col_n]]
+            a.push(nil)
+            col_n += 1
+          end
+          a.push(td)
+          cspan = 1
+          if td['colspan'] =~ /(\d+)/
+            cspan = $1.to_i
+          end
+          rspan = 1
+          if td['rowspan'] =~ /(\d+)/
+            rspan = $1.to_i
+          end
+          (row_n...(row_n + rspan)).each do |r|
+            (col_n...(col_n + cspan)).each do |c|
+              span[[r, c]] = true
+            end
+          end
+          col_n += 1
+        end
+        aa.push(a)
       end
+      aa
     end
 
-    # see http://agqr.jp/css/content.css
-    def determine_minutes(length_css_class)
-      case length_css_class
-      when 't05'
-        5
-      when 't10'
-        10
-      when 't15'
-        15
-      when 't15-2'
-        15
-      when 't30'
+    def determine_wday(index, padded)
+      wday = index - 1 % 7 # monday start
+    end
+
+    def padded?(td)
+    end
+
+    def parse_td_dom(td, wday)
+      start_time = parse_start_time(td, wday)
+      minutes = parse_minutes(td)
+      title = parse_title(td)
+      Program.new(start_time, minutes, title)
+    end
+
+    def parse_minutes(td)
+      rowspan = td.attribute('rowspan')
+      if !rowspan || rowspan.value.blank?
         30
-      when 't45'
-        45
-      when 't60'
-        60
-      when 't90'
-        90
-      when 't120'
-        120
-      when 't180'
-        180
+      else
+        td.attribute('rowspan').value.to_i * 30
       end
+    end
+
+    def parse_start_time(td, wday)
+      ProgramTime.parse(wday, td.css('.time')[0].text)
+    end
+
+    def parse_title(td)
+      [td.css('.title-p')[0].text, td.css('.rp')[0].text].select do |text|
+        !text.gsub(/\s/, '').empty?
+      end.map do |text|
+        Moji.normalize_zen_han(text).strip
+      end.join(' ')
     end
   end
 end
