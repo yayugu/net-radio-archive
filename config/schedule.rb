@@ -5,7 +5,7 @@
 #
 # Learn more: http://github.com/javan/whenever
 
-job_type :rake_not_silent, 'export PATH=/usr/local/bin:$PATH; cd :path && :environment_variable=:environment bundle exec rake :task :output'
+job_type :rake_not_silent, 'export PATH=/usr/local/bin:$PATH; export LANG=en_US.UTF-8; cd :path && :environment_variable=:environment bundle exec rake :task :output'
 
 every 1.minute do
   rake_not_silent 'main:rec_one'
