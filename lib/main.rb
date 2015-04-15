@@ -8,6 +8,11 @@ module Main
       request = Net::HTTP::Get.new(uri.request_uri)
       http.request(request) do |response|
         open(filename, 'wb') do |io|
+          unless response.kind_of?(Net::HTTPSuccess)
+            Rails.logger.error "download error: #{url}, #{response.code}"
+            return false
+          end
+
           response.read_body do |chunk|
             io.write chunk
           end

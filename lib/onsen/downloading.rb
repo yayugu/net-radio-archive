@@ -7,8 +7,6 @@ module Onsen
 
       uri = URI(program.file_url)
       Main::download(program.file_url, filepath(program))
-
-      true
     end
 
     def filepath(program)

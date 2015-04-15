@@ -5,4 +5,5 @@ class HibikiProgram < ActiveRecord::Base
     done: 'done',
     failed: 'failed',
   }
+  RETRY_LIMIT = 3
 end

@@ -32,6 +32,7 @@ CREATE TABLE `hibiki_programs` (
     `comment` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
     `rtmp_url` varchar(767) CHARACTER SET ASCII NOT NULL,
     `state` varchar(100) CHARACTER SET ASCII NOT NULL,
+    `retry_count` int UNSIGNED NOT NULL,
     `created_at` datetime NOT NULL,
     `updated_at` datetime NOT NULL,
     PRIMARY KEY (`id`),

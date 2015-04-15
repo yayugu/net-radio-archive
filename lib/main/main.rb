@@ -72,6 +72,7 @@ module Main
           p.comment = program.comment
           p.rtmp_url = program.rtmp_url
           p.state = HibikiProgram::STATE[:waiting]
+          p.retry_count = 0
           p.save
         end
       end
@@ -150,9 +151,7 @@ module Main
     end
 
     def hibiki_download
-      p = HibikiProgram
-        .where(state: HibikiProgram::STATE[:waiting])
-        .first
+      p = hibiki_program_to_download
       unless p
         return
       end
@@ -160,7 +159,7 @@ module Main
       affected_rows_count = nil
       ActiveRecord::Base.transaction do
         affected_rows_count = HibikiProgram
-          .where(id: p.id, state: HibikiProgram::STATE[:waiting])
+          .where(id: p.id, state: p.state)
           .update_all(state: HibikiProgram::STATE[:downloading])
       end
       if affected_rows_count == 1
@@ -171,10 +170,32 @@ module Main
           else
             HibikiProgram::STATE[:failed]
           end
+        unless succeed
+          p.retry_count += 1
+          if p.retry_count > HibikiProgram::RETRY_LIMIT
+            Rails.logger.error "hibiki rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
+          end
+        end
         p.save
+
       end
 
       exit 0
+    end
+
+    private
+
+    def hibiki_program_to_download
+      p = HibikiProgram
+        .where(state: HibikiProgram::STATE[:waiting])
+        .first
+      return p if p
+
+      HibikiProgram
+        .where(state: HibikiProgram::STATE[:failed])
+        .where('`retry_count` <= ?', HibikiProgram::RETRY_LIMIT)
+        .where('`updated_at` <= ?', 1.day.ago)
+        .first
     end
   end
 end

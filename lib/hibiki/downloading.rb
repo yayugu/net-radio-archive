@@ -19,12 +19,8 @@ module Hibiki
       Main::prepare_dirs(CH_NAME)
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
-        sleep(10)
-        exit_status, output = Main::shell_exec(command) # retry
-        unless exit_status.success?
-          Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
-          return false
-        end
+        #Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
+        return false
       end
 
       true
