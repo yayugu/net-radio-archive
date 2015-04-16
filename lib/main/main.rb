@@ -156,31 +156,29 @@ module Main
         return
       end
 
-      affected_rows_count = nil
-      ActiveRecord::Base.transaction do
-        affected_rows_count = HibikiProgram
-          .where(id: p.id, state: p.state)
-          .update_all(state: HibikiProgram::STATE[:downloading])
+      affected_rows_count = HibikiProgram
+        .where(id: p.id, state: p.state)
+        .update_all(state: HibikiProgram::STATE[:downloading])
+      unless affected_rows_count == 1
+        return 0
       end
-      if affected_rows_count == 1
-        succeed = Hibiki::Downloading.new.download(p)
-        p.state =
-          if succeed
-            HibikiProgram::STATE[:done]
-          else
-            HibikiProgram::STATE[:failed]
-          end
-        unless succeed
-          p.retry_count += 1
-          if p.retry_count > HibikiProgram::RETRY_LIMIT
-            Rails.logger.error "hibiki rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
-          end
+
+      succeed = Hibiki::Downloading.new.download(p)
+      p.state =
+        if succeed
+          HibikiProgram::STATE[:done]
+        else
+          HibikiProgram::STATE[:failed]
         end
-        p.save
-
+      unless succeed
+        p.retry_count += 1
+        if p.retry_count > HibikiProgram::RETRY_LIMIT
+          Rails.logger.error "hibiki rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
+        end
       end
+      p.save!
 
-      exit 0
+      return 0
     end
 
     private
