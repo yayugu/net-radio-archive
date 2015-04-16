@@ -162,6 +162,7 @@ module Main
       unless affected_rows_count == 1
         return 0
       end
+      p.state_will_change!
 
       succeed = Hibiki::Downloading.new.download(p)
       p.state =
