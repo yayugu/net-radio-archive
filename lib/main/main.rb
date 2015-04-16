@@ -162,7 +162,7 @@ module Main
       unless affected_rows_count == 1
         return 0
       end
-      p.state_will_change!
+      p.reload
 
       succeed = Hibiki::Downloading.new.download(p)
       p.state =
@@ -177,7 +177,7 @@ module Main
           Rails.logger.error "hibiki rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
         end
       end
-      p.save!
+      p.save
 
       return 0
     end
