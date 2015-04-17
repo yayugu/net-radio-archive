@@ -92,29 +92,28 @@ module Main
         return
       end
 
-      affected_rows_count = nil
-      ActiveRecord::Base.transaction do
-        affected_rows_count = Job
-          .where(id: job.id, state: Job::STATE[:scheduled])
-          .update_all(state: Job::STATE[:recording])
-      end
-      if affected_rows_count == 1
-        succeed = false
-        if job.ch == Job::CH[:ag]
-          succeed = Ag::Recording.new.record(job)
-        else
-          succeed = Radiko::Recording.new.record(job)
-        end
-        job.state =
-          if succeed
-            Job::STATE[:done]
-          else
-            Job::STATE[:failed]
-          end
-        job.save
+      affected_rows_count = Job
+        .where(id: job.id, state: Job::STATE[:scheduled])
+        .update_all(state: Job::STATE[:recording])
+      unless affected_rows_count == 1
+        return 0
       end
 
-      exit 0
+      succeed = false
+      if job.ch == Job::CH[:ag]
+        succeed = Ag::Recording.new.record(job)
+      else
+        succeed = Radiko::Recording.new.record(job)
+      end
+      job.state =
+        if succeed
+          Job::STATE[:done]
+        else
+          Job::STATE[:failed]
+        end
+      job.save
+
+      return 0
     end
 
     def rec_ondemand
