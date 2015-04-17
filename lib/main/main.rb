@@ -130,24 +130,24 @@ module Main
         return
       end
 
-      affected_rows_count = nil
-      ActiveRecord::Base.transaction do
-        affected_rows_count = OnsenProgram
-          .where(id: p.id, state: OnsenProgram::STATE[:waiting])
-          .update_all(state: OnsenProgram::STATE[:downloading])
+      affected_rows_count = OnsenProgram
+        .where(id: p.id, state: OnsenProgram::STATE[:waiting])
+        .update_all(state: OnsenProgram::STATE[:downloading])
+      unless affected_rows_count == 1
+        return 0
       end
-      if affected_rows_count == 1
-        succeed = Onsen::Downloading.new.download(p)
-        p.state =
-          if succeed
-            OnsenProgram::STATE[:done]
-          else
-            OnsenProgram::STATE[:failed]
-          end
-        p.save
-      end
+      p.reload
 
-      exit 0
+      succeed = Onsen::Downloading.new.download(p)
+      p.state =
+        if succeed
+          OnsenProgram::STATE[:done]
+        else
+          OnsenProgram::STATE[:failed]
+        end
+      p.save
+
+      return 0
     end
 
     def hibiki_download
