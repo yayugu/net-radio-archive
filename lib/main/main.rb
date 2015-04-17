@@ -35,10 +35,10 @@ module Main
       program_list = Onsen::Scraping.new.main
 
       program_list.each do |program|
+        if program.update_date.blank? || program.file_url.blank?
+          next
+        end
         ActiveRecord::Base.transaction do
-          if program.update_date.blank? || program.file_url.blank?
-            next
-          end
           if OnsenProgram.where(file_url: program.file_url).first
             next
           end
@@ -59,10 +59,10 @@ module Main
       program_list = Hibiki::Scraping.new.main
 
       program_list.each do |program|
+        if program.rtmp_url.blank?
+          next
+        end
         ActiveRecord::Base.transaction do
-          if program.rtmp_url.blank?
-            next
-          end
           if HibikiProgram.where(rtmp_url: program.rtmp_url).first
             next
           end
