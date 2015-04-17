@@ -6,5 +6,8 @@ development:
     working_dir: /tmp/net-radio-working
 
 production:
+    radiko_channels:
+        - QRR # bunka housou
+        - LFR # nippon housou
     archive_dir: /path/to/archive/dir
     working_dir: /path/to/working/dir
