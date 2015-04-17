@@ -17,17 +17,18 @@ module Main
     end
 
     def radiko_scrape
-      ch = 'QRR'
-      programs = Radiko::Scraping.new.get(ch)
-      programs.each do |p|
-        title = p.title
-        title += " #{p.performers}" if p.performers.present?
-        Job.new(
-          ch: ch,
-          title: title,
-          start: p.start_time,
-          end: p.end_time
-        ).schedule
+      Settings.radiko_channels.each do |ch|
+        programs = Radiko::Scraping.new.get(ch)
+        programs.each do |p|
+          title = p.title
+          title += " #{p.performers}" if p.performers.present?
+          Job.new(
+            ch: ch,
+            title: title,
+            start: p.start_time,
+            end: p.end_time
+          ).schedule
+        end
       end
     end
 

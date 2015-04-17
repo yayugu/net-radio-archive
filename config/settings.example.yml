@@ -1,4 +1,7 @@
 development:
+    radiko_channels:
+        - QRR # bunka housou
+        - LFR # nippon housou
     archive_dir: /tmp/net-radio-archive
     working_dir: /tmp/net-radio-working
 
