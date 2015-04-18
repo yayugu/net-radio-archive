@@ -2,6 +2,10 @@ require 'fileutils'
 require 'net/http'
 
 module Main
+  def self.sleep_until(time)
+    sleep(time - Time.now)
+  end
+
   def self.download(url, filename)
     uri = URI(url)
     Net::HTTP.start(uri.host, uri.port) do |http|
