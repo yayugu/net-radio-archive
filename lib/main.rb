@@ -3,6 +3,11 @@ require 'net/http'
 
 module Main
   def self.sleep_until(time)
+    now = Time.now
+    if time - now <= 0
+      Rails.logger.warning("rec start delayed? #{time} #{now}")
+      return
+    end
     sleep(time - Time.now)
   end
 
