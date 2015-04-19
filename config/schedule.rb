@@ -8,10 +8,9 @@
 job_type :rake_not_silent, 'export PATH=/usr/local/bin:$PATH; export LANG=en_US.UTF-8; cd :path && :environment_variable=:environment bundle exec rake :task :output'
 
 every 1.minute do
-  # boot processes for radiko channels + A&G+
-  (Settings.radiko_channels.size + 1).each do
-    rake_not_silent 'main:rec_one'
-  end
+  rake_not_silent 'main:rec_one'
+  rake_not_silent 'main:rec_one'
+  rake_not_silent 'main:rec_one'
 end
 
 every '3-50/3 * * * *' do
