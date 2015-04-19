@@ -5,7 +5,7 @@ module Main
   def self.sleep_until(time)
     now = Time.now
     if time - now <= 0
-      Rails.logger.warning("rec start delayed? #{time} #{now}")
+      Rails.logger.warn("rec start delayed? until:#{time} now:#{now}")
       return
     end
     sleep(time - Time.now)
