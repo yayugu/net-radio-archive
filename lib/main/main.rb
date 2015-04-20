@@ -80,24 +80,24 @@ module Main
     end
 
     def rec_one
-      job = Job
-        .where(
-          "? <= `start` and `start` <= ?",
-          2.minutes.ago,
-          2.minutes.from_now
-        )
-        .where(state: Job::STATE[:scheduled])
-        .order(:start)
-        .first
-      unless job
-        return
-      end
+      job = nil
+      ActiveRecord::Base.transaction do
+        job = Job
+          .where(
+            "? <= `start` and `start` <= ?",
+            2.minutes.ago,
+            2.minutes.from_now
+          )
+          .where(state: Job::STATE[:scheduled])
+          .order(:start)
+          .lock
+          .first
+        unless job
+          return
+        end
 
-      affected_rows_count = Job
-        .where(id: job.id, state: Job::STATE[:scheduled])
-        .update_all(state: Job::STATE[:recording])
-      unless affected_rows_count == 1
-        return 0
+        job.state = Job::STATE[:recording]
+        job.save!
       end
 
       succeed = false
@@ -112,7 +112,7 @@ module Main
         else
           Job::STATE[:failed]
         end
-      job.save
+      job.save!
 
       return 0
     end
