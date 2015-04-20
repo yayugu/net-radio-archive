@@ -93,7 +93,7 @@ module Main
           .lock
           .first
         unless job
-          return
+          return 0
         end
 
         job.state = Job::STATE[:recording]
@@ -123,20 +123,19 @@ module Main
     end
 
     def onsen_download
-      p = OnsenProgram
-        .where(state: OnsenProgram::STATE[:waiting])
-        .first
-      unless p
-        return
-      end
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = OnsenProgram
+          .where(state: OnsenProgram::STATE[:waiting])
+          .lock
+          .first
+        unless p
+          return 0
+        end
 
-      affected_rows_count = OnsenProgram
-        .where(id: p.id, state: OnsenProgram::STATE[:waiting])
-        .update_all(state: OnsenProgram::STATE[:downloading])
-      unless affected_rows_count == 1
-        return 0
+        p.state = OnsenProgram::STATE[:downloading]
+        p.save!
       end
-      p.reload
 
       succeed = Onsen::Downloading.new.download(p)
       p.state =
@@ -145,24 +144,22 @@ module Main
         else
           OnsenProgram::STATE[:failed]
         end
-      p.save
+      p.save!
 
       return 0
     end
 
     def hibiki_download
-      p = hibiki_program_to_download
-      unless p
-        return
-      end
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = hibiki_program_to_download
+        unless p
+          return 0
+        end
 
-      affected_rows_count = HibikiProgram
-        .where(id: p.id, state: p.state)
-        .update_all(state: HibikiProgram::STATE[:downloading])
-      unless affected_rows_count == 1
-        return 0
+        p.state = HibikiProgram::STATE[:downloading]
+        p.save!
       end
-      p.reload
 
       succeed = Hibiki::Downloading.new.download(p)
       p.state =
@@ -177,7 +174,7 @@ module Main
           Rails.logger.error "hibiki rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
         end
       end
-      p.save
+      p.save!
 
       return 0
     end
@@ -187,6 +184,7 @@ module Main
     def hibiki_program_to_download
       p = HibikiProgram
         .where(state: HibikiProgram::STATE[:waiting])
+        .lock
         .first
       return p if p
 
@@ -194,6 +192,7 @@ module Main
         .where(state: HibikiProgram::STATE[:failed])
         .where('`retry_count` <= ?', HibikiProgram::RETRY_LIMIT)
         .where('`updated_at` <= ?', 1.day.ago)
+        .lock
         .first
     end
   end
