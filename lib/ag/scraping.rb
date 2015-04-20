@@ -72,10 +72,33 @@ module Ag
     def scraping_page
       html = Net::HTTP.get(URI.parse('http://www.agqr.jp/timetable/streaming.php'))
       dom = Nokogiri::HTML.parse(html)
-      trs = dom.css('.timetb-ag tbody tr') # may be 30minutes belt
-      two_dim_array = table_to_two_dim_array(trs)
+      tbody = dom.css('.timetb-ag tbody') # may be 30minutes belt
+      td_list_list = parse_broken_table(tbody)
+      two_dim_array = table_to_two_dim_array(td_list_list)
       two_dim_array.inject([]) do |programs, belt|
         programs + parse_belt_dom(belt)
+      end
+    end
+
+    def parse_broken_table(tbody)
+      # time table HTML is broken!!!!!! some row aren't opened by <tr>.
+      td_list_list = []
+      td_list_tmp = []
+      tbody.children.each do |tag|
+        if tag.name == 'td'
+          td_list_tmp.push tag
+        elsif tag.name == 'tr' || tag.name == 'th'
+          unless td_list_tmp.empty?
+            td_list_list.push td_list_tmp
+            td_list_tmp = []
+          end
+          if tag.name == 'tr'
+            td_list_list.push tag.css('td')
+          end
+        end
+      end
+      unless td_list_tmp.empty?
+        td_list_list.push td_list_tmp
       end
     end
 
@@ -87,13 +110,13 @@ module Ag
       end
     end
 
-    def table_to_two_dim_array(trs)
+    def table_to_two_dim_array(td_list_list)
       aa = []
       span = {}
-      trs.each_with_index do |tr, row_n|
+      td_list_list.each_with_index do |td_list, row_n|
         a = []
         col_n = 0
-        tr.css('td').each do |td|
+        td_list.each do |td|
           while span[[row_n, col_n]]
             a.push(nil)
             col_n += 1
@@ -117,13 +140,6 @@ module Ag
         aa.push(a)
       end
       aa
-    end
-
-    def determine_wday(index, padded)
-      wday = index - 1 % 7 # monday start
-    end
-
-    def padded?(td)
     end
 
     def parse_td_dom(td, wday)
