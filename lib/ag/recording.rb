@@ -15,9 +15,9 @@ module Ag
 
     def exec_rec(job)
       Main::prepare_dirs(CH_NAME)
-      Main::sleep_until(job.start - 30.seconds)
+      Main::sleep_until(job.start - 20.seconds)
 
-      length = job.length_sec + 120
+      length = job.length_sec + 60
       flv_path = Main::file_path_working(CH_NAME, title(job), 'flv')
       command = "rtmpdump -q -r #{Shellwords.escape(AGQR_STREAM_URL)} --live --stop #{length} -o #{Shellwords.escape(flv_path)}"
       exit_status, output = Main::shell_exec(command)

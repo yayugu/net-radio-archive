@@ -97,7 +97,9 @@ module Radiko
     end
 
     def rtmp(job)
-      length = job.length_sec + 120
+      Main::sleep_until(job.start - 20.seconds)
+
+      length = job.length_sec + 60
       flv_path = Main::file_path_working(job.ch, title(job), 'flv')
       command = "\
         rtmpdump -q \
