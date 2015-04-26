@@ -112,7 +112,7 @@ module Radiko
           --stop #{length} \
           --resume \
           --skip 1 \
-          -o #{Shellwords.escape(flv_path)}\
+          -o #{Shellwords.escape(flv_path)} \
         2>&1"
 
       exit_status, output = Main::shell_exec(command)
