@@ -82,5 +82,6 @@ module Main
     title
       .gsub(/\s/, '_')
       .gsub(/\//, '_')
+      .slice(0, 200) # safe length for filename
   end
 end
