@@ -103,16 +103,17 @@ module Radiko
       flv_path = Main::file_path_working(job.ch, title(job), 'flv')
       command = "\
         rtmpdump \
-        -r #{Shellwords.escape(RTMP_URL)} \
-        --playpath 'simul-stream.stream' \
-        --app '#{job.ch}/_definst_' \
-        -W #{SWF_URL} \
-        -C S:'' -C S:'' -C S:'' -C S:#{@auth_token} \
-        --live \
-        --stop #{length} \
-        --resume \
-        --skip 1 \
-        -o #{Shellwords.escape(flv_path)}"
+          -r #{Shellwords.escape(RTMP_URL)} \
+          --playpath 'simul-stream.stream' \
+          --app '#{job.ch}/_definst_' \
+          -W #{SWF_URL} \
+          -C S:'' -C S:'' -C S:'' -C S:#{@auth_token} \
+          --live \
+          --stop #{length} \
+          --resume \
+          --skip 1 \
+          -o #{Shellwords.escape(flv_path)}\
+        2>&1"
 
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
