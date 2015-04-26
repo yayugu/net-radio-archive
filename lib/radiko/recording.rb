@@ -102,7 +102,7 @@ module Radiko
       length = job.length_sec + 60
       flv_path = Main::file_path_working(job.ch, title(job), 'flv')
       command = "\
-        rtmpdump -q \
+        rtmpdump \
         -r #{Shellwords.escape(RTMP_URL)} \
         --playpath 'simul-stream.stream' \
         --app '#{job.ch}/_definst_' \
@@ -116,7 +116,7 @@ module Radiko
 
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
-        Rails.logger.error "rec failed. job:#{job}, exit_status:#{exit_status}, output:#{output}"
+        Rails.logger.error "rec failed. job:#{job.id}, exit_status:#{exit_status}, output:#{output}"
         return false
       end
 
