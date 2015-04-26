@@ -110,6 +110,8 @@ module Radiko
         -C S:'' -C S:'' -C S:'' -C S:#{@auth_token} \
         --live \
         --stop #{length} \
+        --resume \
+        --skip 1 \
         -o #{Shellwords.escape(flv_path)}"
 
       exit_status, output = Main::shell_exec(command)
