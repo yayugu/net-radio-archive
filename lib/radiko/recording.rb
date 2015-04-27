@@ -126,7 +126,7 @@ module Radiko
 
     def exec_convert(job)
       flv_path = Main::file_path_working(job.ch, title(job), 'flv')
-      m4a_path = Main::file_path_archive(job.ch, title(job), 'aac')
+      m4a_path = Main::file_path_archive(job.ch, title(job), 'm4a')
       Main::convert_ffmpeg_to_m4a(flv_path, m4a_path, job)
     end
 
