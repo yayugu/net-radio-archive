@@ -15,7 +15,7 @@ module Ag
 
     def exec_rec(job)
       Main::prepare_dirs(CH_NAME)
-      Main::sleep_until(job.start - 20.seconds)
+      Main::sleep_until(job.start - 10.seconds)
 
       length = job.length_sec + 60
       flv_path = Main::file_path_working(CH_NAME, title(job), 'flv')
