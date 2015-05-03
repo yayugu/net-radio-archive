@@ -19,7 +19,9 @@ module Radiko
 
     def exec_rec(job)
       Main::prepare_dirs(job.ch)
-      auth
+      Main::retry do
+        auth
+      end
       rtmp(job)
     end
 

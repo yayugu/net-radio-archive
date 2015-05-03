@@ -2,6 +2,26 @@ require 'fileutils'
 require 'net/http'
 
 module Main
+  def self.retry(limit = 3)
+    limit = 0
+    result = nil
+    exception = nil
+
+    limit.times do
+      exception = nil
+      begin
+        result = yield
+      rescue => e
+        exception = e
+      end
+
+      unless exception
+        return result
+      end
+    end
+    throw exception
+  end
+
   def self.sleep_until(time)
     now = Time.now
     if time - now <= 0
