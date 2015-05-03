@@ -14,7 +14,7 @@ module Ag
     end
 
     def exec_rec(job)
-      Main::prepare_dirs(CH_NAME)
+      Main::prepare_working_dir(CH_NAME)
       Main::sleep_until(job.start - 10.seconds)
 
       length = job.length_sec + 60
@@ -31,8 +31,9 @@ module Ag
 
     def exec_convert(job)
       flv_path = Main::file_path_working(CH_NAME, title(job), 'flv')
-      mp4_path = Main::file_path_archive(CH_NAME, title(job), 'mp4')
+      mp4_path = Main::file_path_working(CH_NAME, title(job), 'mp4')
       Main::convert_ffmpeg_to_mp4(flv_path, mp4_path, job)
+      Main::move_to_archive_dir(CH_NAME, job.start, mp4_path)
     end
 
     def title(job)

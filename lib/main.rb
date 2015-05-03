@@ -81,16 +81,47 @@ module Main
   end
 
   def self.prepare_dirs(ch_name)
-    FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}")
+    prepare_working_dir
+    prepare_archive_dir
+  end
+
+  def self.prepare_working_dir(ch_name)
     FileUtils.mkdir_p("#{Settings.working_dir}/#{ch_name}")
+  end
+
+  def self.prepare_archive_dir(ch_name, date = nil)
+    if date
+      FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}/#{month_str(date)}")
+    else
+      FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}")
+    end
+  end
+
+  def self.move_to_archive_dir(ch_name, date, src)
+    filename = File.basename(src)
+    dst_dir = "#{Settings.archive_dir}/#{ch_name}/#{month_str(date)}"
+    dst = "#{dst_dir}/#{filename}"
+    latest_dir = "#{Settings.archive_dir}/#{ch_name}/_latest"
+    latest_symlink = "#{latest_dir}/#{filename}"
+
+    FileUtils.mkdir_p(dst_dir)
+    FileUtils.mv(src, dst)
+
+    # create symlink
+    FileUtils.mkdir_p(latest_dir)
+    FileUtils.ln_s(dst, latest_symlink)
   end
 
   def self.file_path_archive(ch_name, title, ext)
     "#{Settings.archive_dir}/#{ch_name}/#{title_escape(title)}.#{ext}"
   end
 
-  def self.file_path_working(ch_name, title, ext)
-    "#{Settings.working_dir}/#{ch_name}/#{title_escape(title)}.#{ext}"
+  def self.file_path_working(ch_name, title, ext, date = nil)
+    if date
+      "#{Settings.working_dir}/#{ch_name}/#{month_str(date)}/#{title_escape(title)}.#{ext}"
+    else
+      "#{Settings.working_dir}/#{ch_name}/#{title_escape(title)}.#{ext}"
+    end
   end
 
   def self.title_escape(title)
@@ -98,5 +129,9 @@ module Main
       .gsub(/\s/, '_')
       .gsub(/\//, '_')
       .byteslice(0, 200).scrub('') # safe length for filename
+  end
+
+  def self.month_str(date)
+    date.strftime('%Y%m')
   end
 end
