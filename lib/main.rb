@@ -8,15 +8,10 @@ module Main
     exception = nil
 
     limit.times do
-      exception = nil
       begin
-        result = yield
+        return result = yield
       rescue => e
         exception = e
-      end
-
-      unless exception
-        return result
       end
     end
     throw exception
