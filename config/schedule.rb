@@ -9,8 +9,6 @@ job_type :rake_not_silent, 'export PATH=/usr/local/bin:$PATH; export LANG=en_US.
 
 every 1.minute do
   rake_not_silent 'main:rec_one'
-  rake_not_silent 'main:rec_one'
-  rake_not_silent 'main:rec_one'
 end
 
 every '3-50/3 * * * *' do
