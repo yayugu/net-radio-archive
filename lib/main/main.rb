@@ -86,7 +86,7 @@ module Main
           .where(
             "? <= `start` and `start` <= ?",
             2.minutes.ago,
-            2.minutes.from_now
+            5.minutes.from_now
           )
           .where(state: Job::STATE[:scheduled])
           .order(:start)
