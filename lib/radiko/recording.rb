@@ -18,7 +18,7 @@ module Radiko
     end
 
     def exec_rec(job)
-      Main::prepare_dirs(job.ch)
+      Main::prepare_working_dir(job.ch)
       Main::retry do
         auth
       end
@@ -128,8 +128,9 @@ module Radiko
 
     def exec_convert(job)
       flv_path = Main::file_path_working(job.ch, title(job), 'flv')
-      m4a_path = Main::file_path_archive(job.ch, title(job), 'm4a')
+      m4a_path = Main::file_path_working(job.ch, title(job), 'm4a')
       Main::convert_ffmpeg_to_m4a(flv_path, m4a_path, job)
+      Main::move_to_archive_dir(CH_NAME, job.start, mp4_path)
     end
 
     def title(job)
