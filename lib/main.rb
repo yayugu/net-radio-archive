@@ -81,8 +81,8 @@ module Main
   end
 
   def self.prepare_dirs(ch_name)
-    prepare_working_dir
-    prepare_archive_dir
+    prepare_working_dir(ch_name)
+    prepare_archive_dir(ch_name)
   end
 
   def self.prepare_working_dir(ch_name)
