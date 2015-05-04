@@ -3,7 +3,6 @@ require 'net/http'
 
 module Main
   def self.retry(limit = 3)
-    limit = 0
     exception = nil
 
     limit.times do
