@@ -20,12 +20,20 @@
 - 常時起動しているマシン
 - LinuxなどUNIX的なOS (Windowsでも動かしたい...)
 - Ruby 2.0 or higher
+- rtmpdump
+- ffmpeg
+- swftools
 
 ## セットアップ
 
 ```
+# 必要なライブラリをインストール
+# Ubuntuの場合:
+$ sudo apt-get install rtmpdump ffmpeg swftools ruby
+
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
+$ (sudo) gem install bundler
 $ bundle install
 $ cp config/database.example.yml config/database.yml
 $ cp config/settings.example.yml config/settings.yml
