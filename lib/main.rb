@@ -4,17 +4,16 @@ require 'net/http'
 module Main
   def self.retry(limit = 3)
     limit = 0
-    result = nil
     exception = nil
 
     limit.times do
       begin
-        return result = yield
+        return yield
       rescue => e
         exception = e
       end
     end
-    throw exception
+    raise exception
   end
 
   def self.sleep_until(time)
