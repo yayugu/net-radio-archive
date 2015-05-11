@@ -1,13 +1,26 @@
+# cronからは常にproduction環境で起動します
+# 基本的にはこちらのみ設定してください
+production:
+    # radikoで録音するチャンネルを設定してください
+    # channel code (QRRなど) についてはREADME.mdのFAQを参照してください
+    radiko_channels:
+        - QRR # bunka housou
+        - LFR # nippon housou
+
+    # ファイルを保存(archive)するディレクトリを設定してください（フルパス）
+    # このディレクトリ以下にサブディレクトリやファイルが作成されます
+    # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
+    archive_dir: /path/to/archive/dir
+
+    # ダウンロード中などにファイルを一時的に置いておくディレクトリを設定してください（フルパス）
+    # 一時的とはいえ、デフォルトで自己防止のためこのディレクトリのデータは30日ほど削除されません (lib/main/workaround.rbのrm_working_filesを参照)
+    # そのためそれなりにおおきな容量となります
+    # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
+    working_dir: /path/to/working/dir
+
 development:
     radiko_channels:
         - QRR # bunka housou
         - LFR # nippon housou
     archive_dir: /tmp/net-radio-archive
     working_dir: /tmp/net-radio-working
-
-production:
-    radiko_channels:
-        - QRR # bunka housou
-        - LFR # nippon housou
-    archive_dir: /path/to/archive/dir
-    working_dir: /path/to/working/dir
