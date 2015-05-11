@@ -42,6 +42,11 @@ $ cp config/database.example.yml config/database.yml
 $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
 $ vi config/settings.yml # 各自の環境に合わせて編集
+
+# db名はお好みで
+$ echo 'create database net_radio_archive' | mysql -u$YOURUSERNAME -p$YOURPASSWORD
+$ cat db/schema.sql | mysql -u$YOURUSERNAME -p$YOURPASSWORD net_radio_archive
+$ cat db/
 $ bundle exec whenever --update-crontab
 # (または) bundle exec whenever -u $YOUR-USERNAME --update-crontab
 ```
@@ -57,3 +62,9 @@ A. Githubでissueつくってください。
 
 ### Q. ◯◯に対応してねえぞ
 A. Githubでissueつくってください。あとpull req募集中
+
+### Q. radikoがうまく動かない
+A. Radikoはアクセスする側のIPによってどの局を聴けるかが変わります。
+ブラウザで開いてみたり、以下のページなどを参考にご自身が聞ける局をsettings.ymlに設定してください。
+
+http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
