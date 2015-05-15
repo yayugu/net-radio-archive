@@ -16,6 +16,14 @@ module Main
       `find #{Settings.working_dir} -ctime +30 -name "*.flv" -exec rm {} \\;`
     end
 
+    def self.rm_latest_dir_symlinks
+      if Settings.archive.strip.size < 2
+        puts "archive dir is maybe wrong: #{Settings.archive_dir}"
+        return
+      end
+      `find #{Settings.archive_dir}/*/#{Main::latest_dir_name} -ctime +30 -type l -exec rm {} \\;`
+    end
+
     private
 
     def self.send_signal_to_zombie_processes(signal)
