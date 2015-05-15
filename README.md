@@ -43,10 +43,7 @@ $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
 $ vi config/settings.yml # 各自の環境に合わせて編集
 
-# db名はお好みで
-$ echo 'create database net_radio_archive' | mysql -u$YOURUSERNAME -p$YOURPASSWORD
-$ cat db/schema.sql | mysql -u$YOURUSERNAME -p$YOURPASSWORD net_radio_archive
-$ cat db/
+$ RAILS_ENV=production bundle exec rake db:create db:migrate
 $ bundle exec whenever --update-crontab
 # (または) bundle exec whenever -u $YOUR-USERNAME --update-crontab
 ```
