@@ -5,14 +5,16 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  ch: <%= Job::CH[:ag] %>
-  start: <%= DateTime.now %>
-  end: <%= DateTime.now + Rational(1, 24)  %>
   title: 'one title'
-  state: <%= Job::STATE[:scheduled] %>
+  number: 1
+  date: <%= DateTime.now %>
+  file_url: 'http://test.one.onsen_program.com'
+  personality: '花澤香菜'
+  state: <%= OnsenProgram::STATE[:waiting] %>
 two:
-  ch: 'QRR'
-  start: <%= DateTime.now %>
-  end: <%= DateTime.now + Rational(1, 24)  %>
   title: 'two title'
-  state: <%= Job::STATE[:scheduled] %>
+  number: 1
+  date: <%= DateTime.now %>
+  file_url: 'http://test.two.onsen_program.com'
+  personality: '花澤香菜'
+  state: <%= OnsenProgram::STATE[:waiting] %>
