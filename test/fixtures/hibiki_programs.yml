@@ -5,14 +5,14 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  ch: <%= Job::CH[:ag] %>
-  start: <%= DateTime.now %>
-  end: <%= DateTime.now + Rational(1, 24)  %>
   title: 'one title'
-  state: <%= Job::STATE[:scheduled] %>
+  comment: 'one comment'
+  rtmp_url: 'rtmpe://test.one.hibiki_program'
+  state: <%= HibikiProgram::STATE[:waiting] %>
+  retry_count: 0
 two:
-  ch: 'QRR'
-  start: <%= DateTime.now %>
-  end: <%= DateTime.now + Rational(1, 24)  %>
   title: 'two title'
-  state: <%= Job::STATE[:scheduled] %>
+  comment: 'two comment'
+  rtmp_url: 'rtmpe://test.two.hibiki_program'
+  state: <%= HibikiProgram::STATE[:waiting] %>
+  retry_count: 0
