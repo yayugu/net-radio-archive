@@ -43,9 +43,15 @@ $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
 $ vi config/settings.yml # 各自の環境に合わせて編集
 
+# サーバー内での手動設定
 $ RAILS_ENV=production bundle exec rake db:create db:migrate
 $ bundle exec whenever --update-crontab
-# (または) bundle exec whenever -u $YOUR-USERNAME --update-crontab
+$ # (または) bundle exec whenever -u $YOUR-USERNAME --update-crontab
+
+# capistranoでのデプロイ設定
+$ cp config/deploy/production.example.rb config/deploy/production.rb
+$ vi config/deploy/production.rb # 各自の環境に合わせて編集
+$ bundle exec cap production deploy
 ```
 
 cronに
