@@ -1,6 +1,6 @@
 # HOMEディレクトリ以下のrbenvを使う場合のPATH指定
 #set :default_env, {
-# path: '$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH'
+#  path: '$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH'
 #}
 
 set :deploy_to, '/deploy/to/path'
