@@ -17,7 +17,7 @@ module Main
     end
 
     def self.rm_latest_dir_symlinks
-      if Settings.archive.strip.size < 2
+      if Settings.archive_dir.strip.size < 2
         puts "archive dir is maybe wrong: #{Settings.archive_dir}"
         return
       end
