@@ -10,13 +10,13 @@ production:
     # ファイルを保存(archive)するディレクトリを設定してください（フルパス）
     # このディレクトリ以下にサブディレクトリやファイルが作成されます
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
-    archive_dir: /path/to/archive/dir
+    archive_dir: <%= Rails.root.join('public', 'system') %>
 
     # ダウンロード中などにファイルを一時的に置いておくディレクトリを設定してください（フルパス）
     # 一時的とはいえ、デフォルトで自己防止のためこのディレクトリのデータは30日ほど削除されません (lib/main/workaround.rbのrm_working_filesを参照)
     # そのためそれなりにおおきな容量となります
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
-    working_dir: /path/to/working/dir
+    working_dir: <%= Rails.root.join('tmp', 'working') %>
 
 development:
     radiko_channels:
