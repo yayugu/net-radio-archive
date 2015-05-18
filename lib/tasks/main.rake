@@ -29,12 +29,6 @@ namespace :main do
     Main::Main.new.rec_ondemand
   end
 
-  desc 'rec radiko'
-  task :rec_radiko => :environment do
-    #Main::Main.new.rec_one
-    Radiko::Recording.new.record(nil)
-  end
-
   desc 'kill zombie process (rtmpdump)'
   task :kill_zombie_process => :environment do
     Main::Workaround::kill_zombie_process
@@ -43,5 +37,6 @@ namespace :main do
   desc 'remove old working(temporary) files'
   task :rm_working_files => :environment do
     Main::Workaround::rm_working_files
+    Main::Workaround::rm_latest_dir_symlinks
   end
 end

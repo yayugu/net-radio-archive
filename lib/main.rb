@@ -95,11 +95,15 @@ module Main
     end
   end
 
+  def self.latest_dir_name
+    '0_latest'
+  end
+
   def self.move_to_archive_dir(ch_name, date, src)
     filename = File.basename(src)
     dst_dir = "#{Settings.archive_dir}/#{ch_name}/#{month_str(date)}"
     dst = "#{dst_dir}/#{filename}"
-    latest_dir = "#{Settings.archive_dir}/#{ch_name}/_latest"
+    latest_dir = "#{Settings.archive_dir}/#{ch_name}/#{latest_dir_name}"
     latest_symlink = "#{latest_dir}/#{filename}"
 
     FileUtils.mkdir_p(dst_dir)
