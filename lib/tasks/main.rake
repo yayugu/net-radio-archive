@@ -19,6 +19,11 @@ namespace :main do
     Main::Main.new.hibiki_scrape
   end
 
+  desc 'anitama scrape'
+  task :anitama_scrape => :environment do
+    Main::Main.new.anitama_scrape
+  end
+
   desc 'rec one'
   task :rec_one => :environment do
     Main::Main.new.rec_one

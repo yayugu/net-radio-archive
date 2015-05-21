@@ -79,6 +79,29 @@ module Main
       end
     end
 
+    def anitama_scrape
+      program_list = Anitama::Scraping.new.main
+
+      program_list.each do |program|
+        ActiveRecord::Base.transaction do
+          if AnitamaProgram
+              .where(book_id: program.book_id)
+              .where(update_time: program.update_time)
+              .first
+            next
+          end
+
+          p = AnitamaProgram.new
+          p.book_id = program.book_id
+          p.title = program.title
+          p.update_time = program.update_time
+          p.state = HibikiProgram::STATE[:waiting]
+          p.retry_count = 0
+          p.save
+        end
+      end
+    end
+
     def rec_one
       job = nil
       ActiveRecord::Base.transaction do
@@ -120,6 +143,7 @@ module Main
     def rec_ondemand
       onsen_download
       hibiki_download
+      anitama_download
     end
 
     def onsen_download
@@ -174,6 +198,33 @@ module Main
           Rails.logger.error "hibiki rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
         end
       end
+      p.save!
+
+      return 0
+    end
+
+    def anitama_download
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = AnitamaProgram
+          .where(state: AnitamaProgram::STATE[:waiting])
+          .lock
+          .first
+        unless p
+          return 0
+        end
+
+        p.state = AnitamaProgram::STATE[:downloading]
+        p.save!
+      end
+
+      succeed = Anitama::Downloading.new.download(p)
+      p.state =
+        if succeed
+          AnitamaProgram::STATE[:done]
+        else
+          AnitamaProgram::STATE[:failed]
+        end
       p.save!
 
       return 0

@@ -31,6 +31,10 @@ every '12 * * * *' do
   rake_not_silent 'main:radiko_scrape'
 end
 
+every '17 * * * *' do
+  rake_not_silent 'main:anitama_scrape'
+end
+
 every '37 15 * * *' do
   rake_not_silent 'main:kill_zombie_process'
 end

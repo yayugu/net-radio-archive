@@ -50,9 +50,13 @@ GEM
       execjs
     coffee-script-source (1.8.0)
     colorize (0.7.7)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     execjs (2.2.2)
     hike (1.2.3)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.6.11)
     jbuilder (2.2.5)
       activesupport (>= 3.0.0, < 5)
@@ -63,17 +67,29 @@ GEM
     json (1.8.1)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    mechanize (2.7.3)
+      domain_name (~> 0.5, >= 0.5.1)
+      http-cookie (~> 1.0)
+      mime-types (~> 2.0)
+      net-http-digest_auth (~> 1.1, >= 1.1.1)
+      net-http-persistent (~> 2.5, >= 2.5.2)
+      nokogiri (~> 1.4)
+      ntlm-http (~> 0.1, >= 0.1.1)
+      webrobots (>= 0.0.9, < 0.2)
     mime-types (2.4.3)
     mini_portile (0.6.1)
     minitest (5.5.0)
     moji (1.6)
     multi_json (1.10.1)
     mysql2 (0.3.17)
+    net-http-digest_auth (1.4)
+    net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
+    ntlm-http (0.1.1)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -129,6 +145,10 @@ GEM
     uglifier (2.6.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
+    webrobots (0.1.1)
     whenever (0.9.4)
       chronic (>= 0.6.3)
 
@@ -142,6 +162,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   jbuilder (~> 2.0)
   jquery-rails
+  mechanize
   moji
   mysql2
   nokogiri

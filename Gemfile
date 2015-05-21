@@ -41,6 +41,7 @@ gem 'mysql2'
 gem 'chronic'
 gem 'whenever'
 gem 'settingslogic'
+gem 'mechanize'
 
 group :development do
   gem 'capistrano-rails'
