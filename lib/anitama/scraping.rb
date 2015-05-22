@@ -16,6 +16,7 @@ module Anitama
     def main
       create_session
       program_list
+      filter_program(program_list)
     end
 
     def download(book_id, path)
@@ -29,7 +30,7 @@ module Anitama
     def create_session
       @a.get(URL_BASE + "/Transition?command=top&group=G0000049")
       unixtime = Time.now.to_i
-      res = @a.get(URL_BASE + "/CategoryServlet?groupId=null&time=#{unixtime}")
+      @a.get(URL_BASE + "/CategoryServlet?groupId=null&time=#{unixtime}")
     end
 
     def program_list
@@ -39,6 +40,13 @@ module Anitama
         title = book.attr('label')
         update_time = Time.parse(book.attr('updateTime'))
         Program.new(book_id, title, update_time)
+      end
+    end
+
+    def filter_program(list)
+      list.reject do |program|
+        # mp3が複数含まれていて扱いが面倒なのでとりあえず取得対象からはずしておく
+        program.title.include?('校内放送マイクバトル')
       end
     end
 
