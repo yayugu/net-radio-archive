@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/sorah/niconico.git
+  revision: aa95e44a45f23e2dd04b0b1121f5a5b9d04c2421
+  specs:
+    niconico (1.7.0)
+      mechanize (>= 2.7.3)
+      nokogiri (>= 1.6.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -165,6 +173,7 @@ DEPENDENCIES
   mechanize
   moji
   mysql2
+  niconico!
   nokogiri
   rails (= 4.1.8)
   sass-rails (~> 4.0.3)

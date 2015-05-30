@@ -15,6 +15,10 @@ every '3-50/3 * * * *' do
   rake_not_silent 'main:rec_ondemand'
 end
 
+every '4-50/18 * * * *' do
+  rake_not_silent 'main:rec_niconama'
+end
+
 every '0 15 * * *' do
   rake_not_silent 'main:ag_scrape'
 end
@@ -33,6 +37,10 @@ end
 
 every '17 * * * *' do
   rake_not_silent 'main:anitama_scrape'
+end
+
+every '21 * * * *' do
+  rake_not_silent 'main:nico_scrape'
 end
 
 every '37 15 * * *' do

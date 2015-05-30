@@ -126,6 +126,10 @@ module Main
     end
   end
 
+  def self.file_path_working_base(ch_name, title)
+    "#{Settings.working_dir}/#{ch_name}/#{title_escape(title)}"
+  end
+
   def self.title_escape(title)
     title
       .gsub(/\s/, '_')

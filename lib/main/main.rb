@@ -102,6 +102,25 @@ module Main
       end
     end
 
+    def niconama_scrape
+      program_list = NiconicoLive::Scraping.new.main
+
+      program_list.each do |program|
+        ActiveRecord::Base.transaction do
+          if NiconicoLiveProgram.where(id: program.id).first
+            next
+          end
+
+          p = NiconicoLiveProgram.new
+          p.id = program.id
+          p.title = program.title
+          p.state = NiconicoLiveProgram::STATE[:waiting]
+          p.retry_count = 0
+          p.save
+        end
+      end
+    end
+
     def rec_one
       job = nil
       ActiveRecord::Base.transaction do
@@ -145,6 +164,29 @@ module Main
       hibiki_download
       anitama_download
     end
+
+    def rec_niconama
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = NiconicoLiveProgram
+        .where(state: NiconicoLiveProgram::STATE[:waiting])
+        .lock
+        .first
+        unless p
+          return 0
+        end
+
+        p.state = NiconicoLiveProgram::STATE[:downloading]
+        p.save!
+      end
+
+      p.state = NiconicoLive::Downloading.new.download(p)
+      p.save!
+
+      return 0
+    end
+
+    private
 
     def onsen_download
       p = nil
@@ -230,7 +272,6 @@ module Main
       return 0
     end
 
-    private
 
     def hibiki_program_to_download
       p = HibikiProgram
