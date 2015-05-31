@@ -2,6 +2,8 @@ module NiconicoLive
   class Downloading
     CH_NAME = 'niconama'
 
+    class NiconamaDownloadException < StandardError; end
+
     def download(program)
       @program = program
       begin
@@ -63,13 +65,22 @@ module NiconicoLive
       Main::prepare_working_dir(CH_NAME)
 
       path = filepath(@l)
+      succeed_count = 0
       @l.rtmpdump_commands(path).each do |command|
         sleep 10
         full_file_path = command[3] # super magic number!
         command.delete('-V')
         commnad_str = command.join(' ') + " 2>&1"
+        until check_file_size
+          Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file donload"
+          next
+        end
         Main::shell_exec(commnad_str)
         Main::move_to_archive_dir(CH_NAME, @l.opens_at, full_file_path)
+        succeed_count += 1
+      end
+      if succeed_count == 0
+        raise NiconamaDownloadException, "download failed."
       end
     end
 

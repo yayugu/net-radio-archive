@@ -140,4 +140,9 @@ module Main
   def self.month_str(date)
     date.strftime('%Y%m')
   end
+
+  def self.check_file_size(expect_larger_than = (1024 * 1024))
+    size = File.size?
+    size && size > expect_larger_than
+  end
 end
