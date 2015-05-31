@@ -71,7 +71,7 @@ module NiconicoLive
         full_file_path = command[3] # super magic number!
         command.delete('-V')
         commnad_str = command.join(' ') + " 2>&1"
-        until check_file_size
+        until Main::check_file_size
           Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file donload"
           next
         end
