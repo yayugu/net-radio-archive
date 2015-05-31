@@ -65,10 +65,10 @@ module NiconicoLive
       path = filepath(@l)
       @l.rtmpdump_commands(path).each do |command|
         sleep 10
+        full_file_path = command[3] # super magic number!
         command.delete('-V')
         commnad_str = command.join(' ') + " 2>&1"
         Main::shell_exec(commnad_str)
-        full_file_path = command[3] # super magic number!
         Main::move_to_archive_dir(CH_NAME, @l.opens_at, full_file_path)
       end
     end
