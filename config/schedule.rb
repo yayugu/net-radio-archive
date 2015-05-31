@@ -40,7 +40,7 @@ every '17 * * * *' do
 end
 
 every '21 * * * *' do
-  rake_not_silent 'main:nico_scrape'
+  rake_not_silent 'main:niconama_scrape'
 end
 
 every '37 15 * * *' do
