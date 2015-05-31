@@ -24,7 +24,7 @@ module Main
           title += " #{p.performers}" if p.performers.present?
           Job.new(
             ch: ch,
-            title: title,
+            title: title.slice(0, 240),
             start: p.start_time,
             end: p.end_time
           ).schedule
