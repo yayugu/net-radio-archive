@@ -15,7 +15,11 @@ every '3-50/3 * * * *' do
   rake_not_silent 'main:rec_ondemand'
 end
 
-every '4-50/18 * * * *' do
+# maintenance on Thursday
+every '4-50/18 * * * 0-4,6-7' do
+  rake_not_silent 'main:rec_niconama'
+end
+every '4-50/18 12-23 * * 5' do
   rake_not_silent 'main:rec_niconama'
 end
 
@@ -39,7 +43,11 @@ every '17 * * * *' do
   rake_not_silent 'main:anitama_scrape'
 end
 
-every '21 * * * *' do
+# maintenance on Thursday
+every '21 * * * 0-4,6-7' do
+  rake_not_silent 'main:niconama_scrape'
+end
+every '21 12-23 * * 5' do
   rake_not_silent 'main:niconama_scrape'
 end
 
