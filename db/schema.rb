@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150527135411) do
+ActiveRecord::Schema.define(version: 20150602100911) do
 
   create_table "anitama_programs", force: true do |t|
     t.string   "book_id",     limit: 250, null: false
@@ -51,11 +51,13 @@ ActiveRecord::Schema.define(version: 20150527135411) do
   add_index "jobs", ["ch", "start", "state"], name: "start_index", using: :btree
 
   create_table "niconico_live_programs", force: true do |t|
-    t.string   "title",       limit: 250, null: false
-    t.string   "state",       limit: 100, null: false
-    t.integer  "retry_count",             null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "title",           limit: 250, null: false
+    t.string   "state",           limit: 100, null: false
+    t.boolean  "cannot_recovery",             null: false
+    t.text     "memo",                        null: false
+    t.integer  "retry_count",                 null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "onsen_programs", force: true do |t|

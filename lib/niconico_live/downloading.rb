@@ -80,6 +80,9 @@ module NiconicoLive
         when 'tsarchive'
           program.cannot_recovery = true
           program.memo = 'getplayerstatus error: tsarchive. チャンネルの途中から有料放送'
+        else
+          program.memo = "getplayerstatus error: #{e.message}"
+          raise e
         end
         program.state = NiconicoLiveProgram::STATE[:failed]
         raise NiconamaInternalProcessedException, ''

@@ -115,6 +115,8 @@ module Main
           p.id = program.id
           p.title = program.title
           p.state = NiconicoLiveProgram::STATE[:waiting]
+          p.cannot_recovery = false
+          p.memo = ''
           p.retry_count = 0
           p.save
         end
