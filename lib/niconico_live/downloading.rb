@@ -100,7 +100,7 @@ module NiconicoLive
         command.delete('-V')
         commnad_str = command.join(' ') + " 2>&1"
         Main::shell_exec(commnad_str)
-        until Main::check_file_size(full_file_path)
+        unless Main::check_file_size(full_file_path)
           Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
         end
