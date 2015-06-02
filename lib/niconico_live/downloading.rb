@@ -3,36 +3,37 @@ module NiconicoLive
     CH_NAME = 'niconama'
 
     class NiconamaDownloadException < StandardError; end
+    class NiconamaInternalProcessedException < StandardError; end
 
     def download(program)
       @program = program
       begin
         setup
         reservation
-      rescue Niconico::Live::TicketRetrievingFailed => e
-        Rails.logger.error program.id
-        Rails.logger.error e.class
-        Rails.logger.error e.inspect
-        Rails.logger.error e.backtrace.join("\n")
-        return NiconicoLiveProgram::STATE[:failed_ticket_retrive_failed]
+      rescue NiconamaInternalProcessedException => e
+        return
       rescue Exception => e
         Rails.logger.error program.id
         Rails.logger.error e.class
         Rails.logger.error e.inspect
         Rails.logger.error e.backtrace.join("\n")
-        return NiconicoLiveProgram::STATE[:failed_before_got_rtmp_url]
+        program.state = NiconicoLiveProgram::STATE[:failed_before_got_rtmp_url]
+        return
       end
 
       begin
         _download
+      rescue NiconamaInternalProcessedException => e
+        return
       rescue Exception => e
         Rails.logger.error program.id
         Rails.logger.error e.class
         Rails.logger.error e.inspect
         Rails.logger.error e.backtrace.join("\n")
-        return NiconicoLiveProgram::STATE[:failed_dumping_rtmp]
+        program.state = NiconicoLiveProgram::STATE[:failed_dumping_rtmp]
+        return
       end
-      NiconicoLiveProgram::STATE[:done]
+      program.state = NiconicoLiveProgram::STATE[:done]
     end
 
     def setup
@@ -66,7 +67,23 @@ module NiconicoLive
       end
 
       # fetch lazy load objects
-      @l.quesheet
+      begin
+        @l.quesheet
+      rescue Niconico::Live::TicketRetrievingFailed => e
+        case e.message
+        when 'usertimeshift'
+          program.cannot_recovery = true
+          program.memo = 'getplayerstatus error: usertimeshift. コミュニティ限定放送'
+        when 'noauth'
+          program.cannot_recovery = true
+          program.memo = 'getplayerstatus error: noauth. 公式の有料生放送で視聴権限なし'
+        when 'tsarchive'
+          program.cannot_recovery = true
+          program.memo = 'getplayerstatus error: tsarchive. チャンネルの途中から有料放送'
+        end
+        program.state = NiconicoLiveProgram::STATE[:failed]
+        raise NiconamaInternalProcessedException, ''
+      end
     end
 
     def _download

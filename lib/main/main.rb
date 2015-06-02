@@ -180,7 +180,7 @@ module Main
         p.save!
       end
 
-      p.state = NiconicoLive::Downloading.new.download(p)
+      NiconicoLive::Downloading.new.download(p)
       p.save!
 
       return 0
