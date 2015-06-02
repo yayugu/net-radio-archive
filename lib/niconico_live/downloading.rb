@@ -96,6 +96,7 @@ module NiconicoLive
       commands.each do |command|
         sleep 10
         full_file_path = command[3] # super magic number!
+        command = command.dup # avoid to brake iterator!!
         command.delete('-V')
         commnad_str = command.join(' ') + " 2>&1"
         Main::shell_exec(commnad_str)
