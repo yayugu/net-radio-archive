@@ -15,7 +15,7 @@ module NiconicoLive
         Rails.logger.error e.inspect
         Rails.logger.error e.backtrace.join("\n")
         return NiconicoLiveProgram::STATE[:failed_ticket_retrive_failed]
-      rescue => e
+      rescue Exception => e
         Rails.logger.error program.id
         Rails.logger.error e.class
         Rails.logger.error e.inspect
@@ -25,7 +25,7 @@ module NiconicoLive
 
       begin
         _download
-      rescue => e
+      rescue Exception => e
         Rails.logger.error program.id
         Rails.logger.error e.class
         Rails.logger.error e.inspect
@@ -56,7 +56,7 @@ module NiconicoLive
     def reservation
       begin
         @l.accept_reservation
-      rescue Mechanize::ResponseCodeError, NoMethodError => e
+      rescue Mechanize::ResponseCodeError, NoMethodError => _
         # <NoMethodError: undefined method `inner_text' for nil:NilClass>
         # lib/niconico/live/api.rb:60:in `get'
 
