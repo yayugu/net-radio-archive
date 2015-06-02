@@ -92,16 +92,17 @@ module NiconicoLive
 
       path = filepath(@l)
       succeed_count = 0
-      @l.rtmpdump_commands(path).each do |command|
+      commands = @l.rtmpdump_commands(path)
+      commands.each do |command|
         sleep 10
         full_file_path = command[3] # super magic number!
         command.delete('-V')
         commnad_str = command.join(' ') + " 2>&1"
+        Main::shell_exec(commnad_str)
         until Main::check_file_size(full_file_path)
-          Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file donload"
+          Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
         end
-        Main::shell_exec(commnad_str)
         Main::move_to_archive_dir(CH_NAME, @l.opens_at, full_file_path)
         succeed_count += 1
       end
