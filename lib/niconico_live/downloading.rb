@@ -13,7 +13,6 @@ module NiconicoLive
       rescue NiconamaInternalProcessedException => e
         return
       rescue Exception => e
-        Rails.logger.error program.id
         Rails.logger.error e.class
         Rails.logger.error e.inspect
         Rails.logger.error e.backtrace.join("\n")
@@ -26,7 +25,6 @@ module NiconicoLive
       rescue NiconamaInternalProcessedException => e
         return
       rescue Exception => e
-        Rails.logger.error program.id
         Rails.logger.error e.class
         Rails.logger.error e.inspect
         Rails.logger.error e.backtrace.join("\n")
