@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module NiconicoLive
   class Downloading
     CH_NAME = 'niconama'
@@ -92,14 +94,11 @@ module NiconicoLive
 
       path = filepath(@l)
       succeed_count = 0
-      commands = @l.rtmpdump_commands(path)
-      commands.each do |command|
+      infos = @l.rtmpdump_infos(path)
+      infos.each do |info|
         sleep 10
-        full_file_path = command[3] # super magic number!
-        command = command.dup # avoid to brake iterator!!
-        command.delete('-V')
-        commnad_str = command.join(' ') + " 2>&1"
-        Main::shell_exec(commnad_str)
+        full_file_path = info[:file_path]
+        Main::shell_exec(rtmpdump_command(info))
         unless Main::check_file_size(full_file_path)
           Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
@@ -110,6 +109,18 @@ module NiconicoLive
       if succeed_count == 0
         raise NiconamaDownloadException, "download failed."
       end
+    end
+
+    def rtmpdump_command(info)
+      "\
+        rtmpdump \
+          -q \
+          -r #{Shellwords.escape(info[:rtmp_url])} \
+          -o #{Shellwords.escape(info[:file_path])} \
+          -C S:#{Shellwords.escape(info[:ticket])} \
+          --playpath mp4:#{Shellwords.escape(info[:content])} \
+          --app #{Shellwords.escape(info[:app])} \
+        2>&1"
     end
 
     def filepath(live)
