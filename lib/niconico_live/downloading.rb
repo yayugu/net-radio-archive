@@ -70,16 +70,16 @@ module NiconicoLive
       rescue Niconico::Live::TicketRetrievingFailed => e
         case e.message
         when 'usertimeshift'
-          program.cannot_recovery = true
-          program.memo = 'getplayerstatus error: usertimeshift. コミュニティ限定放送'
+          @program.cannot_recovery = true
+          @program.memo = 'getplayerstatus error: usertimeshift. コミュニティ限定放送'
         when 'noauth'
-          program.cannot_recovery = true
-          program.memo = 'getplayerstatus error: noauth. 公式の有料生放送で視聴権限なし'
+          @program.cannot_recovery = true
+          @program.memo = 'getplayerstatus error: noauth. 公式の有料生放送で視聴権限なし'
         when 'tsarchive'
-          program.cannot_recovery = true
-          program.memo = 'getplayerstatus error: tsarchive. チャンネルの途中から有料放送'
+          @program.cannot_recovery = true
+          @program.memo = 'getplayerstatus error: tsarchive. チャンネルの途中から有料放送'
         else
-          program.memo = "getplayerstatus error: #{e.message}"
+          @program.memo = "getplayerstatus error: #{e.message}"
           raise e
         end
         program.state = NiconicoLiveProgram::STATE[:failed]
