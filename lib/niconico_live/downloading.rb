@@ -96,9 +96,12 @@ module NiconicoLive
       succeed_count = 0
       infos = @l.rtmpdump_infos(path)
       infos.each do |info|
-        sleep 10
         full_file_path = info[:file_path]
-        Main::shell_exec(rtmpdump_command(info))
+        exit_status = rtmpdump_with_retry(info)
+        unless exit_status.success?
+          Rails.logger.error "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
+          next
+        end
         unless Main::check_file_size(full_file_path)
           Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
@@ -111,7 +114,20 @@ module NiconicoLive
       end
     end
 
-    def rtmpdump_command(info)
+    def rtmpdump_with_retry(info)
+      exit_status, output = Main::shell_exec(rtmpdump_command(info, false))
+      10.times do
+        if exit_status.success?
+          return exit_status
+        end
+        sleep 5
+        exit_status, output = Main::shell_exec(rtmpdump_command(info, true))
+      end
+      exit_status
+    end
+
+    def rtmpdump_command(info, resume = false)
+      resume_option = resume ? '-e' : ''
       "\
         rtmpdump \
           -q \
@@ -120,6 +136,7 @@ module NiconicoLive
           -C S:#{Shellwords.escape(info[:ticket])} \
           --playpath mp4:#{Shellwords.escape(info[:content])} \
           --app #{Shellwords.escape(info[:app])} \
+          #{resume_option} \
         2>&1"
     end
 
