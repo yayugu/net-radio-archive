@@ -97,7 +97,7 @@ module NiconicoLive
       infos = @l.rtmpdump_infos(path)
       infos.each do |info|
         full_file_path = info[:file_path]
-        exit_status = rtmpdump_with_retry(info)
+        exit_status = rtmpdump_with_resume(info)
         unless exit_status.success?
           Rails.logger.error "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
           next
@@ -114,10 +114,10 @@ module NiconicoLive
       end
     end
 
-    def rtmpdump_with_retry(info)
+    def rtmpdump_with_resume(info)
       exit_status, output = Main::shell_exec(rtmpdump_command(info, false))
       10.times do
-        if exit_status.success?
+        if exit_status.exitstatus != 2 # 2 means 'Incomplete transfer, resuming may get further. '
           return exit_status
         end
         sleep 5
