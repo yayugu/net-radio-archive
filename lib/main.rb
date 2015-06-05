@@ -111,7 +111,9 @@ module Main
 
     # create symlink
     FileUtils.mkdir_p(latest_dir)
-    FileUtils.ln_s(dst, latest_symlink)
+    unless File.exist?(latest_symlink)
+      FileUtils.ln_s(dst, latest_symlink)
+    end
   end
 
   def self.file_path_archive(ch_name, title, ext)
