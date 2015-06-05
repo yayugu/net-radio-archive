@@ -84,7 +84,7 @@ module NiconicoLive
           @program.memo = "getplayerstatus error: #{e.message}"
           raise e
         end
-        program.state = NiconicoLiveProgram::STATE[:failed]
+        @program.state = NiconicoLiveProgram::STATE[:failed]
         raise NiconamaInternalProcessedException, ''
       end
     end
