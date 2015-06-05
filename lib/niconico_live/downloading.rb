@@ -102,7 +102,7 @@ module NiconicoLive
       infos = @l.rtmpdump_infos(path)
       infos.each do |info|
         full_file_path = info[:file_path]
-        [exit_status, output] = rtmpdump_with_resume(info)
+        exit_status, output = rtmpdump_with_resume(info)
         unless exit_status.success?
           Rails.logger.warn "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
           Rails.logger.warn output
