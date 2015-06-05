@@ -61,7 +61,12 @@ module NiconicoLive
         # <NoMethodError: undefined method `inner_text' for nil:NilClass>
         # lib/niconico/live/api.rb:60:in `get'
 
-        # ignore & force reload
+        Rails.logger.warn "reservation failed. but try continue"
+        Rails.logger.warn e.class
+        Rails.logger.warn e.inspect
+        Rails.logger.warn e.backtrace.join("\n")
+
+        # force reload
         sleep 5
         @l.get(true)
       end
@@ -97,13 +102,14 @@ module NiconicoLive
       infos = @l.rtmpdump_infos(path)
       infos.each do |info|
         full_file_path = info[:file_path]
-        exit_status = rtmpdump_with_resume(info)
+        [exit_status, output] = rtmpdump_with_resume(info)
         unless exit_status.success?
-          Rails.logger.error "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn output
           next
         end
         unless Main::check_file_size(full_file_path)
-          Rails.logger.error "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
         end
         Main::move_to_archive_dir(CH_NAME, @l.opens_at, full_file_path)
@@ -118,12 +124,12 @@ module NiconicoLive
       exit_status, output = Main::shell_exec(rtmpdump_command(info, false))
       10.times do
         if exit_status.exitstatus != 2 # 2 means 'Incomplete transfer, resuming may get further. '
-          return exit_status
+          return [exit_status, output]
         end
         sleep 5
         exit_status, output = Main::shell_exec(rtmpdump_command(info, true))
       end
-      exit_status
+      [exit_status, output]
     end
 
     def rtmpdump_command(info, resume = false)
