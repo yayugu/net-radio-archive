@@ -57,7 +57,7 @@ module NiconicoLive
     def reservation
       begin
         @l.accept_reservation
-      rescue Mechanize::ResponseCodeError, NoMethodError => _
+      rescue Mechanize::ResponseCodeError, NoMethodError => e
         # <NoMethodError: undefined method `inner_text' for nil:NilClass>
         # lib/niconico/live/api.rb:60:in `get'
 
