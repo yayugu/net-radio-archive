@@ -111,7 +111,7 @@ module NiconicoLive
       infos = @l.rtmpdump_infos(path)
       infos.each do |info|
         full_file_path = info[:file_path]
-        exit_status, output = rtmpdump_with_resume(info)
+        exit_status, output = rtmpdump_with_retry(info)
         unless exit_status.success?
           @log_buffer << "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
           @log_buffer << output
@@ -129,6 +129,16 @@ module NiconicoLive
       if succeed_count == 0
         raise NiconamaDownloadException, "download failed."
       end
+    end
+
+    def rtmpdump_with_retry(info)
+      5.times do
+        exit_status, output = rtmpdump_with_resume(info)
+        if exit_status.success?
+          break
+        end
+      end
+      [exit_status, output]
     end
 
     def rtmpdump_with_resume(info)
