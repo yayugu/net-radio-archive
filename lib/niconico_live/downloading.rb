@@ -114,7 +114,9 @@ module NiconicoLive
           Rails.logger.warn "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
         end
-        Main::move_to_archive_dir(CH_NAME, @l.opens_at, full_file_path)
+        mp4_path = full_file_path.gsub(/\.f4v$/, '') + '.mp4'
+        Main::convert_ffmpeg_to_mp4(full_file_path, mp4_path, program)
+        Main::move_to_archive_dir(CH_NAME, @l.opens_at, mp4_path)
         succeed_count += 1
       end
       if succeed_count == 0

@@ -59,17 +59,16 @@ module Main
   end
 
   def self.convert_ffmpeg_to_mp4(flv_path, mp4_path, debug_obj)
-    arg = "-loglevel error -y -i #{Shellwords.escape(flv_path)} -vcodec copy -acodec copy #{Shellwords.escape(mp4_path)}"
-    exit_status, output = ffmpeg(arg)
-    unless exit_status.success?
-      Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
-      return false
-    end
-    true
+    arg = "-loglevel error -y -i #{Shellwords.escape(src_path)} -acodec copy -vcodec copy #{Shellwords.escape(dst_path)}"
+    convert_ffmpeg_to(arg, debug_obj)
   end
 
-  def self.convert_ffmpeg_to_m4a(flv_path, m4a_path, debug_obj)
-    arg = "-loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(m4a_path)}"
+  def self.convert_ffmpeg_to_m4a(src_path, dst_path, debug_obj)
+    arg = "-loglevel error -y -i #{Shellwords.escape(src_path)} -acodec copy #{Shellwords.escape(dst_path)}"
+    convert_ffmpeg_to(arg, debug_obj)
+  end
+
+  def self.convert_ffmpeg_to(arg, debug_obj)
     exit_status, output = ffmpeg(arg)
     unless exit_status.success?
       Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
