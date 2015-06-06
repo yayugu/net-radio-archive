@@ -58,7 +58,7 @@ module Main
     end
   end
 
-  def self.convert_ffmpeg_to_mp4(flv_path, mp4_path, debug_obj)
+  def self.convert_ffmpeg_to_mp4(src_path, dst_path, debug_obj)
     arg = "-loglevel error -y -i #{Shellwords.escape(src_path)} -acodec copy -vcodec copy #{Shellwords.escape(dst_path)}"
     convert_ffmpeg_to(arg, debug_obj)
   end
