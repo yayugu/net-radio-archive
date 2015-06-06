@@ -137,6 +137,7 @@ module NiconicoLive
         if exit_status.success?
           break
         end
+        sleep 10
       end
       [exit_status, output]
     end
