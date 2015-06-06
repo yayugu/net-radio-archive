@@ -77,21 +77,8 @@ module Main
     true
   end
 
-  def self.prepare_dirs(ch_name)
-    prepare_working_dir(ch_name)
-    prepare_archive_dir(ch_name)
-  end
-
   def self.prepare_working_dir(ch_name)
     FileUtils.mkdir_p("#{Settings.working_dir}/#{ch_name}")
-  end
-
-  def self.prepare_archive_dir(ch_name, date = nil)
-    if date
-      FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}/#{month_str(date)}")
-    else
-      FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}")
-    end
   end
 
   def self.latest_dir_name
