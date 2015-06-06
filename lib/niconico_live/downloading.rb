@@ -132,6 +132,8 @@ module NiconicoLive
     end
 
     def rtmpdump_with_retry(info)
+      exit_status = nil
+      output = nil
       5.times do
         exit_status, output = rtmpdump_with_resume(info)
         if exit_status.success?
