@@ -58,41 +58,27 @@ module Main
     end
   end
 
-  def self.convert_ffmpeg_to_mp4(flv_path, mp4_path, debug_obj)
-    arg = "-loglevel error -y -i #{Shellwords.escape(flv_path)} -vcodec copy -acodec copy #{Shellwords.escape(mp4_path)}"
+  def self.convert_ffmpeg_to_mp4(src_path, dst_path, debug_obj)
+    arg = "-loglevel error -y -i #{Shellwords.escape(src_path)} -acodec copy -vcodec copy #{Shellwords.escape(dst_path)}"
+    convert_ffmpeg_to(arg, debug_obj)
+  end
+
+  def self.convert_ffmpeg_to_m4a(src_path, dst_path, debug_obj)
+    arg = "-loglevel error -y -i #{Shellwords.escape(src_path)} -acodec copy #{Shellwords.escape(dst_path)}"
+    convert_ffmpeg_to(arg, debug_obj)
+  end
+
+  def self.convert_ffmpeg_to(arg, debug_obj)
     exit_status, output = ffmpeg(arg)
     unless exit_status.success?
       Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
       return false
     end
     true
-  end
-
-  def self.convert_ffmpeg_to_m4a(flv_path, m4a_path, debug_obj)
-    arg = "-loglevel error -y -i #{Shellwords.escape(flv_path)} -acodec copy #{Shellwords.escape(m4a_path)}"
-    exit_status, output = ffmpeg(arg)
-    unless exit_status.success?
-      Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
-      return false
-    end
-    true
-  end
-
-  def self.prepare_dirs(ch_name)
-    prepare_working_dir(ch_name)
-    prepare_archive_dir(ch_name)
   end
 
   def self.prepare_working_dir(ch_name)
     FileUtils.mkdir_p("#{Settings.working_dir}/#{ch_name}")
-  end
-
-  def self.prepare_archive_dir(ch_name, date = nil)
-    if date
-      FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}/#{month_str(date)}")
-    else
-      FileUtils.mkdir_p("#{Settings.archive_dir}/#{ch_name}")
-    end
   end
 
   def self.latest_dir_name
@@ -111,7 +97,9 @@ module Main
 
     # create symlink
     FileUtils.mkdir_p(latest_dir)
-    FileUtils.ln_s(dst, latest_symlink)
+    unless File.exist?(latest_symlink)
+      FileUtils.ln_s(dst, latest_symlink)
+    end
   end
 
   def self.file_path_archive(ch_name, title, ext)
@@ -126,6 +114,10 @@ module Main
     end
   end
 
+  def self.file_path_working_base(ch_name, title)
+    "#{Settings.working_dir}/#{ch_name}/#{title_escape(title)}"
+  end
+
   def self.title_escape(title)
     title
       .gsub(/\s/, '_')
@@ -135,5 +127,10 @@ module Main
 
   def self.month_str(date)
     date.strftime('%Y%m')
+  end
+
+  def self.check_file_size(path, expect_larger_than = (1024 * 1024))
+    size = File.size?(path)
+    size && size > expect_larger_than
   end
 end

@@ -42,6 +42,7 @@ gem 'chronic'
 gem 'whenever'
 gem 'settingslogic'
 gem 'mechanize'
+gem 'niconico', path: 'niconico'
 
 group :development do
   gem 'capistrano-rails'

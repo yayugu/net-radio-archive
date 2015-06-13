@@ -37,17 +37,25 @@ $ sudo apt-get install rtmpdump ffmpeg swftools ruby
 
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
+$ git submodule update --init --recursive
 $ (sudo) gem install bundler
-$ bundle install
+$ bundle install --without development test
 $ cp config/database.example.yml config/database.yml
 $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
 $ vi config/settings.yml # 各自の環境に合わせて編集
 
-# サーバー内での手動設定
+# サーバー内での手動設定 (お手軽、自分はこれでやってます)
 $ RAILS_ENV=production bundle exec rake db:create db:migrate
 $ bundle exec whenever --update-crontab
 $ # (または) bundle exec whenever -u $YOUR-USERNAME --update-crontab
+
+# アップデート
+$ git pull origin master
+$ git submodule update --init --recursive
+$ bundle install --without development test
+$ RAILS_ENV=production bundle exec rake db:migrate
+$ bundle exec whenever --update-crontab
 
 # capistranoでのデプロイ設定
 $ cp config/deploy/production.example.rb config/deploy/production.rb
@@ -64,7 +72,7 @@ cronに
 ### Q. 使い方でわからないところある
 A. Githubでissueつくってください。
 
-### Q. ◯◯に対応してねえぞ
+### Q. ◯◯に対応してほしい
 A. Githubでissueつくってください。あとpull req募集中
 
 ### Q. radikoがうまく動かない

@@ -18,6 +18,16 @@ production:
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
     working_dir: <%= Rails.root.join('tmp', 'working') %>
 
+    #ニコニコ おそらくプレミアム会員必須
+    niconico:
+        username: 'USERNAME'
+        password: 'PASSWORD'
+        live:
+            # 録画(タイムシフトの取得)をしたい生放送をキーワードで指定
+            keywords:
+                - '村川梨衣'
+                - '麻倉もも'
+
 development:
     radiko_channels:
         - QRR # bunka housou

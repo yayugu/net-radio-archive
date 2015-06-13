@@ -1,3 +1,10 @@
+PATH
+  remote: niconico
+  specs:
+    niconico (1.8.0.beta1)
+      mechanize (>= 2.7.3)
+      nokogiri (>= 1.6.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -165,6 +172,7 @@ DEPENDENCIES
   mechanize
   moji
   mysql2
+  niconico!
   nokogiri
   rails (= 4.1.8)
   sass-rails (~> 4.0.3)

@@ -24,6 +24,11 @@ namespace :main do
     Main::Main.new.anitama_scrape
   end
 
+  desc 'niconama scrape'
+  task :niconama_scrape => :environment do
+    Main::Main.new.niconama_scrape
+  end
+
   desc 'rec one'
   task :rec_one => :environment do
     Main::Main.new.rec_one
@@ -32,6 +37,11 @@ namespace :main do
   desc 'rec ondemand'
   task :rec_ondemand => :environment do
     Main::Main.new.rec_ondemand
+  end
+
+  desc 'rec niconama timeshift'
+  task :rec_niconama => :environment do
+    Main::Main.new.rec_niconama
   end
 
   desc 'kill zombie process (rtmpdump)'

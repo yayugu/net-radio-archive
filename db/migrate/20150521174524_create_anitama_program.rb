@@ -22,5 +22,3 @@ EOF
     ActiveRecord::Base.connection.execute(sql)
   end
 end
-class CreateHibikiProgram < ActiveRecord::Migration
-end
