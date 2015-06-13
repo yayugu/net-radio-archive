@@ -103,6 +103,10 @@ module Main
     end
 
     def niconama_scrape
+      unless Settings.niconico
+        exit 0
+      end
+
       program_list = NiconicoLive::Scraping.new.main
 
       program_list.each do |program|
@@ -168,6 +172,10 @@ module Main
     end
 
     def rec_niconama
+      unless Settings.niconico
+        exit 0
+      end
+
       p = nil
       ActiveRecord::Base.transaction do
         p = NiconicoLiveProgram
