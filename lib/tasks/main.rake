@@ -29,6 +29,10 @@ namespace :main do
     Main::Main.new.niconama_scrape
   end
 
+  desc 'wikipedia scape'
+  task :wikipedia_scrape => :environment do
+  end
+
   desc 'rec one'
   task :rec_one => :environment do
     Main::Main.new.rec_one
