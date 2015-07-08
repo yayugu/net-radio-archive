@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'fileutils'
 require 'net/http'
 
