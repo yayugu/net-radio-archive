@@ -122,6 +122,14 @@ module Main
     title
       .gsub(/\s/, '_')
       .gsub(/\//, '_')
+      .gsub(/\?/, "？") # \/:*?"<>|
+      .gsub(/\\/, "￥")
+      .gsub(/:/, "：")
+      .gsub(/\*/, "＊")
+      .gsub(/\|/, "｜")
+      .gsub(/"/, '”')
+      .gsub(/</, "＜")
+      .gsub(/>/, "＞")
       .byteslice(0, 200).scrub('') # safe length for filename
   end
 
