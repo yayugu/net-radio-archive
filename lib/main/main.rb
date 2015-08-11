@@ -171,17 +171,21 @@ module Main
       anitama_download
     end
 
-    def rec_niconama
+    def niconama_download
       unless Settings.niconico
         exit 0
       end
 
       p = nil
       ActiveRecord::Base.transaction do
+        # ニコ生は検索オプションで「タイムシフト視聴可」を付けても
+        # 実際にはまだタイムシフトが用意されていない場合がある
+        # これに対応するため検索で発見しても一定時間待つ
         p = NiconicoLiveProgram
-        .where(state: NiconicoLiveProgram::STATE[:waiting])
-        .lock
-        .first
+          .where(state: NiconicoLiveProgram::STATE[:waiting])
+          .where('`created_at` <= ?', 2.horus.ago)
+          .lock
+          .first
         unless p
           return 0
         end

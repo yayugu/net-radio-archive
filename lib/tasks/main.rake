@@ -45,7 +45,7 @@ namespace :main do
 
   desc 'rec niconama timeshift'
   task :rec_niconama => :environment do
-    Main::Main.new.rec_niconama
+    Main::Main.new.niconama_download
   end
 
   desc 'kill zombie process (rtmpdump)'
