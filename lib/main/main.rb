@@ -183,7 +183,7 @@ module Main
         # これに対応するため検索で発見しても一定時間待つ
         p = NiconicoLiveProgram
           .where(state: NiconicoLiveProgram::STATE[:waiting])
-          .where('`created_at` <= ?', 2.horus.ago)
+          .where('`created_at` <= ?', 2.hours.ago)
           .lock
           .first
         unless p
