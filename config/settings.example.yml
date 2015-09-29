@@ -1,11 +1,6 @@
 # cronからは常にproduction環境で起動します
 # 基本的にはこちらのみ設定してください
 production:
-    # radikoで録音するチャンネルを設定してください
-    # channel code (QRRなど) についてはREADME.mdのFAQを参照してください
-    radiko_channels:
-        - QRR # bunka housou
-        - LFR # nippon housou
 
     # ファイルを保存(archive)するディレクトリを設定してください（フルパス）
     # このディレクトリ以下にサブディレクトリやファイルが作成されます
@@ -18,7 +13,14 @@ production:
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
     working_dir: <%= Rails.root.join('tmp', 'working') %>
 
-    #ニコニコ おそらくプレミアム会員必須
+    # radikoで録音するチャンネルを設定してください
+    # channel code (QRRなど) についてはREADME.mdのFAQを参照してください
+    radiko_channels:
+        - QRR # bunka housou
+        - LFR # nippon housou
+
+    # ニコニコ おそらくプレミアム会員必須
+    # 録画しない場合はこの項目ごと消すと何もしません
     niconico:
         username: 'USERNAME'
         password: 'PASSWORD'
@@ -27,6 +29,22 @@ production:
             keywords:
                 - '村川梨衣'
                 - '麻倉もも'
+
+    # AG-ON
+    # 録画しない場合はこの項目ごと消すと何もしません
+    # これのみSelenium WebDriverを使っていたり、ffmpegでHLSを処理していたりと特殊なので
+    # その辺が原因で動かない可能性もあります。エラーがでたらとりあえず項目消してみてください
+    agon:
+        # AG-ONにアカウント登録してそのアカウントを設定してください
+        mail: 'foo@example.com'
+        password: 'XXXXXX'
+
+        # Seleniumの実行にheadless gemとxvfbを使用するか
+        # falseの場合はSeleniumでfirefoxが普通に起動するようにしておいてください
+        #   (LinuxであればDISPLAY環境変数がセットされているように)
+        #   Mac OS Xの場合は基本的にfalseにしてください
+        # trueの場合はxvfbをインストールしておいてください (Ubuntu/Debianであれば `apt-get install xvfb`)
+        headless: false
 
 development:
     radiko_channels:

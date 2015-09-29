@@ -33,6 +33,11 @@ namespace :main do
   task :wikipedia_scrape => :environment do
   end
 
+  desc 'agon scrape'
+  task :agon_scrape => :environment do
+    Main::Main.new.agon_scrape
+  end
+
   desc 'rec one'
   task :rec_one => :environment do
     Main::Main.new.rec_one

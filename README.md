@@ -27,6 +27,7 @@ Net Radio Archive
 - rtmpdump
 - ffmpeg
 - swftools
+- GUI環境 or xvfb (AG-ONのみ)
 
 ## セットアップ
 
@@ -40,6 +41,7 @@ $ cd net-radio-archive
 $ git submodule update --init --recursive
 $ (sudo) gem install bundler
 $ bundle install --without development test
+$ # AG-ONを使用しない場合は `agon` も加えることでSeleniumのインストールをスキップできます
 $ cp config/database.example.yml config/database.yml
 $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
