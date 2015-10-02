@@ -27,7 +27,11 @@ Net Radio Archive
 - rtmpdump
 - ffmpeg
 - swftools
-- firefox and (GUI環境 or xvfb) (AG-ONのみ)
+- (AG-ONのみ)
+ - GUI環境 or xvfb
+ - firefox
+ - とてもあたらしいffmpeg (HTTP Live Streaming の input に対応しているもの)
+  - (Ubuntu 14.04の自分は https://launchpad.net/~mc3man/+archive/ubuntu/trusty-media を使っています)
 
 ## セットアップ
 
