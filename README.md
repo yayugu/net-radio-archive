@@ -27,7 +27,7 @@ Net Radio Archive
 - rtmpdump
 - ffmpeg
 - swftools
-- GUI環境 or xvfb (AG-ONのみ)
+- firefox and (GUI環境 or xvfb) (AG-ONのみ)
 
 ## セットアップ
 

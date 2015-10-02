@@ -49,8 +49,12 @@ every '12 * * * *' do
   rake_not_silent 'main:radiko_scrape'
 end
 
-every '17 * * * *' do
+every '17 10-22 * * *' do
   rake_not_silent 'main:anitama_scrape'
+end
+
+every '21 10-22 * * *' do
+  rake_not_silent 'main:agon_scrape'
 end
 
 every '37 15 * * *' do

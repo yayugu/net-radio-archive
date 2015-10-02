@@ -35,7 +35,7 @@ module Agon
 
     def download_hls(program, m3u8_url)
       file_path = Main::file_path_working(CH_NAME, title(program), 'mp4')
-      command = "ffmpeg \
+      arg = "\
         -loglevel error \
         -y \
         -i #{Shellwords.escape(m3u8_url)} \
@@ -43,7 +43,7 @@ module Agon
         #{Shellwords.escape(file_path)}"
 
       Main::prepare_working_dir(CH_NAME)
-      exit_status, output = Main::shell_exec(command)
+      exit_status, output = Main::ffmpeg(arg)
       unless exit_status.success?
         Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
         return false
