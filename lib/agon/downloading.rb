@@ -21,7 +21,7 @@ module Agon
     end
 
     def get_m3u8_url(program)
-      @s.navigate.to 'http://ct.uliza.jp/AG-ON/play.aspx?clientid=749&msid=339&episodeid=201509242001794'
+      @s.navigate.to "http://ct.uliza.jp/AG-ON/play.aspx?clientid=749&msid=339&episodeid=#{program.episode_id}"
       elm = @s.find_element(:name, 'mail')
       elm.send_keys Settings.agon.mail
       elm = @s.find_element(:name, 'passwd')
