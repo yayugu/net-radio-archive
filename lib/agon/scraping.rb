@@ -22,11 +22,14 @@ module Agon
       page_urls.map do |url|
         sleep(rand(0.5..1.5))
         get_episode_info(url)
-      end
+      end.compact
     end
 
     def get_episode_info(page_url)
       dom = get_dom(page_url)
+      unless free?(dom)
+        return nil
+      end
       dom = dom.css('#right')
 
       title = dom.css('.sinf_title').first.inner_html.gsub(/\<br\>/i, ' ')
@@ -48,6 +51,15 @@ module Agon
       sp.next_sibling.text
     end
 
+    def free?(dom)
+      m = dom.css('.kakaku').first.inner_html.match(/([0-9]+)円/)
+      unless m
+        # parse失敗の場合とりあえず取得を試みるようにtrueを返す
+        return true
+      end
+      m[1].to_i == 0
+    end
+
     private
 
     def get_dom(url)
@@ -57,4 +69,3 @@ module Agon
     end
   end
 end
-
