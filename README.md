@@ -86,3 +86,7 @@ A. Radikoはアクセスする側のIPによってどの局を聴けるかが変
 ブラウザで開いてみたり、以下のページなどを参考にご自身が聞ける局をsettings.ymlに設定してください。
 
 http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
+
+### Q. AG-ONをうまく動かせない
+A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。
+もしくはSeleniumを使わないように修正していただけるpull req募集中
