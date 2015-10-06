@@ -29,6 +29,15 @@ namespace :main do
     Main::Main.new.niconama_scrape
   end
 
+  desc 'wikipedia scape'
+  task :wikipedia_scrape => :environment do
+  end
+
+  desc 'agon scrape'
+  task :agon_scrape => :environment do
+    Main::Main.new.agon_scrape
+  end
+
   desc 'rec one'
   task :rec_one => :environment do
     Main::Main.new.rec_one
@@ -41,7 +50,7 @@ namespace :main do
 
   desc 'rec niconama timeshift'
   task :rec_niconama => :environment do
-    Main::Main.new.rec_niconama
+    Main::Main.new.niconama_download
   end
 
   desc 'kill zombie process (rtmpdump)'

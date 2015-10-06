@@ -127,6 +127,31 @@ module Main
       end
     end
 
+    def agon_scrape
+      unless Settings.agon
+        exit 0
+      end
+
+      program_list = Agon::Scraping.new.main
+
+      program_list.each do |program|
+        ActiveRecord::Base.transaction do
+          if AgonProgram.where(episode_id: program.episode_id).first
+            next
+          end
+
+          p = AgonProgram.new
+          p.title = program.title
+          p.personality = program.personality
+          p.episode_id = program.episode_id
+          p.page_url = program.page_url
+          p.state = HibikiProgram::STATE[:waiting]
+          p.retry_count = 0
+          p.save
+        end
+      end
+    end
+
     def rec_one
       job = nil
       ActiveRecord::Base.transaction do
@@ -169,19 +194,24 @@ module Main
       onsen_download
       hibiki_download
       anitama_download
+      agon_download
     end
 
-    def rec_niconama
+    def niconama_download
       unless Settings.niconico
         exit 0
       end
 
       p = nil
       ActiveRecord::Base.transaction do
+        # ニコ生は検索オプションで「タイムシフト視聴可」を付けても
+        # 実際にはまだタイムシフトが用意されていない場合がある
+        # これに対応するため検索で発見しても一定時間待つ
         p = NiconicoLiveProgram
-        .where(state: NiconicoLiveProgram::STATE[:waiting])
-        .lock
-        .first
+          .where(state: NiconicoLiveProgram::STATE[:waiting])
+          .where('`created_at` <= ?', 2.hours.ago)
+          .lock
+          .first
         unless p
           return 0
         end
@@ -282,6 +312,36 @@ module Main
       return 0
     end
 
+    def agon_download
+      unless Settings.agon
+        exit 0
+      end
+
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = AgonProgram
+          .where(state: AgonProgram::STATE[:waiting])
+          .lock
+          .first
+        unless p
+          return 0
+        end
+
+        p.state = AgonProgram::STATE[:downloading]
+        p.save!
+      end
+
+      succeed = Agon::Downloading.new.download(p)
+      p.state =
+        if succeed
+          AgonProgram::STATE[:done]
+        else
+          AgonProgram::STATE[:failed]
+        end
+      p.save!
+
+      return 0
+    end
 
     def hibiki_program_to_download
       p = HibikiProgram

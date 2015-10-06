@@ -11,6 +11,7 @@ Net Radio Archive
 - 響
 - 音泉
 - アニたま
+- AG-ON
 
 ## 特徴
 「全部の番組」を取ります。
@@ -25,21 +26,27 @@ Net Radio Archive
 - LinuxなどUNIX的なOS (Windowsでも動かしたい...)
 - Ruby 2.0 or higher
 - rtmpdump
-- ffmpeg
+- ffmpeg or livav
 - swftools
+- (AG-ONのみ)
+ - GUI環境 or xvfb
+ - firefox
+ - とてもあたらしいffmpeg (HTTP Live Streaming の input に対応しているもの)
+  - ※最新のffmpegの導入は面倒であることが多いです。自分はLinux用のstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
 
 ## セットアップ
 
 ```
 # 必要なライブラリをインストール
 # Ubuntuの場合:
-$ sudo apt-get install rtmpdump ffmpeg swftools ruby
+$ sudo apt-get install rtmpdump libav-tools swftools ruby
 
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
 $ git submodule update --init --recursive
 $ (sudo) gem install bundler
 $ bundle install --without development test
+$ # AG-ONを使用しない場合は `agon` も加えることでSeleniumのインストールをスキップできます
 $ cp config/database.example.yml config/database.yml
 $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
@@ -80,3 +87,7 @@ A. Radikoはアクセスする側のIPによってどの局を聴けるかが変
 ブラウザで開いてみたり、以下のページなどを参考にご自身が聞ける局をsettings.ymlに設定してください。
 
 http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
+
+### Q. AG-ONをうまく動かせない
+A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。
+もしくはSeleniumを使わないように修正していただけるpull req募集中

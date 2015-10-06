@@ -1,4 +1,4 @@
-class AnitamaProgram < ActiveRecord::Base
+class AgonProgram < ActiveRecord::Base
   STATE = {
     waiting: 'waiting',
     downloading: 'downloading',
