@@ -11,6 +11,7 @@ Net Radio Archive
 - 響
 - 音泉
 - アニたま
+- AG-ON
 
 ## 特徴
 「全部の番組」を取ります。
@@ -31,7 +32,7 @@ Net Radio Archive
  - GUI環境 or xvfb
  - firefox
  - とてもあたらしいffmpeg (HTTP Live Streaming の input に対応しているもの)
-  - (※最新のffmpegの導入は面倒であることが多いです。自分はLinux用のstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c)
+  - ※最新のffmpegの導入は面倒であることが多いです。自分はLinux用のstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
 
 ## セットアップ
 
