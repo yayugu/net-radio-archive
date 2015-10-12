@@ -13,7 +13,7 @@ module Main
         puts "working dir is maybe wrong: #{Settings.working_dir}"
         return
       end
-      `find #{Settings.working_dir} -ctime +#{((defined? Settings.working_dir_delete_days) && Settings.working_dir_delete_days) || 30} -name "*.flv" -exec rm {} \\;`
+      `find #{Settings.working_dir} -ctime +#{Settings.working_files_retention_period_days || 30} -name "*.flv" -exec rm {} \\;`
     end
 
     def self.rm_latest_dir_symlinks

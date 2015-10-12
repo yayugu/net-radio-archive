@@ -13,7 +13,9 @@ production:
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
     working_dir: <%= Rails.root.join('tmp', 'working') %>
 
-    working_dir_delete_days: 30
+    # 作業時に残ったファイル(mp4に変換前のflv dumpなど)を残しておく日数です
+    # 何か事故が起きた時に使えるかもしれない
+    working_files_retention_period_days: 30
 
     # radikoで録音するチャンネルを設定してください
     # channel code (QRRなど) についてはREADME.mdのFAQを参照してください
