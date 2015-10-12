@@ -13,6 +13,8 @@ production:
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
     working_dir: <%= Rails.root.join('tmp', 'working') %>
 
+    working_dir_delete_days: 30
+
     # radikoで録音するチャンネルを設定してください
     # channel code (QRRなど) についてはREADME.mdのFAQを参照してください
     radiko_channels:
