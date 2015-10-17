@@ -91,3 +91,8 @@ http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
 ### Q. AG-ONをうまく動かせない
 A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。
 もしくはSeleniumを使わないように修正していただけるpull req募集中
+
+### Q. rtmpdumpが不安定 / CPUを100%消費する
+gitで最新のソースを取得してきてビルドすると改善することが多いです。
+
+http://qiita.com/yayugu/items/12c0ffd92bc8539098b8
