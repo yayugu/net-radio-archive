@@ -2,7 +2,7 @@ module Main
   class Main
     def initialize
       stdout_logger = Logger.new(STDOUT)
-      config.logger.extend(ActiveSupport::Logger.broadcast(stdout_logger))
+      Rails.logger.extend(ActiveSupport::Logger.broadcast(stdout_logger))
     end
 
     def ag_scrape
