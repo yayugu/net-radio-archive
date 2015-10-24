@@ -1,10 +1,5 @@
 module Main
   class Main
-    def initialize
-      stdout_logger = Logger.new(STDOUT)
-      Rails.logger.extend(ActiveSupport::Logger.broadcast(stdout_logger))
-    end
-
     def ag_scrape
       programs = Ag::Scraping.new.main
       programs.each do |p|
