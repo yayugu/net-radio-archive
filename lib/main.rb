@@ -70,6 +70,7 @@ module Main
 
   def self.convert_ffmpeg_to(arg, debug_obj)
     exit_status, output = ffmpeg(arg)
+    Rails.logger.info(output)
     unless exit_status.success?
       Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
       return false
