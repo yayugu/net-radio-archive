@@ -8,7 +8,6 @@ module NiconicoLive
     class NiconamaInternalProcessedException < StandardError; end
 
     def download(program)
-      @log_buffer = []
       @program = program
       begin
         setup
@@ -16,9 +15,6 @@ module NiconicoLive
       rescue NiconamaInternalProcessedException => e
         return
       rescue Exception => e
-        unless @log_buffer.empty?
-          Rails.logger.warn @log_buffer.join("\n")
-        end
         Rails.logger.error e.class
         Rails.logger.error e.inspect
         Rails.logger.error e.backtrace.join("\n")
@@ -31,13 +27,10 @@ module NiconicoLive
       rescue NiconamaInternalProcessedException => e
         return
       rescue Exception => e
-        unless @log_buffer.empty?
-          Rails.logger.warn @log_buffer.join("\n")
-        end
         Rails.logger.error e.class
         Rails.logger.error e.inspect
         Rails.logger.error 'quesheet:'
-        pp @l.quesheet
+        Rails.logger.error @l.quesheet
         Rails.logger.error e.backtrace.join("\n")
         program.state = NiconicoLiveProgram::STATE[:failed_dumping_rtmp]
         return
@@ -70,10 +63,10 @@ module NiconicoLive
         # <NoMethodError: undefined method `inner_text' for nil:NilClass>
         # lib/niconico/live/api.rb:60:in `get'
 
-        @log_buffer << "reservation failed. but try continue"
-        @log_buffer << e.class
-        @log_buffer << e.inspect
-        @log_buffer << e.backtrace.join("\n")
+        Rails.logger.warn << "reservation failed. but try continue"
+        Rails.logger.warn << e.class
+        Rails.logger.warn << e.inspect
+        Rails.logger.warn << e.backtrace.join("\n")
 
         # force reload
         sleep 5
@@ -113,18 +106,18 @@ module NiconicoLive
         full_file_path = info[:file_path]
         exit_status, output = rtmpdump_with_retry(info)
         unless exit_status.success?
-          @log_buffer << "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
-          @log_buffer << output
+          Rails.logger.warn << "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn << output
           next
         end
         unless Main::check_file_size(full_file_path)
-          @log_buffer << "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn << "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
         end
         converted_path = full_file_path.gsub(/\.flv$/, '') + '.mkv'
         Main::convert_ffmpeg_to_mp4(full_file_path, converted_path, @program)
         unless Main::check_file_size(converted_path)
-          @log_buffer << "coverted file is not valid: #{@l.id}, #{converted_path} but continue other file download"
+          Rails.logger.warn << "coverted file is not valid: #{@l.id}, #{converted_path} but continue other file download"
           next
         end
         Main::move_to_archive_dir(CH_NAME, @l.opens_at, converted_path)
