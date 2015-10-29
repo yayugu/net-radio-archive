@@ -63,10 +63,10 @@ module NiconicoLive
         # <NoMethodError: undefined method `inner_text' for nil:NilClass>
         # lib/niconico/live/api.rb:60:in `get'
 
-        Rails.logger.warn << "reservation failed. but try continue"
-        Rails.logger.warn << e.class
-        Rails.logger.warn << e.inspect
-        Rails.logger.warn << e.backtrace.join("\n")
+        Rails.logger.warn "reservation failed. but try continue"
+        Rails.logger.warn e.class
+        Rails.logger.warn e.inspect
+        Rails.logger.warn e.backtrace.join("\n")
 
         # force reload
         sleep 5
@@ -106,18 +106,18 @@ module NiconicoLive
         full_file_path = info[:file_path]
         exit_status, output = rtmpdump_with_retry(info)
         unless exit_status.success?
-          Rails.logger.warn << "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
-          Rails.logger.warn << output
+          Rails.logger.warn "rtmpdump failed: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn output
           next
         end
         unless Main::check_file_size(full_file_path)
-          Rails.logger.warn << "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
+          Rails.logger.warn "downloaded file is not valid: #{@l.id}, #{full_file_path} but continue other file download"
           next
         end
         converted_path = full_file_path.gsub(/\.flv$/, '') + '.mkv'
         Main::convert_ffmpeg_to_mp4(full_file_path, converted_path, @program)
         unless Main::check_file_size(converted_path)
-          Rails.logger.warn << "coverted file is not valid: #{@l.id}, #{converted_path} but continue other file download"
+          Rails.logger.warn "coverted file is not valid: #{@l.id}, #{converted_path} but continue other file download"
           next
         end
         Main::move_to_archive_dir(CH_NAME, @l.opens_at, converted_path)
