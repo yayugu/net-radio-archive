@@ -5,6 +5,9 @@ module Agon
     CH_NAME = 'agon'
 
     def initialize
+    end
+
+    def download(program)
       if Settings.agon.headless
         require 'headless'
         headless = Headless.new
@@ -13,9 +16,7 @@ module Agon
       profile = Selenium::WebDriver::Firefox::Profile.new
       profile['general.useragent.override'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.32 (KHTML, like Gecko) Mobile/13A4254v'
       @s = Selenium::WebDriver.for :firefox, profile: profile
-    end
 
-    def download(program)
       url = get_m3u8_url(program)
       download_hls(program, url)
     end
