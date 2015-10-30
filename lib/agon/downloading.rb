@@ -8,16 +8,23 @@ module Agon
     end
 
     def download(program)
-      if Settings.agon.headless
-        require 'headless'
-        headless = Headless.new
-        headless.start
-      end
-      profile = Selenium::WebDriver::Firefox::Profile.new
-      profile['general.useragent.override'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.32 (KHTML, like Gecko) Mobile/13A4254v'
-      @s = Selenium::WebDriver.for :firefox, profile: profile
+      begin
+        if Settings.agon.headless
+          require 'headless'
+          headless = Headless.new
+          headless.start
+        end
+        profile = Selenium::WebDriver::Firefox::Profile.new
+        profile['general.useragent.override'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.32 (KHTML, like Gecko) Mobile/13A4254v'
+        @s = Selenium::WebDriver.for :firefox, profile: profile
 
-      url = get_m3u8_url(program)
+        url = get_m3u8_url(program)
+      rescue => e
+        Rails.logger.warn e.class
+        Rails.logger.warn e.inspect
+        Rails.logger.warn e.backtrace.join("\n")
+        return false
+      end
       download_hls(program, url)
     end
 

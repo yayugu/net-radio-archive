@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151002075432) do
+ActiveRecord::Schema.define(version: 20151030150712) do
 
   create_table "agon_programs", force: true do |t|
     t.string   "title",       limit: 250, null: false
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20151002075432) do
     t.string   "file_url",    limit: 767, null: false
     t.string   "personality", limit: 250, null: false
     t.string   "state",       limit: 100, null: false
+    t.integer  "retry_count",             null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end

@@ -6,8 +6,12 @@ module Onsen
       uri = URI(program.file_url)
       path = filepath(program)
       Main::prepare_working_dir(CH_NAME)
-      Main::download(program.file_url, path)
+      succeed = Main::download(program.file_url, path)
+      unless succeed
+        return false
+      end
       Main::move_to_archive_dir(CH_NAME, program.date, path)
+      true
     end
 
     def filepath(program)

@@ -47,6 +47,7 @@ module Main
           p.file_url = program.file_url
           p.personality = program.personality
           p.state = OnsenProgram::STATE[:waiting]
+          p.retry_count = 0
           p.save
         end
       end

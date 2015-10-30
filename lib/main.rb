@@ -41,6 +41,7 @@ module Main
         end
       end
     end
+    true
   end
 
   def self.shell_exec(command)
