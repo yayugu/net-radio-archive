@@ -282,7 +282,10 @@ module Main
       return p if p
 
       klass
-        .where(state: klass::STATE[:failed])
+        .where(state: [
+               klass::STATE[:failed],
+               klass::STATE[:downloading],
+        ])
         .where('`retry_count` <= ?', klass::RETRY_LIMIT)
         .where('`updated_at` <= ?', 1.day.ago)
         .lock
