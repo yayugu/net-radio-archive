@@ -8,7 +8,7 @@ module Anitama
       begin
         Anitama::Scraping.new.download(program.book_id, path)
       rescue => e
-        Rails.logger.warn e
+        Rails.logger.error e
         return false
       end
       Main::move_to_archive_dir(CH_NAME, program.update_time, path)

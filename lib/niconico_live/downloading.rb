@@ -142,6 +142,7 @@ module NiconicoLive
     end
 
     def rtmpdump_with_resume(info)
+      Rails.logger.info "nico rtmpdump command: #{rtmpdump_command(info, false)}"
       exit_status, output = Main::shell_exec(rtmpdump_command(info, false))
       10.times do
         if exit_status.exitstatus != 2 # 2 means 'Incomplete transfer, resuming may get further. '
