@@ -139,7 +139,7 @@ module Main
     date.strftime('%Y%m')
   end
 
-  def self.check_file_size(path, expect_larger_than = (10 * 1024 * 1024)) # 10MB
+  def self.check_file_size(path, expect_larger_than = (20 * 1024 * 1024)) # 20MB
     size = File.size?(path)
     size && size > expect_larger_than
   end
