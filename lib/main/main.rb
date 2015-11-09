@@ -57,19 +57,21 @@ module Main
       program_list = Hibiki::Scraping.new.main
 
       program_list.each do |program|
-        if program.rtmp_url.blank?
-          next
-        end
         ActiveRecord::Base.transaction do
-          if HibikiProgram.where(rtmp_url: program.rtmp_url).first
+          if HibikiProgramV2
+              .where(access_id: program.access_id)
+              .where(episode_id: program.episode_id)
+              .first
             next
           end
 
-          p = HibikiProgram.new
+          p = HibikiProgramV2.new
+          p.access_id = program.access_id
+          p.episode_id = program.episode_id
           p.title = program.title
-          p.comment = program.comment
-          p.rtmp_url = program.rtmp_url
-          p.state = HibikiProgram::STATE[:waiting]
+          p.episode_name = program.episode_name
+          p.cast = program.cast
+          p.state = HibikiProgramV2::STATE[:waiting]
           p.retry_count = 0
           p.save
         end
@@ -230,7 +232,7 @@ module Main
     end
 
     def hibiki_download
-      download(HibikiProgram, Hibiki::Downloading.new)
+      download2(HibikiProgramV2, Hibiki::Downloading.new)
     end
 
     def anitama_download
@@ -264,6 +266,30 @@ module Main
           model_klass::STATE[:failed]
         end
       unless succeed
+        p.retry_count += 1
+        if p.retry_count > model_klass::RETRY_LIMIT
+          Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
+        end
+      end
+      p.save!
+
+      return 0
+    end
+
+    def download2(model_klass, downloader)
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = fetch_downloadable_program(model_klass)
+        unless p
+          return 0
+        end
+
+        p.state = model_klass::STATE[:downloading]
+        p.save!
+      end
+
+      downloader.download(p)
+      if p.state == model_klass::STATE[:failed]
         p.retry_count += 1
         if p.retry_count > model_klass::RETRY_LIMIT
           Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"

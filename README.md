@@ -26,20 +26,25 @@ Net Radio Archive
 - LinuxなどUNIX的なOS (Windowsでも動かしたい...)
 - Ruby 2.0 or higher
 - rtmpdump
-- ffmpeg or livav
 - swftools
+- あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
+ - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
+ - Macではhomebrewで導入できるバージョンで問題ありません
 - (AG-ONのみ)
  - GUI環境 or xvfb
  - firefox
- - とてもあたらしいffmpeg (HTTP Live Streaming の input に対応しているもの)
-  - ※最新のffmpegの導入は面倒であることが多いです。自分はLinux用のstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
 
 ## セットアップ
 
 ```
 # 必要なライブラリをインストール
 # Ubuntuの場合:
-$ sudo apt-get install rtmpdump libav-tools swftools ruby
+$ sudo apt-get install rtmpdump swftools ruby
+
+$ # libavがインストールされている場合には削除してから
+$ wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
+$ tar xvf ffmpeg-release-64bit-static.tar.xz
+$ sudo cp ./ffmpeg-release-64bit-static/ffmpeg /usr/local/bin
 
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
