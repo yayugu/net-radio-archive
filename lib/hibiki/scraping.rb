@@ -19,10 +19,22 @@ module Hibiki
     end
 
     def get_wday(wday)
+      programs = []
+      parsed = nil
+      do
+        uri = URI("https://vcms-api.hibiki-radio.jp/api/v1//programs?day_of_week=#{wday_to_s(wday)}}&limit=8&page=1")
+        res = Net::HTTP.get(uri)
+        parsed = JSON.parse(res)
+      until parsed.size < 8
+
       get_wday_base(wday).map do |base|
         sleep(1)
         add_program_detail(base)
       end.compact # remove nil
+    end
+
+    def wday_to_s(wday)
+      %w(sun mon tue wed thu fri sat)[wday]
     end
 
     def add_program_detail(base)
