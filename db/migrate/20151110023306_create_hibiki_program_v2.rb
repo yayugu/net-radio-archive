@@ -1,7 +1,7 @@
-class CreateHibikiProgram2ndGens < ActiveRecord::Migration
+class CreateHibikiProgramV2 < ActiveRecord::Migration
   def up
     sql = <<EOF
-CREATE TABLE `hibiki_program_2nd_gens` (
+CREATE TABLE `hibiki_program_v2s` (
     `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `access_id` varchar(100) CHARACTER SET ASCII NOT NULL,
     `episode_id` int UNSIGNED NOT NULL,
@@ -19,7 +19,7 @@ EOF
     ActiveRecord::Base.connection.execute(sql)
   end
   def down
-    sql = 'DROP TABLE `hibiki_program_2nd_gens`;'
+    sql = 'DROP TABLE `hibiki_program_v2s`;'
     ActiveRecord::Base.connection.execute(sql)
   end
 end

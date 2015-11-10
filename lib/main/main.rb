@@ -58,20 +58,20 @@ module Main
 
       program_list.each do |program|
         ActiveRecord::Base.transaction do
-          if HibikiProgram2ndGen
+          if HibikiProgramV2
               .where(access_id: program.access_id)
               .where(episode_id: program.episode_id)
               .first
             next
           end
 
-          p = HibikiProgram2ndGen.new
+          p = HibikiProgramV2.new
           p.access_id = program.access_id
           p.episode_id = program.episode_id
           p.title = program.title
           p.episode_name = program.episode_name
           p.cast = program.cast
-          p.state = HibikiProgram2ndGen::STATE[:waiting]
+          p.state = HibikiProgramV2::STATE[:waiting]
           p.retry_count = 0
           p.save
         end
