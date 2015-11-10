@@ -17,7 +17,8 @@ module Hibiki
         program.state = HibikiProgramV2::STATE[:outdated]
         return
       end
-      if infos['episode']['video']['live_flg'] == true
+      live_flg = infos['episode'].try(:[], 'video').try(:[], 'live_flg')
+      if live_flg == nil || live_flg == true
         program.state = HibikiProgramV2::STATE[:not_downloadable]
         return
       end
@@ -65,7 +66,8 @@ module Hibiki
       date = program.created_at.strftime('%Y_%m_%d')
       title = "#{date}_#{program.title}_#{program.episode_name}"
       if program.cast.present?
-        title += "_#{program.cast}"
+        cast = program.cast.gsub(',', ' ')
+        title += "_#{cast}"
       end
       title
     end
