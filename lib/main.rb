@@ -55,7 +55,7 @@ module Main
     # found ffmpeg command or not
     command = exit_status == 0 ? 'ffmpeg' : 'avconv'
     full = "#{command} #{arg} 2>&1"
-    shell_exec(command)
+    shell_exec(full)
   end
 
   def self.convert_ffmpeg_to_mp4(src_path, dst_path, debug_obj)
