@@ -3,12 +3,16 @@ module Onsen
     CH_NAME = 'onsen'
 
     def download(program)
-      uri = URI(program.file_url)
       path = filepath(program)
       Main::prepare_working_dir(CH_NAME)
       succeed = Main::download(program.file_url, path)
       unless succeed
         return false
+      end
+      if Settings.force_mp4 && /\.([a-zA-Z0-9]+?)$/.match(path)[1] == 'mp3'
+        mp4_path = path.gsub(/\.([a-zA-Z0-9]+?)$/,'.mp4')
+        Main::convert_ffmpeg_to_mp4_with_blank_video(path, mp4_path, program)
+        path = mp4_path
       end
       Main::move_to_archive_dir(CH_NAME, program.date, path)
       true
