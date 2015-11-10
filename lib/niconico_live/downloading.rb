@@ -29,7 +29,7 @@ module NiconicoLive
       rescue Exception => e
         Rails.logger.error e.class
         Rails.logger.warn e.inspect
-        Rails.logger.warn 'quesheet:' + @l.quesheet
+        Rails.logger.warn "quesheet: #{@l.quesheet.inspect}"
         Rails.logger.warn e.backtrace.join("\n")
         program.state = NiconicoLiveProgram::STATE[:failed_dumping_rtmp]
         return
