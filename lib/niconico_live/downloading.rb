@@ -16,8 +16,8 @@ module NiconicoLive
         return
       rescue Exception => e
         Rails.logger.error e.class
-        Rails.logger.error e.inspect
-        Rails.logger.error e.backtrace.join("\n")
+        Rails.logger.warn e.inspect
+        Rails.logger.warn e.backtrace.join("\n")
         program.state = NiconicoLiveProgram::STATE[:failed_before_got_rtmp_url]
         return
       end
@@ -28,10 +28,9 @@ module NiconicoLive
         return
       rescue Exception => e
         Rails.logger.error e.class
-        Rails.logger.error e.inspect
-        Rails.logger.error 'quesheet:'
-        Rails.logger.error @l.quesheet
-        Rails.logger.error e.backtrace.join("\n")
+        Rails.logger.warn e.inspect
+        Rails.logger.warn 'quesheet:' + @l.quesheet
+        Rails.logger.warn e.backtrace.join("\n")
         program.state = NiconicoLiveProgram::STATE[:failed_dumping_rtmp]
         return
       end
