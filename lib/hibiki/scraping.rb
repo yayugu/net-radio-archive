@@ -1,8 +1,6 @@
 require 'net/http'
 require 'time'
 require 'pp'
-require 'digest/md5'
-require 'moji'
 
 module Hibiki
   class Program < Struct.new(:access_id, :episode_id, :title, :episode_name, :cast)
@@ -10,9 +8,9 @@ module Hibiki
 
   class Scraping
     def main
-      pro = get_list
-      pp pro
-      exit
+      get_list.reject do |program|
+        program.episode_id == nil
+      end
     end
 
     def get_list

@@ -57,19 +57,21 @@ module Main
       program_list = Hibiki::Scraping.new.main
 
       program_list.each do |program|
-        if program.rtmp_url.blank?
-          next
-        end
         ActiveRecord::Base.transaction do
-          if HibikiProgram.where(rtmp_url: program.rtmp_url).first
+          if HibikiProgram2ndGen
+              .where(access_id: program.access_id)
+              .where(episode_id: program.episode_id)
+              .first
             next
           end
 
-          p = HibikiProgram.new
+          p = HibikiProgram2ndGen.new
+          p.access_id = program.access_id
+          p.episode_id = program.episode_id
           p.title = program.title
-          p.comment = program.comment
-          p.rtmp_url = program.rtmp_url
-          p.state = HibikiProgram::STATE[:waiting]
+          p.episode_name = program.episode_name
+          p.cast = program.cast
+          p.state = HibikiProgram2ndGen::STATE[:waiting]
           p.retry_count = 0
           p.save
         end
