@@ -23,6 +23,10 @@ production:
         - QRR # bunka housou
         - LFR # nippon housou
 
+    # trueの場合、音声のみのコンテンツ(音泉、アニたま、Radiko)を保存時に強制的にmp4へ変換します(再エンコードはかけないので音声は劣化しません)
+    # Googleフォトなどにバックアップする際に便利です
+    force_mp4: false
+
     # AG-ON (導入難易度高め。詳しくはREADME参照)
     # 録画しない場合はこの項目ごと消すと何もしません
     # これのみSelenium WebDriverを使っていたり、ffmpegでHLSを処理していたりと特殊なので

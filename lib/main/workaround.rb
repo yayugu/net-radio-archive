@@ -14,6 +14,7 @@ module Main
         return
       end
       `find #{Settings.working_dir} -ctime +#{Settings.working_files_retention_period_days || 30} -name "*.flv" -exec rm {} \\;`
+      `find #{Settings.working_dir} -ctime +#{Settings.working_files_retention_period_days || 30} -name "*.mp3" -exec rm {} \\;`
     end
 
     def self.rm_latest_dir_symlinks

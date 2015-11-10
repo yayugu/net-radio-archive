@@ -64,6 +64,11 @@ module Main
     convert_ffmpeg_to(arg, debug_obj)
   end
 
+  def self.convert_ffmpeg_to_mp4_with_blank_video(src_path, dst_path, debug_obj)
+    arg = "-loglevel error -y -s 320x240 -f rawvideo -pix_fmt rgb24 -r 1 -i /dev/zero -i #{Shellwords.escape(src_path)} -acodec copy -vcodec libx264 -shortest #{Shellwords.escape(dst_path)}"
+    convert_ffmpeg_to(arg, debug_obj)
+  end
+
   def self.convert_ffmpeg_to_m4a(src_path, dst_path, debug_obj)
     arg = "-loglevel error -y -i #{Shellwords.escape(src_path)} -acodec copy #{Shellwords.escape(dst_path)}"
     convert_ffmpeg_to(arg, debug_obj)
