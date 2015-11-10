@@ -52,11 +52,10 @@ module Main
 
   def self.ffmpeg(arg)
     exit_status, output = shell_exec('hash ffmpeg >/dev/null 2>&1')
-    if exit_status == 0 # found ffmpeg command
-      shell_exec("ffmpeg " + arg)
-    else
-      shell_exec("avconv " + arg)
-    end
+    # found ffmpeg command or not
+    command = exit_status == 0 ? 'ffmpeg' : 'avconv'
+    full = "#{command} #{arg} 2>&1"
+    shell_exec(command)
   end
 
   def self.convert_ffmpeg_to_mp4(src_path, dst_path, debug_obj)
@@ -75,6 +74,9 @@ module Main
     unless exit_status.success?
       Rails.logger.error "convert failed. debug_obj:#{debug_obj.inspect}, exit_status:#{exit_status}, output:#{output}"
       return false
+    end
+    if output.present?
+      Rails.logger.warn "ffmpeg command:#{arg} output:#{output}"
     end
     true
   end

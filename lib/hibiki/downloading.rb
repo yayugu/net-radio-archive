@@ -56,6 +56,9 @@ module Hibiki
         Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
         return false
       end
+      if output.present?
+        Rails.logger.warn "hibiki ffmpeg command:#{arg} output:#{output}"
+      end
 
       Main::move_to_archive_dir(CH_NAME, program.created_at, file_path)
 
