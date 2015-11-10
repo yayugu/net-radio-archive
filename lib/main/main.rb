@@ -232,7 +232,7 @@ module Main
     end
 
     def hibiki_download
-      download(HibikiProgram, Hibiki::Downloading.new)
+      download2(HibikiProgramV2, Hibiki::Downloading.new)
     end
 
     def anitama_download
@@ -266,6 +266,30 @@ module Main
           model_klass::STATE[:failed]
         end
       unless succeed
+        p.retry_count += 1
+        if p.retry_count > model_klass::RETRY_LIMIT
+          Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
+        end
+      end
+      p.save!
+
+      return 0
+    end
+
+    def download2(model_klass, downloader)
+      p = nil
+      ActiveRecord::Base.transaction do
+        p = fetch_downloadable_program(model_klass)
+        unless p
+          return 0
+        end
+
+        p.state = model_klass::STATE[:downloading]
+        p.save!
+      end
+
+      downloader.download(p)
+      if p.state == model_klass::STATE[:failed]
         p.retry_count += 1
         if p.retry_count > model_klass::RETRY_LIMIT
           Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
