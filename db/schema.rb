@@ -39,20 +39,6 @@ ActiveRecord::Schema.define(version: 20151110023306) do
 
   add_index "anitama_programs", ["book_id", "update_time"], name: "book_id", unique: true, using: :btree
 
-  create_table "hibiki_program_v2", force: true do |t|
-    t.string   "access_id",    limit: 100, null: false
-    t.integer  "episode_id",               null: false
-    t.string   "title",        limit: 250, null: false
-    t.string   "episode_name", limit: 250, null: false
-    t.string   "cast",         limit: 250, null: false
-    t.string   "state",        limit: 100, null: false
-    t.integer  "retry_count",              null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
-
-  add_index "hibiki_program_v2", ["access_id", "episode_id"], name: "access_id", unique: true, using: :btree
-
   create_table "hibiki_program_v2s", force: true do |t|
     t.string   "access_id",    limit: 100, null: false
     t.integer  "episode_id",               null: false

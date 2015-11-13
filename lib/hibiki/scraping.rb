@@ -29,7 +29,6 @@ module Hibiki
           'X-Requested-With' => 'XMLHttpRequest',
           'Origin' => 'http://hibiki-radio.jp'
         )
-        p res.body
         raws = JSON.parse(res.body)
         programs += raws.map{|raw| parse_program(raw) }
         sleep 1
