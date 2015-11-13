@@ -7,6 +7,11 @@ module Hibiki
   end
 
   class Scraping
+    def initialize
+      @a = Mechanize.new
+      @a.user_agent_alias = 'Windows Chrome'
+    end
+
     def main
       get_list.reject do |program|
         program.episode_id == nil
@@ -15,12 +20,16 @@ module Hibiki
 
     def get_list
       programs = []
-      parsed = nil
       page = 1
       begin
-        uri = URI("https://vcms-api.hibiki-radio.jp/api/v1//programs?limit=8&page=#{page}")
-        res = Net::HTTP.get(uri)
-        raws = JSON.parse(res)
+        res = @a.get(
+          "https://vcms-api.hibiki-radio.jp/api/v1//programs?limit=8&page=#{page}",
+          [],
+          "http://hibiki-radio.jp/",
+          'X-Requested-With' => 'XMLHttpRequest',
+          'Origin' => 'http://hibiki-radio.jp'
+        )
+        raws = JSON.parse(res.body)
         programs += raws.map{|raw| parse_program(raw) }
         sleep 1
         page += 1
