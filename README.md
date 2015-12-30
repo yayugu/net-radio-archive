@@ -59,15 +59,15 @@ $ vi config/settings.yml # 各自の環境に合わせて編集
 
 # サーバー内での手動設定 (お手軽、自分はこれでやってます)
 $ RAILS_ENV=production bundle exec rake db:create db:migrate
-$ bundle exec whenever --update-crontab
-$ # (または) bundle exec whenever -u $YOUR-USERNAME --update-crontab
+$ RAILS_ENV=production bundle exec whenever --update-crontab
+$ # (または) RAILS_ENV=production bundle exec whenever -u $YOUR-USERNAME --update-crontab
 
 # アップデート
 $ git pull origin master
 $ git submodule update --init --recursive
 $ bundle install --without development test
 $ RAILS_ENV=production bundle exec rake db:migrate
-$ bundle exec whenever --update-crontab
+$ RAILS_ENV=production bundle exec whenever --update-crontab
 
 # capistranoでのデプロイ設定
 $ cp config/deploy/production.example.rb config/deploy/production.rb
