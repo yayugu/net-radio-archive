@@ -52,6 +52,10 @@ production:
     #        keywords:
     #            - '村川梨衣'
     #            - '麻倉もも'
+    #        # wikipediaのカテゴリで検索キーワードを一括指定できます
+    #        keyword_wikipedia_categories:
+    #            - '声優ユニット'
+    #            - '日本の女性声優'
 
 development:
     radiko_channels:

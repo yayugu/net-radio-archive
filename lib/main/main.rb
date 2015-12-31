@@ -151,6 +151,24 @@ module Main
       end
     end
 
+    def wikipedia_scrape
+      unless Settings.try(:niconico).try(:live).try(:keyword_wikipedia_categories)
+        exit 0
+      end
+
+      Settings.niconico.live.keyword_wikipedia_categories.each do |category|
+        items = Wikipedia::Scraping.new.main(category)
+        items = items.map do |item|
+          [category, item]
+        end
+        WikipediaCategoryItem.import(
+          [:category, :title],
+          items,
+          on_duplicate_key_update: [:title]
+        )
+      end
+    end
+
     def rec_one
       job = nil
       ActiveRecord::Base.transaction do

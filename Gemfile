@@ -43,6 +43,8 @@ gem 'whenever'
 gem 'settingslogic'
 gem 'mechanize'
 gem 'niconico', path: 'niconico'
+gem 'httparty'
+gem 'activerecord-import'
 
 # AG-ONでのみ必要
 # 不要な場合は `bundle install --without agon development` のようにしてください

@@ -1,5 +1,6 @@
 require 'net/http'
 require 'json'
+require 'cgi/util'
 
 module Wikipedia
   class Scraping
@@ -8,7 +9,8 @@ module Wikipedia
       ret = members.map do |m|
         m['title'].gsub(/^(.*) \(.*\)$/, '\1')
       end.delete_if do |t|
-        t.match(/^Category:/)
+        t.match(/^Category:/) ||
+          t.match(/^Template:/)
       end
     end
 
@@ -19,10 +21,9 @@ module Wikipedia
         r = get(category, continue)
         category_members += r['query']['categorymembers']
         continue = r
-          .try(:[], 'query-continue')
-          .try(:[], 'categorymembers')
+          .try(:[], 'continue')
           .try(:[], 'cmcontinue')
-        sleep 1
+        sleep 5
         unless continue
           break
         end
@@ -31,13 +32,13 @@ module Wikipedia
     end
 
     def get(category, continue)
-      url_str = "http://ja.wikipedia.org/w/api.php?action=query&list=categorymembers&format=json&cmlimit=500&cmtitle=#{URI.escape('Category:' + category)}"
+      url_str = "https://ja.wikipedia.org/w/api.php?action=query&list=categorymembers&format=json&cmlimit=500&cmtitle=#{CGI.escape('Category:' + category)}"
       if continue
-        url_str += "&cmcontinue=#{URI.escape(continue)}"
+        url_str += "&cmcontinue=#{CGI.escape(continue)}"
       end
 
-      ret = Net::HTTP.get(URI(url_str))
-      results = JSON.parse(ret)
+      res = HTTParty.get(url_str)
+      JSON.parse(res.body)
     end
   end
 end
