@@ -100,6 +100,8 @@ A. 難しいです。Githubでissueつくっていただければ相談にのり
 ### Q. rtmpdumpが不安定 / CPUを100%消費する
 gitで最新のソースを取得してきてビルドすると改善することが多いです。
 
+http://qiita.com/yayugu/items/12c0ffd92bc8539098b8
+
 ### Q. 録画がはじまらない / 特定のプラットフォーム or 局のみ録画がはじまらない
 番組表の取得がまだ行われていない可能性があります。 config/schedule.rbを見ていただけるとわかるのですが番組表の取得は昼間中心となっています。お急ぎの場合は手動で
 
@@ -109,4 +111,3 @@ $ RAILS_ENV=production bundle exec rake main:XXXX_scrape
 
 を実行してください
 
-http://qiita.com/yayugu/items/12c0ffd92bc8539098b8
