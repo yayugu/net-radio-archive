@@ -152,7 +152,7 @@ module Main
     end
 
     def wikipedia_scrape
-      unless Settings.try(:niconico).try(:live).try(:keyword_wikipedia_categories)
+      unless Settings.niconico && Settings.niconico.live.keyword_wikipedia_categories
         exit 0
       end
 
