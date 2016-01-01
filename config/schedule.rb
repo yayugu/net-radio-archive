@@ -57,6 +57,10 @@ every '21 10-22 * * *' do
   rake_not_silent 'main:agon_scrape'
 end
 
+every '38 15 1 * *' do
+  rake_not_silent 'main:wikipedia_scrape'
+end
+
 every '37 15 * * *' do
   rake_not_silent 'main:kill_zombie_process'
 end
