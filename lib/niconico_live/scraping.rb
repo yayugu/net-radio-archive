@@ -23,7 +23,6 @@ module NiconicoLive
           item.title
         end.join(' OR ')
         ret_sub = search([search_word])
-        p ret_sub
         ret += ret_sub
         sleep 10
       end
