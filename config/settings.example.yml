@@ -23,6 +23,14 @@ production:
         - QRR # bunka housou
         - LFR # nippon housou
 
+    # ファイル名に含まれる単語からシムリンクを作成
+    # archive_dirで設定したディレクトリ配下に 0_selections ディレクトリの作成、配下にシムリンク
+    # 定期的に聴きたいラジオをより分けるのに便利です
+    #selections:
+    #    - 花澤香菜
+    #    - 佐倉綾音
+    #    - モモノキ
+
     # trueの場合、音声のみのコンテンツ(音泉、アニたま、Radiko)を保存時に強制的にmp4へ変換します(再エンコードはかけないので音声は劣化しません)
     # Googleフォトなどにバックアップする際に便利です
     force_mp4: false
