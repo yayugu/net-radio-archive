@@ -2,7 +2,7 @@ module NiconicoLive
   class Scraping
     def main
       setup
-      search_keyword + search_keyword_category_bulk
+      reject_ignore_keywords(search_keyword + search_keyword_category_bulk)
     end
 
     def setup
@@ -40,11 +40,19 @@ module NiconicoLive
             Niconico::Live::Client::SearchFilters::HIDE_TS_EXPIRED,
           ]
         )
-        ret_sub.map do |pr|
-          pr.id = Niconico::Live::Util.normalize_id(pr.id, with_lv: false)
-          pr
-        end
         ret + ret_sub
+      end
+    end
+
+    def reject_ignore_keywords(search_results)
+      ignore_keywords = Settings.niconico.live.ignore_keywords
+      unless ignore_keywords
+        return search_results
+      end
+      search_results.reject do |r|
+        ignore_keywords.any? do |k|
+          r.title.include? k
+        end
       end
     end
   end

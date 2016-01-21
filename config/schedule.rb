@@ -17,18 +17,15 @@ end
 
 #=== nico
 # maintenance on Thursday
-every '50 */2 * * 0-3,5-6' do
-  rake_not_silent 'main:niconama_scrape'
-end
-every '50 12-23/2 * * 4' do
+every '0 14 * * *' do
   rake_not_silent 'main:niconama_scrape'
 end
 
 # maintenance on Thursday
-every '4-50/18 * * * 0-3,5-6' do
+every '4-57/8 * * * 0-3,5-6' do
   rake_not_silent 'main:rec_niconama'
 end
-every '4-50/18 12-23 * * 4' do
+every '4-57/8 12-23 * * 4' do
   rake_not_silent 'main:rec_niconama'
 end
 #===
