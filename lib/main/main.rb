@@ -214,9 +214,24 @@ module Main
       agon_download
     end
 
+    LOCK_NICONAMA_DOWNLOAD = 'lock_niconama_download'
     def niconama_download
       unless Settings.niconico
-        exit 0
+        return 0
+      end
+      ActiveRecord::Base.transaction do
+        l = KeyValue.where(key: LOCK_NICONAMA_DOWNLOAD).lock.first
+        if !l
+          l = KeyValue.new
+          l.key = LOCK_NICONAMA_DOWNLOAD
+          l.value = 'true'
+          l.save!
+        elsif l.value == 'false'
+          l.value = 'true'
+          l.save!
+        else
+          return 0
+        end
       end
 
       p = nil
@@ -239,6 +254,12 @@ module Main
 
       NiconicoLive::Downloading.new.download(p)
       p.save!
+
+      ActiveRecord::Base.transaction do
+        l = KeyValue.lock.find(LOCK_NICONAMA_DOWNLOAD)
+        l.value = 'false'
+        l.save!
+      end
 
       return 0
     end
