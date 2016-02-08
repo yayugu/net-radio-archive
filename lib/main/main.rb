@@ -28,6 +28,20 @@ module Main
       end
     end
 
+    def radiru_scrape
+      Settings.radiru_channels.each do |ch|
+        programs = Radiru::Scraping.new.get(ch)
+        programs.each do |p|
+          Job.new(
+            ch: ch,
+            title: p.title,
+            start: p.start_time,
+            end: p.end_time
+          ).schedule
+        end
+      end
+    end
+
     def onsen_scrape
       program_list = Onsen::Scraping.new.main
 
@@ -193,6 +207,8 @@ module Main
       succeed = false
       if job.ch == Job::CH[:ag]
         succeed = Ag::Recording.new.record(job)
+      elsif Settings.radiru_channels.include?(job.ch)
+        succeed = Radiru::Recording.new.record(job)
       else
         succeed = Radiko::Recording.new.record(job)
       end

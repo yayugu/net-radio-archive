@@ -9,6 +9,11 @@ namespace :main do
     Main::Main.new.radiko_scrape
   end
 
+  desc 'radiru scrape'
+  task :radiru_scrape => :environment do
+    Main::Main.new.radiru_scrape
+  end
+
   desc 'onsen scrape'
   task :onsen_scrape => :environment do
     Main::Main.new.onsen_scrape
