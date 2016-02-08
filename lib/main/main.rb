@@ -207,7 +207,7 @@ module Main
       succeed = false
       if job.ch == Job::CH[:ag]
         succeed = Ag::Recording.new.record(job)
-      elsif Settings.radiru_channels.include?(job.ch)
+      elsif Settings.radiru_channels && Settings.radiru_channels.include?(job.ch)
         succeed = Radiru::Recording.new.record(job)
       else
         succeed = Radiko::Recording.new.record(job)
