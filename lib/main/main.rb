@@ -196,49 +196,40 @@ module Main
             .where(state: Job::STATE[:scheduled])
             .order(:start)
             .lock
-          unless jobs
+            .all
+          if jobs.empty?
             return 0
+          end
+          jobs.each do |j|
+            j.state = Job::STATE[:recording]
+            j.save!
           end
         end
       end
 
-      thread_array = []
-      jobs.each do |job|
-        thread_array << Thread.start(job) {|j|
-          Rails.logger.info "rec thread created. job:#{j.id}"
+      threads_from_records(jobs) do |j|
+        Rails.logger.info "rec thread created. job:#{j.id}"
 
-          ActiveRecord::Base.connection_pool.with_connection do
-            j.state = Job::STATE[:recording]
-            j.save!
-          end
+        succeed = false
+        if j.ch == Job::CH[:ag]
+          succeed = Ag::Recording.new.record(j)
+        elsif Settings.radiru_channels && Settings.radiru_channels.include?(j.ch)
+          succeed = Radiru::Recording.new.record(j)
+        else
+          succeed = Radiko::Recording.new.record(j)
+        end
 
-          succeed = false
-          if j.ch == Job::CH[:ag]
-            succeed = Ag::Recording.new.record(j)
-          elsif Settings.radiru_channels && Settings.radiru_channels.include?(j.ch)
-            succeed = Radiru::Recording.new.record(j)
-          else
-            succeed = Radiko::Recording.new.record(j)
-          end
+        ActiveRecord::Base.connection_pool.with_connection do
+          j.state =
+            if succeed
+              Job::STATE[:done]
+            else
+              Job::STATE[:failed]
+            end
+          j.save!
+        end
 
-          ActiveRecord::Base.connection_pool.with_connection do
-            j.state =
-              if succeed
-                Job::STATE[:done]
-              else
-                Job::STATE[:failed]
-              end
-            j.save!
-          end
-
-          Rails.logger.info "rec thread end. job:#{j.id}"
-        }
-
-        sleep 1
-      end
-
-      thread_array.each do |th|
-        th.join
+        Rails.logger.info "rec thread end. job:#{j.id}"
       end
 
       return 0
@@ -302,6 +293,24 @@ module Main
     end
 
     private
+
+    def threads_from_records(records)
+      thread_array = []
+      records.each do |record|
+        thread_array << Thread.start(record) do |r|
+          begin
+            yield r
+          rescue => e
+            Rails.logger.error %W|#{e.class}\n#{e.inspect}\n#{e.backtrace.join("\n")}|
+          end
+        end
+        sleep 1
+      end
+
+      thread_array.each do |th|
+        th.join
+      end
+    end
 
     def onsen_download
       download(OnsenProgram, Onsen::Downloading.new)
