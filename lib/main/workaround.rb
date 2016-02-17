@@ -3,9 +3,13 @@ require 'time'
 module Main
   module Workaround
     def self.kill_zombie_process
-      send_signal_to_zombie_processes(:TERM)
+      send_signal_to_zombie_processes('rtmpdump', :TERM)
+      send_signal_to_zombie_processes('ffmpeg', :TERM)
+      send_signal_to_zombie_processes('avconv', :TERM)
       sleep 5
-      send_signal_to_zombie_processes(:KILL)
+      send_signal_to_zombie_processes('rtmpdump', :KILL)
+      send_signal_to_zombie_processes('ffmpeg', :KILL)
+      send_signal_to_zombie_processes('avconv', :KILL)
     end
 
     def self.rm_working_files
@@ -27,8 +31,8 @@ module Main
 
     private
 
-    def self.send_signal_to_zombie_processes(signal)
-      pids = (`pgrep 'rtmpdump'`).split("\n").map(&:to_i)
+    def self.send_signal_to_zombie_processes(process_name, signal)
+      pids = (`pgrep '#{process_name}'`).split("\n").map(&:to_i)
       pids.each do |pid|
         elapsed_sec = Time.now.to_i - Time.parse(`ps -o lstart --noheader -p #{pid}`).to_i
         if (60 * 60 * 25) < elapsed_sec # 24 + 1(margin) hours
