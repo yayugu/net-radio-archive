@@ -208,7 +208,7 @@ module Main
       end
 
       threads_from_records(jobs) do |j|
-        Rails.logger.info "rec thread created. job:#{j.id}"
+        Rails.logger.debug "rec thread created. job:#{j.id}"
 
         succeed = false
         if j.ch == Job::CH[:ag]
@@ -229,7 +229,7 @@ module Main
           j.save!
         end
 
-        Rails.logger.info "rec thread end. job:#{j.id}"
+        Rails.logger.debug "rec thread end. job:#{j.id}"
       end
 
       return 0
