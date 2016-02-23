@@ -70,8 +70,8 @@ module Ag
 
 
     def scraping_page
-      html = Net::HTTP.get(URI.parse('http://www.agqr.jp/timetable/streaming.php'))
-      dom = Nokogiri::HTML.parse(html)
+      res = HTTParty.get('http://www.agqr.jp/timetable/streaming.html')
+      dom = Nokogiri::HTML.parse(res.body)
       tbody = dom.css('.timetb-ag tbody') # may be 30minutes belt
       td_list_list = parse_broken_table(tbody)
       two_dim_array = table_to_two_dim_array(td_list_list)
