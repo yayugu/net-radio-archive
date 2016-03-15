@@ -274,16 +274,16 @@ module Main
           .where('`created_at` <= ?', 2.hours.ago)
           .lock
           .first
-        unless p
-          return 0
+        if p
+          p.state = NiconicoLiveProgram::STATE[:downloading]
+          p.save!
         end
-
-        p.state = NiconicoLiveProgram::STATE[:downloading]
-        p.save!
       end
 
-      NiconicoLive::Downloading.new.download(p)
-      p.save!
+      if p
+        NiconicoLive::Downloading.new.download(p)
+        p.save!
+      end
 
       ActiveRecord::Base.transaction do
         l = KeyValue.lock.find(LOCK_NICONAMA_DOWNLOAD)
