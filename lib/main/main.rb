@@ -254,9 +254,11 @@ module Main
           l.key = LOCK_NICONAMA_DOWNLOAD
           l.value = 'true'
           l.save!
-        elsif l.value == 'false' || l.updated_at < 1.hours.ago
+        elsif l.value == 'false'
           l.value = 'true'
           l.save!
+        elsif l.updated_at < 1.hours.ago
+          l.touch
         else
           return 0
         end
