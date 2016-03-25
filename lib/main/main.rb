@@ -29,6 +29,10 @@ module Main
     end
 
     def radiru_scrape
+      unless Settings.radiru_channels
+        exit 0
+      end
+
       Settings.radiru_channels.each do |ch|
         programs = Radiru::Scraping.new.get(ch)
         programs.each do |p|
@@ -208,7 +212,7 @@ module Main
       end
 
       threads_from_records(jobs) do |j|
-        Rails.logger.info "rec thread created. job:#{j.id}"
+        Rails.logger.debug "rec thread created. job:#{j.id}"
 
         succeed = false
         if j.ch == Job::CH[:ag]
@@ -229,7 +233,7 @@ module Main
           j.save!
         end
 
-        Rails.logger.info "rec thread end. job:#{j.id}"
+        Rails.logger.debug "rec thread end. job:#{j.id}"
       end
 
       return 0
@@ -257,6 +261,8 @@ module Main
         elsif l.value == 'false'
           l.value = 'true'
           l.save!
+        elsif l.updated_at < 1.hours.ago
+          l.touch
         else
           return 0
         end
@@ -272,16 +278,16 @@ module Main
           .where('`created_at` <= ?', 2.hours.ago)
           .lock
           .first
-        unless p
-          return 0
+        if p
+          p.state = NiconicoLiveProgram::STATE[:downloading]
+          p.save!
         end
-
-        p.state = NiconicoLiveProgram::STATE[:downloading]
-        p.save!
       end
 
-      NiconicoLive::Downloading.new.download(p)
-      p.save!
+      if p
+        NiconicoLive::Downloading.new.download(p)
+        p.save!
+      end
 
       ActiveRecord::Base.transaction do
         l = KeyValue.lock.find(LOCK_NICONAMA_DOWNLOAD)
