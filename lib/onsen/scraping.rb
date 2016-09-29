@@ -14,68 +14,51 @@ module Onsen
     end
 
     def get_program_list
-      (0..6).inject([]) do |program_list, wday|
-        sleep(1)
-        dom = get_dom(wday)
-        program_list += parse_dom_wday(dom, wday)
+      dom = get_dom()
+      parse_dom(dom).reject do |program|
+        program == nil
       end
     end
 
-    def parse_dom_wday(dom, wday)
+    def parse_dom(dom)
       programs = dom.css('program')
       programs.to_a.map do |program|
-        parse_program(program, wday)
+        parse_program(program)
       end
     end
 
-    def parse_program(dom, wday)
+    def parse_program(dom)
       title = Moji.normalize_zen_han(dom.css('title').text)
-      number = dom.css('number').text
-      update_date = parse_date(dom.css('update').text)
+      number = dom.css('program_number').text
+      update_date_str = dom.css('up_date').text
+      if update_date_str == ""
+        return nil
+      end
+      update_date = Time.parse(update_date_str)
 
       # well known file type: mp3, mp4(movie)
-      file_url = dom.css('fileUrlIphone').text
+      file_url = dom.css('iphone_url').text
+      if file_url == ""
+        return nil
+      end
 
-      personality = Moji.normalize_zen_han(dom.css('personality').text)
+      personality = Moji.normalize_zen_han(dom.css('actor_tag').text)
       Program.new(title, number, update_date, file_url, personality)
     end
 
-    def parse_date(month_day)
-      month, day = parse_month_day(month_day)
-      unless month && day
-        return nil
-      end
-      year = now_smaller_than_target?(month, day) \
-        ? Time.now.year - 1
-        : Time.now.year
-      Time.new(year, month, day)
-    end
-
-    def parse_month_day(month_day)
-      m = /(\d+)\/(\d+)/.match(month_day)
-      unless m
-        return nil
-      end
-      [m[1].to_i, m[2].to_i]
-    end
-
-    def now_smaller_than_target?(target_month, target_day)
-      now = Time.now.strftime("%02m%02d").to_i
-      target = sprintf("%02d%02d", target_month, target_day).to_i
-      now < target
-    end
-
-    def get_dom(wday)
-      unix_m = Time.now.strftime("%s%L")
-      url = "http://onsen.ag/getXML.php?#{unix_m}"
+    def get_dom()
+      url = "http://www.onsen.ag/app/programs.xml"
       code_date = Time.now.strftime("%w%d%H")
       code = Digest::MD5.hexdigest("onsen#{code_date}")
       res = Net::HTTP.post_form(
         URI.parse(url),
         'code' => code,
-        'file_name' => "regular_#{wday}"
+        'file_name' => "regular_1"
       )
-      dom = Nokogiri::XML.parse(res.body)
+      unless res.kind_of?(Net::HTTPSuccess)
+        Rails.logger.error "onsen scraping error: #{url}, #{res.code}"
+      end
+      Nokogiri::XML.parse(res.body)
     end
   end
 end
