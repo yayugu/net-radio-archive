@@ -13,8 +13,18 @@ module Ag
 
     # convert human friendly time to computer friendly time
     def self.parse(wday, time_str)
-      time = Time.parse(time_str)
-      if time.hour < SAME_DAY_LINE_HOUR
+      m = time_str.match(/(\d+):(\d+)/)
+      hour = m[1].to_i
+      min = m[2].to_i
+      over_24_oclock = false
+      if hour >= 24 # 25:00 とかの表記用
+        over_24_oclock = true
+        hour -= 24
+        wday = (wday + 1) % 7
+      end
+      time_str_fixed = sprintf("%02d:%02d", hour, min)
+      time = Time.parse(time_str_fixed)
+      if !over_24_oclock && time.hour < SAME_DAY_LINE_HOUR # 01:00 とかの表記用。現在は使われていないが一応
         wday = (wday + 1) % 7
       end
       self.new(wday, time)
@@ -75,8 +85,9 @@ module Ag
       tbody = dom.css('.timetb-ag tbody') # may be 30minutes belt
       td_list_list = parse_broken_table(tbody)
       two_dim_array = table_to_two_dim_array(td_list_list)
-      two_dim_array.inject([]) do |programs, belt|
-        programs + parse_belt_dom(belt)
+      day_time_array = join_box_program(transpose(two_dim_array))
+      day_time_array.each_with_index.inject([]) do |programs, (programs_day, index)|
+        programs + parse_day(programs_day, index)
       end
     end
 
@@ -103,11 +114,10 @@ module Ag
       td_list_list
     end
 
-    def parse_belt_dom(belt)
-      belt.each_with_index.inject([]) do |programs, (td, index)|
-        next programs unless td
-        wday = (index + 1) % 7 # monday start
-        programs << parse_td_dom(td, wday)
+    def parse_day(programs_day, index)
+      wday = (index + 1) % 7 # monday start
+      programs_day.map do |td|
+        parse_td_dom(td, wday)
       end
     end
 
@@ -143,6 +153,28 @@ module Ag
       aa
     end
 
+    def transpose(two_dim_array)
+      max_size = two_dim_array.max_by{|i| i.size }.size
+      filled = two_dim_array.map{|i| i.fill(nil, i.size...max_size) }
+      filled.transpose
+    end
+
+    def join_box_program(day_time_array)
+      day_time_array.map do |day|
+        day.inject([]) do |programs, td|
+          unless td
+            next programs
+          end
+          time = td.css('.time')[0].text
+          if time.include?('頃')
+            programs.last['rowspan'] = programs.last['rowspan'].to_i + td['rowspan'].to_i
+            next programs
+          end
+          programs << td
+        end
+      end
+    end
+
     def parse_td_dom(td, wday)
       start_time = parse_start_time(td, wday)
       minutes = parse_minutes(td)
@@ -155,7 +187,7 @@ module Ag
       if !rowspan || rowspan.value.blank?
         30
       else
-        td.attribute('rowspan').value.to_i * 30
+        td.attribute('rowspan').value.to_i
       end
     end
 
