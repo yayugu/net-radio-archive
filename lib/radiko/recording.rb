@@ -5,7 +5,7 @@ require 'base64'
 
 module Radiko
   class Recording
-    SWF_URL = 'http://radiko.jp/player/swf/player_4.1.0.00.swf'
+    SWF_URL = 'http://radiko.jp/apps/js/flash/myplayer-release.swf'
     SWF_PATH = '/tmp/player.swf'
     KEY_PATH = '/tmp/radiko_key.png'
     RTMP_URL = 'rtmpe://f-radiko.smartstream.ne.jp'
@@ -40,7 +40,7 @@ module Radiko
 
     def extract_swf
       unless File.exists?(KEY_PATH)
-        command = "swfextract -b 14 #{SWF_PATH} -o #{KEY_PATH}"
+        command = "swfextract -b 12 #{SWF_PATH} -o #{KEY_PATH}"
         Main::shell_exec(command)
       end
     end
@@ -56,8 +56,8 @@ module Radiko
           '',
           {
             'pragma' => 'no-cache',
-            'X-Radiko-App' => 'pc_1',
-            'X-Radiko-App-Version' => '2.0.1',
+            'X-Radiko-App' => 'pc_ts',
+            'X-Radiko-App-Version' => '4.0.0',
             'X-Radiko-User' => 'test-stream',
             'X-Radiko-Device' => 'pc',
           }
@@ -86,8 +86,8 @@ module Radiko
           '',
           {
             'pragma' => 'no-cache',
-            'X-Radiko-App' => 'pc_1',
-            'X-Radiko-App-Version' => '2.0.1',
+            'X-Radiko-App' => 'pc_ts',
+            'X-Radiko-App-Version' => '4.0.0',
             'X-Radiko-User' => 'test-stream',
             'X-Radiko-Device' => 'pc',
             'X-Radiko-Authtoken' =>  @auth_token,
