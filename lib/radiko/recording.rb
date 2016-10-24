@@ -6,8 +6,8 @@ require 'base64'
 module Radiko
   class Recording
     SWF_URL = 'http://radiko.jp/apps/js/flash/myplayer-release.swf'
-    SWF_PATH = '/tmp/player.swf'
-    KEY_PATH = '/tmp/radiko_key.png'
+    SWF_PATH = '/tmp/player2.swf'
+    KEY_PATH = '/tmp/radiko_key2.png'
     RTMP_URL = 'rtmpe://f-radiko.smartstream.ne.jp'
 
     def record(job)
