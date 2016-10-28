@@ -20,7 +20,7 @@ module Radiru
     end
 
     def get_streams_dom
-      xml = Net::HTTP.get(URI("http://www3.nhk.or.jp/netradio/app/config_pc.xml"))
+      xml = Net::HTTP.get(URI("http://www3.nhk.or.jp/netradio/app/config_pc_2016.xml"))
       Nokogiri::XML(xml)
     end
 
