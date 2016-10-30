@@ -43,7 +43,13 @@ Net Radio Archive
 ```
 # 必要なライブラリをインストール
 # Ubuntuの場合:
-$ sudo apt-get install rtmpdump swftools ruby
+$ # Mysqlは5.6以外でも可
+$ # Ubuntu 14.04だとrubyのversionが古いのでお好きな方法orこの辺(https://www.brightbox.com/blog/2016/01/06/ruby-2-3-ubuntu-packages/ ) を参考に新しめなバージョンをインストールしてください
+$ sudo apt-get install rtmpdump swftools ruby git mysql-server-5.6 mysql-client-5.6 libmysqld-dev
+$ sudo service mysql start # WSLだとっぽい表示がでるかもしれませんがプロセスが起動していればOK
+$ 
+$ # (以下はAG-ONが必要のみ)
+$ sudo apt-get install xvfb firefox
 
 $ # libavがインストールされている場合には削除してから
 $ wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
