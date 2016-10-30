@@ -12,7 +12,7 @@ Net Radio Archive
 - 音泉
 - アニたま
 - AG-ON
-- らじる(NHK-FM)
+- らじる(NHK)
 - ニコ生（ニコニコ生放送）
 
 ## 特徴
