@@ -36,6 +36,10 @@ module Agon
       elm.send_keys Settings.agon.password
       @s.find_element(:id, 'btnLogin').click
 
+      # Timeout = 15 sec
+      wait = Selenium::WebDriver::Wait.new(:timeout => 15)
+      wait.until { @s.find_element(:tag_name, 'video') }
+
       m3u8_url = @s.find_element(:tag_name, 'video')['src']
       @s.quit
       return m3u8_url
