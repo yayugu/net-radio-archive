@@ -24,7 +24,7 @@ Net Radio Archive
 ## 必要なもの
 - 常時起動しているマシン
 - LinuxなどUNIX的なOS (Windowsでも動かしたい...)
-- Ruby 2.0 or higher
+- Ruby 2.3 (2.4未対応です。対応してくれるpull req募集中)
 - rtmpdump
 - swftools
 - あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
@@ -33,6 +33,7 @@ Net Radio Archive
 - (AG-ONのみ)
  - GUI環境 or xvfb
  - firefox
+ - Geckodriver
 
 ## セットアップ
 
@@ -95,6 +96,7 @@ http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
 
 ### Q. AG-ONをうまく動かせない
 A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。
+
 もしくはSeleniumを使わないように修正していただけるpull req募集中
 
 ### Q. rtmpdumpが不安定 / CPUを100%消費する
