@@ -65,7 +65,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     execjs (2.2.2)
-    ffi (1.9.10)
+    ffi (1.9.17)
     headless (2.2.0)
     hike (1.2.3)
     http-cookie (1.0.2)
@@ -96,7 +96,7 @@ GEM
     mini_portile (0.6.1)
     minitest (5.5.0)
     moji (1.6)
-    multi_json (1.11.2)
+    multi_json (1.12.1)
     multi_xml (0.5.5)
     mysql2 (0.3.17)
     net-http-digest_auth (1.4)
@@ -128,7 +128,7 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
-    rubyzip (1.1.7)
+    rubyzip (1.2.0)
     sass (3.2.19)
     sass-rails (4.0.5)
       railties (>= 4.0.0, < 5.0)
@@ -138,9 +138,8 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (2.50.0)
+    selenium-webdriver (3.0.5)
       childprocess (~> 0.5)
-      multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     settingslogic (2.0.9)
@@ -172,7 +171,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.1)
     webrobots (0.1.1)
-    websocket (1.2.2)
+    websocket (1.2.3)
     whenever (0.9.4)
       chronic (>= 0.6.3)
 
@@ -205,4 +204,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.11.2
+   1.13.6
