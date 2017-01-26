@@ -12,6 +12,8 @@ Net Radio Archive
 - 音泉
 - アニたま
 - AG-ON
+- らじる(NHK)
+- ニコ生（ニコニコ生放送）
 
 ## 特徴
 「全部の番組」を取ります。
@@ -31,16 +33,25 @@ Net Radio Archive
  - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
  - Macではhomebrewで導入できるバージョンで問題ありません
 - (AG-ONのみ)
+ - AG-ONのアカウント
  - GUI環境 or xvfb
  - firefox
  - Geckodriver
+- (ニコ生のみ)
+ - プレミアム会員のアカウント
 
 ## セットアップ
 
 ```
 # 必要なライブラリをインストール
 # Ubuntuの場合:
-$ sudo apt-get install rtmpdump swftools ruby
+$ # Mysqlは5.6以外でも可
+$ # Ubuntu 14.04だとrubyのversionが古いのでお好きな方法orこの辺(https://www.brightbox.com/blog/2016/01/06/ruby-2-3-ubuntu-packages/ ) を参考に新しめなバージョンをインストールしてください
+$ sudo apt-get install rtmpdump swftools ruby git mysql-server-5.6 mysql-client-5.6 libmysqld-dev
+$ sudo service mysql start # WSLだとっぽい表示がでるかもしれませんがプロセスが起動していればOK
+$ 
+$ # (以下はAG-ONが必要のみ)
+$ sudo apt-get install xvfb firefox
 
 $ # libavがインストールされている場合には削除してから
 $ wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
@@ -113,3 +124,11 @@ $ RAILS_ENV=production bundle exec rake main:XXXX_scrape
 
 を実行してください
 
+### Q. ニコ生の動作がいまいち
+ニコ生については色々制約が多いです
+- プレミアム会員必須
+- タイムシフトから取得するためタイムシフトに対応していない番組は対応不可
+- コメントはいまのところ取得できない
+- さまざまな理由でダウンロードに失敗することがある
+
+改善のpull reqお待ちしております
