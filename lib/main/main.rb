@@ -349,7 +349,12 @@ module Main
         p.save!
       end
 
-      succeed = downloader.download(p)
+      succeed = false
+      begin
+        succeed = downloader.download(p)
+      rescue => e
+        Rails.logger.error %W|#{e.class}\n#{e.inspect}\n#{e.backtrace.join("\n")}|
+      end
       p.state =
         if succeed
           model_klass::STATE[:done]
