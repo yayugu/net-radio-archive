@@ -26,7 +26,8 @@ module Main
 
   def self.download(url, filename)
     uri = URI(url)
-    Net::HTTP.start(uri.host, uri.port) do |http|
+    use_ssl = uri.scheme == 'https'
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => use_ssl) do |http|
       request = Net::HTTP::Get.new(uri.request_uri)
       http.request(request) do |response|
         open(filename, 'wb') do |io|
