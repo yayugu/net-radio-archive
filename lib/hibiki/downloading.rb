@@ -12,8 +12,9 @@ module Hibiki
 
     def download(program)
       infos = get_infos(program)
-      if infos['episode']['id'] != program.episode_id
-        Rails.logger.error("episode outdated. title=#{program.title} expected_episode_id=#{program.episode_id} actual_episode_id=#{infos['episode']['id']}")
+      actual_episode_id = infos.try([], 'episode').try([], 'id')
+      if actual_episode_id != program.episode_id
+        Rails.logger.error("episode outdated. title=#{program.title} expected_episode_id=#{program.episode_id} actual_episode_id=#{actual_episode_id}")
         program.state = HibikiProgramV2::STATE[:outdated]
         return
       end
