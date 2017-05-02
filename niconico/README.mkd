@@ -1,0 +1,23 @@
+# Niconico - yet another nicovideo.gem
+
+## Description
+
+Wrapper of `Mechanize`, optimized for <http://www.nicovideo.jp/>.
+
+## Feature
+
+* Login to nicovideo
+* Retrive a ranking page
+* Download a video
+
+## Requirements
+
+* Ruby 2.0.0+ (2.1+ is supported)
+
+## Install
+
+    $ gem install niconico
+
+## Author
+
+* Shota Fukumori (sora\_h)
