@@ -7,7 +7,7 @@ RUN  echo "deb http://archive.ubuntu.com/ubuntu xenial main universe\n" > /etc/a
   && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates main universe\n" >> /etc/apt/sources.list \
   && echo "deb http://security.ubuntu.com/ubuntu xenial-security main universe\n" >> /etc/apt/sources.list
 RUN apt-get update -qqy \
-  && apt-get install -y --no-install-recommends nodejs rtmpdump swftools git xvfb wget bzip2 ca-certificates tzdata sudo unzip
+  && apt-get install -y --no-install-recommends nodejs rtmpdump swftools git xvfb wget bzip2 ca-certificates tzdata sudo unzip cron
 
 
 #=========
