@@ -107,6 +107,15 @@ RUN wget --no-verbose -O /tmp/geckodriver.tar.gz https://github.com/mozilla/geck
   && mv /opt/geckodriver /opt/geckodriver-$GECKODRIVER_VERSION \
   && chmod 755 /opt/geckodriver-$GECKODRIVER_VERSION \
   && ln -fs /opt/geckodriver-$GECKODRIVER_VERSION /usr/bin/geckodriver
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
+
+#=========
+# ffmpeg
+#=========
+RUN wget --no-verbose -O /tmp/ffmpeg.tar.gz http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz \
+  && tar -C /tmp -xf /tmp/ffmpeg.tar.gz \
+  && mv /tmp/ffmpeg-*-64bit-static/ffmpeg /usr/bin \
+  && rm -rf /tmp/ffmpeg*
 
 #============
 # Timezone
@@ -123,3 +132,5 @@ RUN echo 'Asia/Tokyo' > /etc/timezone \
 RUN mkdir /myapp
 WORKDIR /myapp
 ADD . /myapp
+RUN bundle install
+
