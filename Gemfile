@@ -37,7 +37,7 @@ gem 'spring',        group: :development
 
 gem 'nokogiri'
 gem 'moji'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.18'
 gem 'chronic'
 gem 'whenever'
 gem 'settingslogic'

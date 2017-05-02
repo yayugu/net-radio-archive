@@ -101,7 +101,7 @@ GEM
     moji (1.6)
     multi_json (1.12.1)
     multi_xml (0.6.0)
-    mysql2 (0.4.5)
+    mysql2 (0.3.21)
     net-http-digest_auth (1.4.1)
     net-http-persistent (2.9.4)
     net-scp (1.2.1)
@@ -191,7 +191,7 @@ DEPENDENCIES
   jquery-rails
   mechanize
   moji
-  mysql2
+  mysql2 (~> 0.3.18)
   niconico!
   nokogiri
   rails (= 4.1.8)
