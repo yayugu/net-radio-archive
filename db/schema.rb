@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151231134624) do
+ActiveRecord::Schema.define(version: 20170505142758) do
 
   create_table "agon_programs", force: true do |t|
     t.string   "title",       limit: 250, null: false
@@ -27,6 +27,19 @@ ActiveRecord::Schema.define(version: 20151231134624) do
   add_index "agon_programs", ["episode_id"], name: "episode_id", unique: true, using: :btree
   add_index "agon_programs", ["page_url"], name: "page_url", using: :btree
 
+  create_table "agonp_programs", force: true do |t|
+    t.string   "title",       limit: 250, null: false
+    t.string   "personality", limit: 250, null: false
+    t.string   "episode_id",  limit: 250, null: false
+    t.string   "price",       limit: 100, null: false
+    t.string   "state",       limit: 100, null: false
+    t.integer  "retry_count",             null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "agonp_programs", ["episode_id"], name: "episode_id", unique: true, using: :btree
+
   create_table "anitama_programs", force: true do |t|
     t.string   "book_id",     limit: 250, null: false
     t.string   "title",       limit: 250, null: false
@@ -38,6 +51,12 @@ ActiveRecord::Schema.define(version: 20151231134624) do
   end
 
   add_index "anitama_programs", ["book_id", "update_time"], name: "book_id", unique: true, using: :btree
+
+  create_table "ar_internal_metadata", primary_key: "key", force: true do |t|
+    t.string   "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "hibiki_program_v2s", force: true do |t|
     t.string   "access_id",    limit: 100, null: false

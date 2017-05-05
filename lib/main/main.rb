@@ -169,6 +169,31 @@ module Main
       end
     end
 
+    def agonp_scrape
+      unless Settings.agonp
+        exit 0
+      end
+
+      program_list = Agonp::Scraping.new.main
+
+      program_list.each do |program|
+        ActiveRecord::Base.transaction do
+          if AgonpProgram.where(episode_id: program.episode_id).first
+            next
+          end
+
+          p = AgonpProgram.new
+          p.title = program.title
+          p.personality = program.personality
+          p.episode_id = program.episode_id
+          p.price = program.price
+          p.state = OndemandRetry::STATE[:waiting]
+          p.retry_count = 0
+          p.save
+        end
+      end
+    end
+
     def wikipedia_scrape
       unless Settings.niconico && Settings.niconico.live.keyword_wikipedia_categories
         exit 0
@@ -244,6 +269,7 @@ module Main
       hibiki_download
       anitama_download
       agon_download
+      agonp_download
     end
 
     LOCK_NICONAMA_DOWNLOAD = 'lock_niconama_download'
@@ -335,6 +361,13 @@ module Main
         exit 0
       end
       download(AgonProgram, Agon::Downloading.new)
+    end
+
+    def agonp_download
+      unless Settings.agonp
+        exit 0
+      end
+      download(AgonpProgram, Agonp::Downloading.new)
     end
 
     def download(model_klass, downloader)

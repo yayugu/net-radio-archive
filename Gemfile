@@ -37,7 +37,7 @@ gem 'spring',        group: :development
 
 gem 'nokogiri'
 gem 'moji'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.18'
 gem 'chronic'
 gem 'whenever'
 gem 'settingslogic'
@@ -45,6 +45,7 @@ gem 'mechanize'
 gem 'niconico', path: 'niconico'
 gem 'httparty'
 gem 'activerecord-import'
+gem 'pry'
 
 # AG-ONでのみ必要
 # 不要な場合は `bundle install --without agon development` のようにしてください

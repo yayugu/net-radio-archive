@@ -42,22 +42,31 @@ production:
     force_mp4: false
 
     # AG-ON (導入難易度高め。詳しくはREADME参照)
-    # 録画しない場合はこの項目ごと消すと何もしません
+    # 録画しない場合はこの項目ごとコメントアウトすると何もしません
     # これのみSelenium WebDriverを使っていたり、ffmpegでHLSを処理していたりと特殊なので
     # その辺が原因で動かない可能性もあります。エラーがでたらとりあえず項目消してみてください
     #agon:
     #    # AG-ONにアカウント登録してそのアカウントを設定してください
     #    mail: 'foo@example.com'
     #    password: 'XXXXXX'
-
     #    # Seleniumの実行にheadless gemとxvfbを使用するか
     #    # falseの場合はSeleniumでfirefoxが普通に起動するようにしておいてください
     #    #   (LinuxであればDISPLAY環境変数がセットされているように)
     #    #   Mac OS Xの場合は基本的にfalseにしてください
     #    # trueの場合はxvfbをインストールしておいてください (Ubuntu/Debianであれば `apt-get install xvfb`)
     #    headless: false
+
+    # AG-ON Premium
+    # 録画しない場合はこの項目ごとコメントアウトすると何もしません
+    #agonp:
+    #    # AG-ON Premiumにアカウント登録してそのアカウントを設定してください
+    #    # AG−ON 無印とは別のアカウント管理となっていますので移行する方は
+    #    #  アカウントをPremiumであらためて取得してください
+    #    mail: 'foo@example.com'
+    #    password: 'XXXXXX'
+
     # ニコニコ(開発中。恐ろしく不安定) おそらくプレミアム会員必須
-    # 録画しない場合はこの項目ごと消すと何もしません
+    # 録画しない場合はこの項目ごとコメントアウトすると何もしません
     #niconico:
     #    username: 'USERNAME'
     #    password: 'PASSWORD'
