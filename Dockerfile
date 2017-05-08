@@ -11,7 +11,7 @@ RUN apt-get update -qqy \
 
 #=========
 # Ruby
-# see: https://github.com/SeleniumHQ/docker-selenium/blob/master/Base/Dockerfile
+# see Dockerfiles on https://hub.docker.com/_/ruby/
 #=========
 # skip installing gem documentation
 RUN mkdir -p /usr/local/etc \
@@ -119,9 +119,10 @@ RUN wget --no-verbose -O /tmp/ffmpeg.tar.gz http://johnvansickle.com/ffmpeg/rele
 #=========
 # rtmpdump
 #=========
-RUN git clone git://git.ffmpeg.org/rtmpdump
-WORKDIR /rtmpdump
-RUN make && make install
+RUN git clone git://git.ffmpeg.org/rtmpdump \
+  && cd /rtmpdump \
+  && make \
+  && make install
 
 #============
 # Timezone
