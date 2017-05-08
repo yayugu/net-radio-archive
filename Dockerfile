@@ -7,7 +7,11 @@ RUN  echo "deb http://archive.ubuntu.com/ubuntu xenial main universe\n" > /etc/a
   && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates main universe\n" >> /etc/apt/sources.list \
   && echo "deb http://security.ubuntu.com/ubuntu xenial-security main universe\n" >> /etc/apt/sources.list
 RUN apt-get update -qqy \
-  && apt-get install -y --no-install-recommends nodejs swftools git xvfb wget bzip2 ca-certificates tzdata sudo unzip cron locales
+  && apt-get install -y --no-install-recommends nodejs swftools git xvfb wget bzip2 ca-certificates tzdata sudo unzip cron locales \
+    rsyslog \
+    coreutils
+# rsyslog: for get cron error logs
+# coreutils: for sleep command
 
 #=========
 # Ruby
@@ -133,6 +137,12 @@ RUN echo 'Asia/Tokyo' > /etc/timezone \
   && rm /etc/localtime \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
+
+#============
+# Copy bundler env to /etc/environment to load on cron
+#============
+RUN printenv | grep -E "^BUNDLE" >> /etc/environment
+
 #============
 # Rails
 #============
@@ -141,6 +151,7 @@ WORKDIR /myapp
 ADD . /myapp
 RUN bundle install --without development test \
   && RAILS_ENV=production bundle exec rake db:create db:migrate \
-  && RAILS_ENV=production bundle exec whenever --update-crontab
+  && RAILS_ENV=production bundle exec whenever --update-crontab \
+  && chmod 0600 /var/spool/cron/crontabs/root
 
-CMD ["/usr/sbin/crond", "-f"]
+CMD rsyslogd && /usr/sbin/cron -f
