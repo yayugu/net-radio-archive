@@ -39,6 +39,11 @@ namespace :main do
     Main::Main.new.agon_scrape
   end
 
+  desc 'agonp scrape'
+  task :agonp_scrape => :environment do
+    Main::Main.new.agonp_scrape
+  end
+
   desc 'wikipedia scape'
   task :wikipedia_scrape => :environment do
     Main::Main.new.wikipedia_scrape

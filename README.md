@@ -12,6 +12,7 @@ Net Radio Archive
 - 音泉
 - アニたま
 - AG-ON
+- AG-ON Premium
 - らじる(NHK)
 - ニコ生（ニコニコ生放送）
 
@@ -30,15 +31,15 @@ Net Radio Archive
 - rtmpdump
 - swftools
 - あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
- - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
- - Macではhomebrewで導入できるバージョンで問題ありません
+  - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
+  - Macではhomebrewで導入できるバージョンで問題ありません
 - (AG-ONのみ)
- - AG-ONのアカウント
- - GUI環境 or xvfb
- - firefox
- - Geckodriver
+  - AG-ONのアカウント
+  - GUI環境 or xvfb
+  - firefox
+  - Geckodriver
 - (ニコ生のみ)
- - プレミアム会員のアカウント
+  - プレミアム会員のアカウント
 
 ## セットアップ
 
@@ -106,9 +107,17 @@ A. Radikoはアクセスする側のIPによってどの局を聴けるかが変
 http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
 
 ### Q. AG-ONをうまく動かせない
-A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。
+~~A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。~~
 
-もしくはSeleniumを使わないように修正していただけるpull req募集中
+~~もしくはSeleniumを使わないように修正していただけるpull req募集中~~
+
+移行先のAG-ON PremiumはSeleniumなしで録画できるようになったのでそちらをご利用ください。
+
+### Q. AG-ON Premiumで有料コンテンツを録画できない
+自分が契約している月額コンテンツがないため、検証ができていません。
+そのため録画リストへの追加を行わないようにしています
+
+対応してくれるpull reqを募集しております
 
 ### Q. rtmpdumpが不安定 / CPUを100%消費する
 gitで最新のソースを取得してきてビルドすると改善することが多いです。
