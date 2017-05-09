@@ -5,17 +5,17 @@ production:
     # ファイルを保存(archive)するディレクトリを設定してください（フルパス）
     # このディレクトリ以下にサブディレクトリやファイルが作成されます
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
-    archive_dir: <%= Rails.root.join('public', 'system') %>
+    archive_dir: /archive
 
     # ダウンロード中などにファイルを一時的に置いておくディレクトリを設定してください（フルパス）
     # 一時的とはいえ、デフォルトで事故防止のためこのディレクトリのデータは30日ほど削除されません (lib/main/workaround.rbのrm_working_filesを参照)
     # そのためそれなりにおおきな容量となります
     # cronが実行されるユーザーにrwxのpermissionが与えられるようにしてください
-    working_dir: <%= Rails.root.join('tmp', 'working') %>
+    working_dir: /working
 
     # 作業時に残ったファイル(mp4に変換前のflv dumpなど)を残しておく日数です
     # 何か事故が起きた時に使えるかもしれない
-    working_files_retention_period_days: 30
+    working_files_retention_period_days: 7
 
     # radikoで録音するチャンネルを設定してください
     # channel code (QRRなど) についてはREADME.mdのFAQを参照してください
@@ -54,7 +54,7 @@ production:
     #    #   (LinuxであればDISPLAY環境変数がセットされているように)
     #    #   Mac OS Xの場合は基本的にfalseにしてください
     #    # trueの場合はxvfbをインストールしておいてください (Ubuntu/Debianであれば `apt-get install xvfb`)
-    #    headless: false
+    #    headless: true
 
     # AG-ON Premium
     # 録画しない場合はこの項目ごとコメントアウトすると何もしません
