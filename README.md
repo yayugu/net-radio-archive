@@ -111,11 +111,11 @@ $ docker build --network host -t yayugu/net-radio-archive .
 # /working : 作業用ディレクトリです。それなりに容量を消費します
 # /archive : 録画したファイルが置かれるディレクトリです。大事
 # /myapp/log : ログが置かれるディレクトリです
-$ docker run -d --rm --network host -t yayugu/net-radio-archive \
+$ docker run -d --rm --network host \
   -v /host/path/to/working/dir:/working \
   -v /host/path/to/archive/dir:/archive \
   -v /host/path/to/log:/myapp/log \
-  .
+  yayugu/net-radio-archive
 
 # 長期運用する場合はlogrotateを入れておきましょう
 $ cat /etc/logrotate.d/net-radio-archive
@@ -147,7 +147,7 @@ http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
 
 ~~もしくはSeleniumを使わないように修正していただけるpull req募集中~~
 
-移行先のAG-ON PremiumはSeleniumなしで録画できるようになったのでそちらをご利用ください。
+移行先のAG-ON PremiumはSeleniumなしで録画できるようになったので半年くらい待っていれば移行されるはず？
 
 ### Q. AG-ON Premiumで有料コンテンツを録画できない
 自分が契約している月額コンテンツがないため、検証ができていません。
