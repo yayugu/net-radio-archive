@@ -5,6 +5,8 @@
 #
 # Learn more: http://github.com/javan/whenever
 
+set :output, {error: 'log/cron.log', standard: 'log/cron.log'}
+
 job_type :rake_not_silent, 'sleep $[ ( $RANDOM % 30 )  + 1 ]s; export PATH=/usr/local/bin:$PATH; export LANG=en_US.UTF-8; cd :path && :environment_variable=:environment bundle exec rake :task :output'
 
 every 1.minute do
