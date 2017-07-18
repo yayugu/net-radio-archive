@@ -13,7 +13,7 @@ module Radiru
 
     def get_programs_dom(ch)
       today = Date.today.strftime("%Y-%m-%d")
-      xml = Net::HTTP.get(URI("http://cgi4.nhk.or.jp/hensei/api/sche-nr.cgi?tz=all&ch=net#{ch}&date=#{today}"))
+      xml = Net::HTTP.get(URI("http://cgi4.nhk.or.jp/hensei/api/sche-nr.cgi?tz=all&ch=net#{ch}&##{today}"))
       Nokogiri::XML(xml)
     end
 
