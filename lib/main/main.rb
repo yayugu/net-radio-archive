@@ -144,31 +144,6 @@ module Main
       end
     end
 
-    def agon_scrape
-      unless Settings.agon
-        exit 0
-      end
-
-      program_list = Agon::Scraping.new.main
-
-      program_list.each do |program|
-        ActiveRecord::Base.transaction do
-          if AgonProgram.where(episode_id: program.episode_id).first
-            next
-          end
-
-          p = AgonProgram.new
-          p.title = program.title
-          p.personality = program.personality
-          p.episode_id = program.episode_id
-          p.page_url = program.page_url
-          p.state = HibikiProgram::STATE[:waiting]
-          p.retry_count = 0
-          p.save
-        end
-      end
-    end
-
     def agonp_scrape
       unless Settings.agonp
         exit 0
@@ -268,7 +243,6 @@ module Main
       onsen_download
       hibiki_download
       anitama_download
-      agon_download
       agonp_download
     end
 
@@ -354,13 +328,6 @@ module Main
 
     def anitama_download
       download(AnitamaProgram, Anitama::Downloading.new)
-    end
-
-    def agon_download
-      unless Settings.agon
-        exit 0
-      end
-      download(AgonProgram, Agon::Downloading.new)
     end
 
     def agonp_download

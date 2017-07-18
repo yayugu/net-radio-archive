@@ -41,21 +41,6 @@ production:
     # Googleフォトなどにバックアップする際に便利です
     force_mp4: false
 
-    # AG-ON (導入難易度高め。詳しくはREADME参照)
-    # 録画しない場合はこの項目ごとコメントアウトすると何もしません
-    # これのみSelenium WebDriverを使っていたり、ffmpegでHLSを処理していたりと特殊なので
-    # その辺が原因で動かない可能性もあります。エラーがでたらとりあえず項目消してみてください
-    #agon:
-    #    # AG-ONにアカウント登録してそのアカウントを設定してください
-    #    mail: 'foo@example.com'
-    #    password: 'XXXXXX'
-    #    # Seleniumの実行にheadless gemとxvfbを使用するか
-    #    # falseの場合はSeleniumでfirefoxが普通に起動するようにしておいてください
-    #    #   (LinuxであればDISPLAY環境変数がセットされているように)
-    #    #   Mac OS Xの場合は基本的にfalseにしてください
-    #    # trueの場合はxvfbをインストールしておいてください (Ubuntu/Debianであれば `apt-get install xvfb`)
-    #    headless: true
-
     # AG-ON Premium
     # 録画しない場合はこの項目ごとコメントアウトすると何もしません
     #agonp:

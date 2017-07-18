@@ -11,7 +11,6 @@ Net Radio Archive
 - 響
 - 音泉
 - アニたま
-- AG-ON
 - AG-ON Premium
 - らじる(NHK)
 - ニコ生（ニコニコ生放送）
@@ -34,18 +33,14 @@ Net Radio Archive
 - あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
   - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
   - Macではhomebrewで導入できるバージョンで問題ありません
-- (AG-ONのみ)
-  - AG-ONのアカウント
-  - GUI環境 or xvfb
-  - firefox
-  - Geckodriver
+- (AG-ON Premiumのみ)
+  - AG-ON Premiumのアカウント
 - (ニコ生のみ)
   - プレミアム会員のアカウント
 
 ## セットアップ
 
 ### ふつうにセットアップ
-
 ```
 # 必要なライブラリをインストール
 # Ubuntuの場合:
@@ -53,9 +48,6 @@ $ # Mysqlは5.6以外でも可
 $ # Ubuntu 14.04だとrubyのversionが古いのでお好きな方法orこの辺(https://www.brightbox.com/blog/2016/01/06/ruby-2-3-ubuntu-packages/ ) を参考に新しめなバージョンをインストールしてください
 $ sudo apt-get install rtmpdump swftools ruby git mysql-server-5.6 mysql-client-5.6 libmysqld-dev
 $ sudo service mysql start # WSLだとっぽい表示がでるかもしれませんがプロセスが起動していればOK
-
-$ # (以下はAG-ONが必要のみ)
-$ sudo apt-get install xvfb firefox
 
 $ # libavがインストールされている場合には削除してから
 $ wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
@@ -65,8 +57,7 @@ $ sudo cp ./ffmpeg-release-64bit-static/ffmpeg /usr/local/bin
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
 $ (sudo) gem install bundler
-$ bundle install --without development test
-$ # AG-ONを使用しない場合は `agon` も加えることでSeleniumのインストールをスキップできます
+$ bundle install --without development test agon
 $ cp config/database.example.yml config/database.yml
 $ cp config/settings.example.yml config/settings.yml
 $ vi config/database.yml # 各自の環境に合わせて編集
@@ -78,10 +69,9 @@ $ # (または) RAILS_ENV=production bundle exec whenever -u $YOUR-USERNAME --up
 # アップデート
 $ git pull origin master
 $ git submodule update --init --recursive
-$ bundle install --without development test
+$ bundle install --without development test agon
 $ RAILS_ENV=production bundle exec rake db:migrate
 $ RAILS_ENV=production bundle exec whenever --update-crontab
-
 ```
 
 cronに
@@ -142,13 +132,6 @@ A. Radikoはアクセスする側のIPによってどの局を聴けるかが変
 ブラウザで開いてみたり、以下のページなどを参考にご自身が聞ける局をsettings.ymlに設定してください。
 
 http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
-
-### Q. AG-ONをうまく動かせない
-~~A. 難しいです。Githubでissueつくっていただければ相談にのりますのでお気軽にどうぞ。~~
-
-~~もしくはSeleniumを使わないように修正していただけるpull req募集中~~
-
-移行先のAG-ON PremiumはSeleniumなしで録画できるようになったので半年くらい待っていれば移行されるはず？
 
 ### Q. AG-ON Premiumで有料コンテンツを録画できない
 自分が契約している月額コンテンツがないため、検証ができていません。
