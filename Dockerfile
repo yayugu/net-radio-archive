@@ -148,9 +148,12 @@ RUN printenv | grep -E "^BUNDLE" >> /etc/environment
 #============
 RUN mkdir /myapp
 WORKDIR /myapp
+ADD Gemfile /myapp/Gemfile
+ADD Gemfile.lock /myapp/Gemfile.lock
+ADD niconico /myapp/niconico
+RUN bundle install -j4 --without development test agon
 ADD . /myapp
-RUN bundle install -j4 --without development test agon \
-  && RAILS_ENV=production bundle exec rake db:create db:migrate \
+RUN RAILS_ENV=production bundle exec rake db:create db:migrate \
   && RAILS_ENV=production bundle exec whenever --update-crontab \
   && chmod 0600 /var/spool/cron/crontabs/root
 
