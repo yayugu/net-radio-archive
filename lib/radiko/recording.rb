@@ -6,9 +6,8 @@ require 'base64'
 module Radiko
   class Recording
     SWF_URL = 'http://radiko.jp/apps/js/flash/myplayer-release.swf'
-    SWF_PATH = '/tmp/player2.swf'
-    KEY_PATH = '/tmp/radiko_key2.png'
     RTMP_URL = 'rtmpe://f-radiko.smartstream.ne.jp'
+    WORK_DIR_NAME = 'radiko'
 
     def record(job)
       unless exec_rec(job)
@@ -20,6 +19,7 @@ module Radiko
     end
 
     def exec_rec(job)
+      Main::prepare_working_dir(WORK_DIR_NAME)
       Main::prepare_working_dir(job.ch)
       Main::retry do
         auth
@@ -35,14 +35,14 @@ module Radiko
     end
 
     def dl_swf
-      unless File.exists?(SWF_PATH)
-        Main::download(SWF_URL, SWF_PATH)
+      unless File.exists?(swf_path)
+        Main::download(SWF_URL, swf_path)
       end
     end
 
     def extract_swf
-      unless File.exists?(KEY_PATH)
-        command = "swfextract -b 12 #{SWF_PATH} -o #{KEY_PATH}"
+      unless File.exists?(key_path)
+        command = "swfextract -b 12 #{swf_path} -o #{key_path}"
         Main::shell_exec(command)
       end
     end
@@ -71,7 +71,7 @@ module Radiko
     end
 
     def partialkey
-      open(KEY_PATH, 'rb:ASCII-8BIT') do |fp|
+      open(key_path, 'rb:ASCII-8BIT') do |fp|
         fp.seek(@offset)
         return Base64.strict_encode64(fp.read(@length))
       end
@@ -143,6 +143,14 @@ module Radiko
     def title(job)
       date = job.start.strftime('%Y_%m_%d_%H%M')
       "#{date}_#{job.title}"
+    end
+
+    def swf_path
+      Main::file_path_working_base(WORK_DIR_NAME, "player2.swf")
+    end
+
+    def key_path
+      Main::file_path_working_base(WORK_DIR_NAME, "radiko_key2.png")
     end
   end
 end
