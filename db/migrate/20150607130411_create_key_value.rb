@@ -1,4 +1,4 @@
-class KeyValue < ActiveRecord::Migration
+class CreateKeyValue < ActiveRecord::Migration
   def up
     sql = <<EOF
 CREATE TABLE `key_value` (
