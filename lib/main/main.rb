@@ -349,25 +349,7 @@ module Main
         p.save!
       end
 
-      succeed = false
-      begin
-        succeed = downloader.download(p)
-      rescue => e
-        Rails.logger.error %W|#{e.class}\n#{e.inspect}\n#{e.backtrace.join("\n")}|
-      end
-      p.state =
-        if succeed
-          model_klass::STATE[:done]
-        else
-          model_klass::STATE[:failed]
-        end
-      unless succeed
-        p.retry_count += 1
-        if p.retry_count > model_klass::RETRY_LIMIT
-          Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
-        end
-      end
-      p.save!
+      download_(model_klass, downloader, p)
 
       return 0
     end
@@ -387,16 +369,31 @@ module Main
         p.save!
       end
 
-      downloader.download(p)
-      if p.state == model_klass::STATE[:failed]
+      download_(model_klass, downloader, p)
+
+      return 0
+    end
+
+    def download_(model_klass, downloader, p)
+      succeed = false
+      begin
+        succeed = downloader.download(p)
+      rescue => e
+        Rails.logger.error %W|#{e.class}\n#{e.inspect}\n#{e.backtrace.join("\n")}|
+      end
+      p.state =
+        if succeed
+          model_klass::STATE[:done]
+        else
+          model_klass::STATE[:failed]
+        end
+      unless succeed
         p.retry_count += 1
         if p.retry_count > model_klass::RETRY_LIMIT
           Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
         end
       end
       p.save!
-
-      return 0
     end
 
     def fetch_downloadable_program(klass, older_than = nil)
