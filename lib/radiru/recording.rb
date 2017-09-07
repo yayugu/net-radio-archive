@@ -44,7 +44,7 @@ module Radiru
       length = job.length_sec + 60
       file_path = Main::file_path_working(job.ch, title(job), 'm4a')
       arg = "\
-        -loglevel error \
+        -loglevel warning \
         -y \
         -i #{Shellwords.escape(@m3u8_url)} \
         -t #{length} \
@@ -52,12 +52,9 @@ module Radiru
         #{Shellwords.escape(file_path)}"
 
       exit_status, output = Main::ffmpeg(arg)
-      unless exit_status.success?
+      unless exit_status.success? && output.blank?
         Rails.logger.error "rec failed. job:#{job.id}, exit_status:#{exit_status}, output:#{output}"
         return false
-      end
-      if output.present?
-        Rails.logger.warn "radiru ffmpeg command:#{arg} output:#{output}"
       end
 
       true
