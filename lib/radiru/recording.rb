@@ -46,7 +46,6 @@ module Radiru
       arg = "\
         -loglevel warning \
         -y \
-        -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 4294 \
         -i #{Shellwords.escape(@m3u8_url)} \
         -t #{length} \
         -vcodec none -acodec copy -bsf:a aac_adtstoasc \
