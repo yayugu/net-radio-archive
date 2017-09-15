@@ -31,7 +31,7 @@ module Agonp
     end
 
     def parse_programs(page)
-      page.search('.search-results__data-wrapper').map do |program_row|
+      page.search('.search-results__list').map do |program_row|
         parse_program(program_row)
       end
     end
@@ -43,7 +43,7 @@ module Agonp
               .sub(/無料\s+/,'')
               .sub(/^\s+/,'')
               .sub(/\s+$/,'')
-      episode_id = program_row.css('a').attr('href').text.match(/programs\/view\/(\d+)/)[1]
+      episode_id = program_row.css('a.search-results__button--play-latest').attr('href').text.match(/episodes\/view\/(\d+)/)[1]
       Program.new(
           title,
           program_row.css('.search-results__personality').first.text.strip.gsub('／', ' '),
