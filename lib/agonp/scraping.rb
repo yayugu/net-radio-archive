@@ -17,7 +17,7 @@ module Agonp
       programs = []
       page = 1
       2.times do |i| # 一応2ページ分ほどみておく
-        res = @a.get("https://agonp.jp/search?order=latest&page=#{i + 1}")
+        res = @a.get("https://agonp.jp/search?order=latest&tab=episodes&page=#{i + 1}")
         programs += parse_programs(res)
         sleep 1
       end
@@ -43,7 +43,7 @@ module Agonp
               .sub(/無料\s+/,'')
               .sub(/^\s+/,'')
               .sub(/\s+$/,'')
-      episode_id = program_row.css('a.search-results__button--play-latest').attr('href').text.match(/episodes\/view\/(\d+)/)[1]
+      episode_id = program_row.css('a.search-results__button--play-now').attr('href').text.match(/episodes\/view\/(\d+)/)[1]
       Program.new(
           title,
           program_row.css('.search-results__personality').first.text.strip.gsub('／', ' '),
