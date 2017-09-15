@@ -31,7 +31,7 @@ module Agonp
     end
 
     def parse_programs(page)
-      page.search('.search-results__list').map do |program_row|
+      page.search('.search-results__list-item.row').map do |program_row|
         parse_program(program_row)
       end
     end
