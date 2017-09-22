@@ -1,3 +1,4 @@
+# coding: utf-8
 module Agonp
   class Program < Struct.new(:title, :personality, :episode_id, :price)
   end
