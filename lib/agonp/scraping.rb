@@ -16,7 +16,7 @@ module Agonp
       programs = []
       page = 1
       2.times do |i| # 一応2ページ分ほどみておく
-        res = @a.get("https://agonp.jp/search?order=latest&page=#{i + 1}")
+        res = @a.get("https://agonp.jp/search?order=latest&tab=episodes&page=#{i + 1}")
         programs += parse_programs(res)
         sleep 1
       end
@@ -30,24 +30,24 @@ module Agonp
     end
 
     def parse_programs(page)
-      page.search('.program-list-row').map do |program_row|
+      page.search('.search-results__list-item.row').map do |program_row|
         parse_program(program_row)
       end
     end
 
     def parse_program(program_row)
-      title = program_row.css('.program-list-row-title').first
-                  .children
-                  .select {|c| c.text?}
-                  .reduce('') {|memo, c| c.text}
-                  .strip
-      episode_id = program_row.css('a').first.attr('href')
-                       .match(%r{episodes/view/(\d+)})[1]
+      title = program_row.css('.search-results__title').first
+              .children
+              .inner_text.strip
+              .sub(/無料\s+/,'')
+              .sub(/^\s+/,'')
+              .sub(/\s+$/,'')
+      episode_id = program_row.css('a.search-results__button--play-now').attr('href').text.match(/episodes\/view\/(\d+)/)[1]
       Program.new(
           title,
-          program_row.css('.program-list-row-participants').first.text.strip.gsub('／', ' '),
+          program_row.css('.search-results__personality').first.text.strip.gsub('／', ' '),
           episode_id,
-          program_row.css('.program-list-row-price').first.text.strip,
+          program_row.css('.search-results__price').first.text.strip
       )
     end
   end
