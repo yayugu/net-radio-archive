@@ -374,23 +374,25 @@ module Main
       return 0
     end
 
-    def download_(model_klass, downloader, p)
+    def download_(klass, downloader, p)
       succeed = false
       begin
         succeed = downloader.download(p)
       rescue => e
         Rails.logger.error %W|#{e.class}\n#{e.inspect}\n#{e.backtrace.join("\n")}|
       end
-      p.state =
-        if succeed
-          model_klass::STATE[:done]
-        else
-          model_klass::STATE[:failed]
-        end
+      if p.state == klass::STATE[:downloading]
+        p.state =
+          if succeed
+            klass::STATE[:done]
+          else
+            klass::STATE[:failed]
+          end
+      end
       unless succeed
         p.retry_count += 1
-        if p.retry_count > model_klass::RETRY_LIMIT
-          Rails.logger.error "#{model_klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
+        if p.retry_count > klass::RETRY_LIMIT
+          Rails.logger.error "#{klass.name} rec failed. exceeded retry_limit. #{p.id}: #{p.title}"
         end
       end
       p.save!
