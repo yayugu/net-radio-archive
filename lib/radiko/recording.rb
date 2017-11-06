@@ -9,6 +9,10 @@ module Radiko
     RTMP_URL = 'rtmpe://f-radiko.smartstream.ne.jp'
     WORK_DIR_NAME = 'radiko'
 
+    def initialize
+      @cookie = ''
+    end
+
     def record(job)
       unless exec_rec(job)
         return false
@@ -22,14 +26,16 @@ module Radiko
       Main::prepare_working_dir(WORK_DIR_NAME)
       Main::prepare_working_dir(job.ch)
       Main::retry do
-        auth
+        auth(job)
       end
       rtmp(job)
+      logout
     end
 
-    def auth
+    def auth(job)
       dl_swf
       extract_swf
+      login(job)
       auth1
       auth2
     end
@@ -44,6 +50,28 @@ module Radiko
       unless File.exists?(key_path)
         command = "swfextract -b 12 #{swf_path} -o #{key_path}"
         Main::shell_exec(command)
+      end
+    end
+
+    def login(job)
+      if !Settings.radiko_premium ||
+          !Settings.radiko_premium.mail ||
+          !Settings.radiko_premium.password ||
+          !Settings.radiko_premium.channels.include?(job.ch)
+        return
+      end
+      uri = URI('https://radiko.jp/ap/member/login/login')
+      https = Net::HTTP.new(uri.host, uri.port)
+      https.use_ssl = true
+      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      https.start do |h|
+        req = Net::HTTP::Post.new(uri.path)
+        req.set_form_data(
+            'mail' => Settings.radiko_premium.mail,
+            'pass' => Settings.radiko_premium.password,
+        )
+        res = h.request(req)
+        @cookie = res.response['set-cookie']
       end
     end
 
@@ -62,6 +90,7 @@ module Radiko
             'X-Radiko-App-Version' => '4.0.0',
             'X-Radiko-User' => 'test-stream',
             'X-Radiko-Device' => 'pc',
+            'Cookie' => @cookie,
           }
         )
         @auth_token = /x-radiko-authtoken=([\w-]+)/i.match(res.body)[1]
@@ -94,6 +123,7 @@ module Radiko
             'X-Radiko-Device' => 'pc',
             'X-Radiko-Authtoken' =>  @auth_token,
             'X-Radiko-Partialkey' =>  partialkey,
+            'Cookie' => @cookie,
           }
         )
         @area_id = /^([^,]+),/.match(res.body)[1]
@@ -124,6 +154,29 @@ module Radiko
       end
 
       true
+    end
+
+    def logout
+      if @cookie.empty?
+        return
+      end
+      uri = URI('https://radiko.jp/ap/member/webapi/member/logout')
+      https = Net::HTTP.new(uri.host, uri.port)
+      https.use_ssl = true
+      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      https.start do |h|
+        res = h.get(
+            uri.path,
+            '',
+            {
+                'pragma' => 'no-cache',
+                'Accept' => 'application/json, text/javascript, */*; q=0.01',
+                'X-Radiko-App-Version' => 'application/json, text/javascript, */*; q=0.01',
+                'X-Requested-With' => 'XMLHttpRequest',
+                'Cookie' => @cookie,
+            }
+        )
+      end
     end
 
     def exec_convert(job)

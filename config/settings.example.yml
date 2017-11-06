@@ -23,6 +23,15 @@ production:
         - QRR # bunka housou
         - LFR # nippon housou
 
+    # radiko premiumで録音するチャンネルを設定してください。
+    # premiumでは同時視聴端末について3台の制限があるため
+    # 3チャンネル以上の同時録画は失敗する可能性があります
+    radiko_premium:
+        mail: 'hoge@hoge.com'
+        password: 'hogehoge'
+        channels:
+          - QRR
+
     # らじるらじるで録音するチャンネルを設定してください
     radiru_channels:
         - r1 # ラジオ第1
@@ -64,9 +73,6 @@ production:
     #        keyword_wikipedia_categories:
     #            - '声優ユニット'
     #            - '日本の女性声優'
-    #    video:
-    #        channels:
-    #            - anitama-ch
 
 development:
     radiko_channels:

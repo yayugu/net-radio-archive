@@ -13,7 +13,10 @@ module Main
     end
 
     def radiko_scrape
-      Settings.radiko_channels.each do |ch|
+      channels = []
+      channels += Settings.radiko_channels if Settings.radiko_channels
+      channels += Settings.radiko_premium.channels if Settings.try(:radiko_premium).try(:channels)
+      channels.each do |ch|
         programs = Radiko::Scraping.new.get(ch)
         programs.each do |p|
           title = p.title
