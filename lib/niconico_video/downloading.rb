@@ -1,6 +1,6 @@
-module Anitama
+module NiconicoVideo
   class Downloading
-    CH_NAME = 'anitama'
+    CH_NAME = 'nicodou'
 
     def download(program)
       Main::prepare_working_dir(CH_NAME)

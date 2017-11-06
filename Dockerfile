@@ -102,6 +102,11 @@ RUN git clone git://git.ffmpeg.org/rtmpdump \
   && make \
   && make install
 
+#=========
+# youtube-dl
+#=========
+RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube-dl && chmod a+rx /usr/local/bin/youtube-dl
+
 #============
 # Timezone
 # see: https://bugs.launchpad.net/ubuntu/+source/tzdata/+bug/1554806
@@ -111,6 +116,10 @@ RUN echo 'Asia/Tokyo' > /etc/timezone \
   && rm /etc/localtime \
   && dpkg-reconfigure --frontend noninteractive tzdata
 
+#============
+# Locale
+#============
+ENV LC_ALL C.UTF-8
 
 #============
 # Copy bundler env to /etc/environment to load on cron

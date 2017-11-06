@@ -64,6 +64,9 @@ production:
     #        keyword_wikipedia_categories:
     #            - '声優ユニット'
     #            - '日本の女性声優'
+    #    video:
+    #        channels:
+    #            - anitama-ch
 
 development:
     radiko_channels:

@@ -120,7 +120,7 @@ module Main
     end
 
     def niconama_scrape
-      unless Settings.niconico
+      if !Settings.niconico || !Settings.niconico.live
         exit 0
       end
 
@@ -184,6 +184,29 @@ module Main
           items,
           on_duplicate_key_update: [:title]
         )
+      end
+    end
+
+    def nicodou_scrape
+      if !Settings.niconico || !Settings.niconico.video
+        exit 0
+      end
+
+      program_list = NiconicoVideo::Scraping.new.main
+
+      program_list.each do |program|
+        ActiveRecord::Base.transaction do
+          if NiconicoVideoProgram.where(video_id: program.video_id).first
+            next
+          end
+
+          p = NiconicoVideoProgram.new
+          p.video_id = program.video_id
+          p.title = program.title
+          p.state = OndemandRetry::STATE[:waiting]
+          p.retry_count = 0
+          p.save
+        end
       end
     end
 
