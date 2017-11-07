@@ -6,11 +6,10 @@ Net Radio Archive
 
 今のところ対応しているラジオ
 
-- Radiko
+- Radiko (エリアフリーも対応)
 - 超A&G+
 - 響
 - 音泉
-- アニたま
 - AG-ON Premium
 - らじる(NHK)
 - ニコ生（ニコニコ生放送）
@@ -33,6 +32,8 @@ Net Radio Archive
 - あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
   - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
   - Macではhomebrewで導入できるバージョンで問題ありません
+- (ラジコエリアフリー利用者のみ)
+  - ラジコプレミアム会員のアカウント
 - (AG-ON Premiumのみ)
   - AG-ON Premiumのアカウント
 - (ニコ生のみ)
@@ -132,6 +133,9 @@ A. Radikoはアクセスする側のIPによってどの局を聴けるかが変
 ブラウザで開いてみたり、以下のページなどを参考にご自身が聞ける局をsettings.ymlに設定してください。
 
 http://d.hatena.ne.jp/zariganitosh/20130214/radiko_keyword_preset
+
+またプレミアム会員になることでエリアフリーですべての局を聴取することができます。
+ご自身のIPが希望する局のエリア外の場合にはラジコプレミアムに加入してradiko_premiumの設定を試してみてください
 
 ### Q. AG-ON Premiumで有料コンテンツを録画できない
 自分が契約している月額コンテンツがないため、検証ができていません。
