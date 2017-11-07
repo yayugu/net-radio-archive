@@ -167,7 +167,6 @@ module Radiko
       https.start do |h|
         res = h.get(
             uri.path,
-            '',
             {
                 'pragma' => 'no-cache',
                 'Accept' => 'application/json, text/javascript, */*; q=0.01',
