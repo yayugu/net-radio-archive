@@ -99,29 +99,6 @@ module Main
       end
     end
 
-    def anitama_scrape
-      program_list = Anitama::Scraping.new.main
-
-      program_list.each do |program|
-        ActiveRecord::Base.transaction do
-          if AnitamaProgram
-              .where(book_id: program.book_id)
-              .where(update_time: program.update_time)
-              .first
-            next
-          end
-
-          p = AnitamaProgram.new
-          p.book_id = program.book_id
-          p.title = program.title
-          p.update_time = program.update_time
-          p.state = HibikiProgram::STATE[:waiting]
-          p.retry_count = 0
-          p.save
-        end
-      end
-    end
-
     def niconama_scrape
       if !Settings.niconico || !Settings.niconico.live
         exit 0
@@ -268,7 +245,6 @@ module Main
     def rec_ondemand
       onsen_download
       hibiki_download
-      anitama_download
       agonp_download
     end
 
@@ -350,10 +326,6 @@ module Main
 
     def hibiki_download
       download2(HibikiProgramV2, Hibiki::Downloading.new)
-    end
-
-    def anitama_download
-      download(AnitamaProgram, Anitama::Downloading.new)
     end
 
     def agonp_download

@@ -52,10 +52,6 @@ every '5 * * * *' do
   rake_not_silent 'main:radiru_scrape'
 end
 
-every '17 10-22 * * *' do
-  rake_not_silent 'main:anitama_scrape'
-end
-
 every '23 10-22 * * *' do
   rake_not_silent 'main:agonp_scrape'
 end
