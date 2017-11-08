@@ -158,7 +158,7 @@ module Radiko
 
     def logout
       if @cookie.empty?
-        return
+        return true
       end
       uri = URI('https://radiko.jp/ap/member/webapi/member/logout')
       https = Net::HTTP.new(uri.host, uri.port)
@@ -176,6 +176,8 @@ module Radiko
             }
         )
       end
+
+      true
     end
 
     def exec_convert(job)
