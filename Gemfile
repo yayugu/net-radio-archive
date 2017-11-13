@@ -46,15 +46,3 @@ gem 'niconico', path: 'niconico'
 gem 'httparty'
 gem 'activerecord-import'
 gem 'pry'
-
-# AG-ONでのみ必要
-# 不要な場合は `bundle install --without agon development` のようにしてください
-group :agon do
-  gem 'selenium-webdriver'
-  gem 'headless'
-end
-
-group :development do
-  gem 'capistrano-rails'
-  gem 'capistrano-scm-copy'
-end
