@@ -42,14 +42,14 @@ class Niconico
           keyword: keyword,
           filter: filter
         )
-        results_dom = page.at('.result_list')
-        items = results_dom.css('.result_item')
+        results_dom = page.at('.result-list')
+        items = results_dom.css('.result-item')
         search_results = items.map do |item|
-          title_dom = item.at('.search_stream_title a')
+          title_dom = item.at('a.title')
           next nil unless title_dom
           id = Util::normalize_id(title_dom.attr(:href).scan(/lv[\d]+/).first, with_lv: false)
           title = title_dom.text.strip
-          description = item.at('.search_stream_description').text.strip
+          description = item.at('.description-text').text.strip
           SearchResult.new(id, title, description)
         end
         search_results.compact
