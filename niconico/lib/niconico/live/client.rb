@@ -43,6 +43,11 @@ class Niconico
           filter: filter
         )
         results_dom = page.at('.result-list')
+        unless results_dom
+          Rails.logger.error "nico scrape dom empty"
+          Rails.logger.error page.inspect
+          Rails.logger.error page.body
+        end
         items = results_dom.css('.result-item')
         search_results = items.map do |item|
           title_dom = item.at('a.title')
