@@ -26,7 +26,7 @@ Net Radio Archive
 - 常時起動しているマシン
 - LinuxなどUNIX的なOS
   - WindowsでもBash on Windows / Windows Subsystem for Linuxなら動きますがcronに依存しており、WSLではcronを動かすのが少し手間です
-- Ruby 2.3 (2.4未対応です。対応してくれるpull req募集中)
+- Ruby 2.4 or later
 - rtmpdump
 - swftools
 - あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
