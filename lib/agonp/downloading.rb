@@ -25,9 +25,9 @@ module Agonp
     end
 
     def get_program_id(program)
-      page = @a.get("https://agonp.jp/episodes/view/#{program.episode_id}")
-      page.search('a.view-header__button').attr('href').text
-        .match(%r{programs/view/(\d+)})[1]
+      res = @a.get("https://agonp.jp/api/v2/episodes/info/#{program.episode_id}.json")
+      resj = JSON.parse(res.body)
+      resj['data']['episode']['program_id']
     end
 
     def get_video_url(program)
