@@ -42,7 +42,7 @@ module Agonp
               .sub(/無料\s+/,'')
               .sub(/^\s+/,'')
               .sub(/\s+$/,'')
-      episode_id = program_row.css('a.search-results__button--play-now').attr('href').text.match(/episodes\/view\/(\d+)/)[1]
+      episode_id = program_row.css('a.search-results__button--play-now').attr('href').text.match(/play\/(\d+)/)[1]
       Program.new(
           title,
           program_row.css('.search-results__personality').first.text.strip.gsub('／', ' '),
