@@ -25,7 +25,7 @@ end
 
 # maintenance on Thursday
 # Use much traffics. avoid peek time.
-every '4-58 1-19 * * 0-3,5-6' do
+every '4-58 2-19 * * 0-3,5-6' do
   rake_not_silent 'main:rec_niconama'
 end
 every '4-58 12-19 * * 4' do
