@@ -6,7 +6,7 @@ module NiconicoVideo
       Main::prepare_working_dir(CH_NAME)
       path = filepath(program)
       begin
-        'youtube-dl -v -f "[vbr<599]+[abr>127]" -uyusu767-foo@yahoo.co.jp -prakisuta http://www.nicovideo.jp/watch/1509345736'
+        %Q(youtube-dl -v -f "[vbr<599]+[abr>127]" -u#{username} -p#{password} http://www.nicovideo.jp/watch/1509345736)
       rescue => e
         Rails.logger.error e
         return false

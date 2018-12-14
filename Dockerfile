@@ -94,6 +94,12 @@ RUN git clone git://git.ffmpeg.org/rtmpdump \
 #=========
 RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube-dl && chmod a+rx /usr/local/bin/youtube-dl
 
+#=========
+# livedl
+#=========
+RUN wget https://github.com/yayugu/livedl/releases/download/20181107.38/livedl -O /usr/local/bin/livedl \
+  && chmod a+rx /usr/local/bin/livedl
+
 #============
 # Timezone
 # see: https://bugs.launchpad.net/ubuntu/+source/tzdata/+bug/1554806
