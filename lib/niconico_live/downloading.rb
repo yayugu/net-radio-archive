@@ -29,7 +29,7 @@ module NiconicoLive
         Rails.logger.warn "nico livedl failed: #{@program.id}, #{output}"
       end
 
-      files = Dir.glob("#{file_path_working_base(CH_NAME, '')}*.mp4")
+      files = Dir.glob("#{Main::file_path_working_base(CH_NAME, '')}*.mp4")
       if files.empty?
         raise NiconamaDownloadException, "download failed: #{@program.title}"
       end
@@ -40,15 +40,15 @@ module NiconicoLive
     end
 
     def livedl_command
-      path = filepath(@l)
       "\
         livedl \
           -nico-login '#{Shellwords.escape(Settings.niconico.username)},#{Shellwords.escape(Settings.niconico.password)}'\
+          -nico-login-only=on \
           -nico-force-reservation=on \
-          -nico-format '#{file_path_working_base(CH_NAME, '')}?DAY8? ?HOUR??MINUTE? ?TITLE?' \
+          -nico-format '#{Main::file_path_working_base(CH_NAME, '')}?DAY8? ?HOUR??MINUTE? ?TITLE?' \
           -nico-auto-convert=on \
           -nico-auto-delete-mode 2 \
-          -nico-fast-ts
+          -nico-fast-ts \
           lv#{Shellwords.escape(@program.id)} \
         2>&1
       "
