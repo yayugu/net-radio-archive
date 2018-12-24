@@ -52,10 +52,12 @@ module Main
   end
 
   def self.ffmpeg(arg)
-    exit_status, output = shell_exec('hash ffmpeg >/dev/null 2>&1')
-    # found ffmpeg command or not
-    command = exit_status == 0 ? 'ffmpeg' : 'avconv'
-    full = "#{command} #{arg} 2>&1"
+    full = "ffmpeg #{arg} 2>&1"
+    shell_exec(full)
+  end
+
+  def self.ffmpeg_with_timeout(duration, kill_duration, arg)
+    full = "timeout -k #{kill_duration} #{duration} ffmpeg #{arg} 2>&1"
     shell_exec(full)
   end
 
