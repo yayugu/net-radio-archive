@@ -53,18 +53,19 @@ module Hibiki
     def download_hls(program, m3u8_url)
       # こいつを叩かないとset cookieされない
       get_api(m3u8_url)
+      cookie = @a.cookies.each.first.cookie_value
 
       file_path = Main::file_path_working(CH_NAME, title(program), 'mp4')
       arg = "\
         -loglevel error \
         -y \
-        -cookies '#{@a.cookies.each.first.cookie_value }' \
+        -cookies #{Shellwords.escape(Shellwords.escape(cookie))} \
         -i #{Shellwords.escape(m3u8_url)} \
         -vcodec copy -acodec copy -bsf:a aac_adtstoasc \
         #{Shellwords.escape(file_path)}"
 
       Main::prepare_working_dir(CH_NAME)
-      exit_status, output = Main::ffmpeg_with_timeout('30m', '1m', arg)
+      exit_status, output = Main::ffmpeg_with_timeout('5h', '1m', arg)
       unless exit_status.success?
         Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
         return false
