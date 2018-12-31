@@ -146,6 +146,7 @@ module Main
 
   def self.title_escape(title)
     title
+      .to_s
       .gsub(/\s/, '_')
       .gsub(/\//, '_')
       .gsub(/\?/, "？") # \/:*?"<>|

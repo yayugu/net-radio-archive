@@ -81,6 +81,7 @@ GEM
     loofah (2.1.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
+    m3u8 (0.8.2)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     mechanize (2.7.5)
@@ -188,6 +189,7 @@ DEPENDENCIES
   httparty
   jbuilder (~> 2.0)
   jquery-rails
+  m3u8
   mechanize
   moji
   mysql2 (~> 0.3.18)

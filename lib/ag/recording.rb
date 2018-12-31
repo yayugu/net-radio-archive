@@ -3,7 +3,7 @@ require 'fileutils'
 
 module Ag
   class Recording
-    AGQR_STREAM_URL = 'rtmp://fms-base2.mitene.ad.jp/agqr/aandg22'
+    AGQR_STREAM_URL = 'rtmp://fms-base2.mitene.ad.jp/agqr/aandg1'
     CH_NAME = 'ag'
 
     def record(job)
