@@ -1,9 +1,13 @@
 require 'shellwords'
 require 'fileutils'
+require 'm3u8'
+require 'uri'
 
 module Hibiki
   class Downloading
     CH_NAME = 'hibiki'
+
+    class HibikiDownloadException < StandardError; end
 
     def initialize
       @a = Mechanize.new
@@ -28,10 +32,15 @@ module Hibiki
         return
       end
       url = get_m3u8_url(infos['episode']['video']['id'])
-      unless download_hls(program, url)
+
+      prepare_working_dir(program)
+      path = process_m3u8(program, url)
+      unless download_hls(program, path)
+        clean_working_dir(program)
         program.state = HibikiProgramV2::STATE[:failed]
         return
       end
+      clean_working_dir(program)
       program.state = HibikiProgramV2::STATE[:done]
     end
 
@@ -50,24 +59,74 @@ module Hibiki
       url
     end
 
-    def download_hls(program, m3u8_url)
-      # こいつを叩かないとset cookieされない
-      get_api(m3u8_url)
-      cookie = @a.cookies.each.first.cookie_value
+    def process_m3u8(program, m3u8_url)
 
+      playlist_m3u8 = get_api(m3u8_url).body
+      playlist = M3u8::Playlist.read(playlist_m3u8)
+
+      ts_audio_m3u8_url = playlist.items.first.uri
+      if ts_audio_m3u8_url =~ %r(^https://ad.hibiki-radio.jp/m3u8/dynamic_media)
+        uri = URI(ts_audio_m3u8_url)
+        queries = URI::decode_www_form(uri.query).to_h
+        ts_audio_m3u8_url = queries['url2']
+      end
+      ts_audio_m3u8 = get_api(ts_audio_m3u8_url).body
+      ts_audio = M3u8::Playlist.read(ts_audio_m3u8)
+
+      uri = URI.parse(ts_audio_m3u8_url)
+      path = "#{uri.scheme}://#{uri.host}#{File.dirname(uri.path)}/"
+
+      ts_audio.items.each do |item|
+        if item.kind_of?(M3u8::KeyItem)
+          key_url = item.uri
+          key_body = get_api(key_url).body.force_encoding('BINARY')
+          key_path = working_dir(program) + 'key'
+          IO.binwrite(key_path, key_body)
+          item.uri = "file:/#{key_path}"
+        elsif item.kind_of?(M3u8::SegmentItem)
+          url = path + item.segment
+          dst_path = working_dir(program) + item.segment
+          download_ts(url, dst_path)
+          item.segment = "file:/#{dst_path}"
+        end
+      end
+
+      m3u8_path = working_dir(program) + 'ts_audio.m3u8'
+      File.write(m3u8_path, ts_audio.to_s)
+      m3u8_path
+    end
+
+    def download_ts(url, dst_path)
+      command = "curl \
+        --silent \
+        --show-error \
+        --connect-timeout 10 \
+        --max-time 30 \
+        --retry 5 \
+        #{Shellwords.escape(url)} \
+        -o #{Shellwords.escape(dst_path)} \
+      2>&1"
+      exit_status, output = Main::shell_exec(command)
+      unless exit_status.success?
+        Raise HibikiDownloadException, "ts download faild, hibiki program:#{program.id}, exit_status:#{exit_status}, output:#{output}"
+      end
+    end
+
+    def download_hls(program, m3u8_path)
       file_path = Main::file_path_working(CH_NAME, title(program), 'mp4')
       arg = "\
         -loglevel error \
         -y \
-        -cookies #{Shellwords.escape(Shellwords.escape(cookie))} \
-        -i #{Shellwords.escape(m3u8_url)} \
+        -allowed_extensions ALL \
+        -protocol_whitelist file,crypto,http,https,tcp,tls \
+        -i #{Shellwords.escape(m3u8_path)} \
+        -timeout 10000000 \
         -vcodec copy -acodec copy -bsf:a aac_adtstoasc \
         #{Shellwords.escape(file_path)}"
 
-      Main::prepare_working_dir(CH_NAME)
       exit_status, output = Main::ffmpeg_with_timeout('5h', '1m', arg)
       unless exit_status.success?
-        Rails.logger.error "rec failed. program:#{program}, exit_status:#{exit_status}, output:#{output}"
+        Rails.logger.error "rec failed. hibiki program:#{program.id}, exit_status:#{exit_status}, output:#{output}"
         return false
       end
       if output.present?
@@ -97,6 +156,18 @@ module Hibiki
         title += "_#{cast}"
       end
       title
+    end
+
+    def working_dir(program)
+      "#{Settings.working_dir}/#{CH_NAME}/#{program.id}/"
+    end
+
+    def prepare_working_dir(program)
+      FileUtils.mkdir_p(working_dir(program))
+    end
+
+    def clean_working_dir(program)
+      FileUtils.rm_rf(working_dir(program))
     end
   end
 end
