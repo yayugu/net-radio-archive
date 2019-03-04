@@ -25,9 +25,9 @@ module Hibiki
         res = @a.get(
           "https://vcms-api.hibiki-radio.jp/api/v1//programs?limit=8&page=#{page}",
           [],
-          "http://hibiki-radio.jp/",
+          "https://hibiki-radio.jp/",
           'X-Requested-With' => 'XMLHttpRequest',
-          'Origin' => 'http://hibiki-radio.jp'
+          'Origin' => 'https://hibiki-radio.jp'
         )
         raws = JSON.parse(res.body)
         programs += raws.map{|raw| parse_program(raw) }
