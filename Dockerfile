@@ -97,7 +97,7 @@ RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube
 #=========
 # livedl
 #=========
-RUN wget https://github.com/yayugu/livedl/releases/download/20181107.38/livedl -O /usr/local/bin/livedl \
+RUN wget https://github.com/yayugu/livedl/releases/download/20181215.36/livedl -O /usr/local/bin/livedl \
   && chmod a+rx /usr/local/bin/livedl
 
 #============
