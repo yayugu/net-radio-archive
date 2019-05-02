@@ -51,9 +51,9 @@ $ sudo apt-get install rtmpdump swftools ruby git mysql-server-5.6 mysql-client-
 $ sudo service mysql start # WSLだとっぽい表示がでるかもしれませんがプロセスが起動していればOK
 
 $ # libavがインストールされている場合には削除してから
-$ wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
-$ tar xvf ffmpeg-release-64bit-static.tar.xz
-$ sudo cp ./ffmpeg-release-64bit-static/ffmpeg /usr/local/bin
+$ wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+$ tar xvf ffmpeg-release-amd64-static.tar.xz
+$ sudo cp ./ffmpeg-release-amd64-static/ffmpeg /usr/local/bin
 
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
