@@ -32,6 +32,7 @@ Net Radio Archive
 - あたらしめのffmpeg (HTTP Live Streaming の input に対応しているもの)
   - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
   - Macではhomebrewで導入できるバージョンで問題ありません
+- livedl
 - (ラジコエリアフリー利用者のみ)
   - ラジコプレミアム会員のアカウント
 - (AG-ON Premiumのみ)
@@ -54,6 +55,11 @@ $ # libavがインストールされている場合には削除してから
 $ wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
 $ tar xvf ffmpeg-release-amd64-static.tar.xz
 $ sudo cp ./ffmpeg-release-amd64-static/ffmpeg /usr/local/bin
+
+$ wget https://github.com/yayugu/livedl/releases/download/20181107.38/livedl
+$ sudo cp ./livedl /usr/local/bin/livedl
+$ sudo chmod +x /usr/local/bin/livedl
+# 取得したコンパイル済みバイナリが正常に動かない場合は、ここから(https://github.com/himananiito/livedl)ソースを取得して自前でコンパイルし、上記パスにインストールする
 
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
