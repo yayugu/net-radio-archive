@@ -1,5 +1,6 @@
 require 'date'
-require 'net/http'
+require 'net/https'
+require 'json'
 
 module Radiru
   class Program < Struct.new(:start_time, :end_time, :title)
@@ -7,30 +8,39 @@ module Radiru
 
   class Scraping
     def get(ch)
-      dom = get_programs_dom(ch)
-      parse_dom(dom)
+      id = get_id(ch)
+      json = get_programs_json(id)
+      parse(id, json)
     end
 
-    def get_programs_dom(ch)
+    def get_id(ch)
+      case ch
+      when 'r1'
+        'n1'
+      when 'r2'
+        'n2'
+      when 'fm'
+        'n3'
+      end
+    end
+
+    def get_programs_json(id)
       today = Date.today.strftime("%Y-%m-%d")
-      xml = Net::HTTP.get(URI("http://cgi4.nhk.or.jp/hensei/api/sche-nr.cgi?tz=all&ch=net#{ch}&##{today}"))
-      Nokogiri::XML(xml)
+      res = Net::HTTP.get(URI("https://api.nhk.or.jp/r2/pg/list/4/130/#{id}/#{today}.json"))
+      JSON.parse(res);
     end
 
-    def parse_dom(dom)
-      dom.css('item').map do |program|
+    def parse(id, json)
+      json['list'][id].map do |program|
         parse_program(program)
       end
     end
 
-    def parse_program(dom)
-      start_time = dom.css('starttime').text
-      end_time = dom.css('endtime').text
-      title = dom.css('title').text
+    def parse_program(program)
       Program.new(
-        start_time,
-        end_time,
-        title,
+        program['start_time'],
+        program['end_time'],
+        program['title'],
       )
     end
   end
