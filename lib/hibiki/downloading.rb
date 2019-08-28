@@ -86,7 +86,7 @@ module Hibiki
         elsif item.kind_of?(M3u8::SegmentItem)
           url = path + item.segment
           dst_path = working_dir(program) + item.segment
-          download_ts(url, dst_path)
+          download_ts(program, url, dst_path)
           item.segment = "file:/#{dst_path}"
         end
       end
@@ -96,7 +96,7 @@ module Hibiki
       m3u8_path
     end
 
-    def download_ts(url, dst_path)
+    def download_ts(program, url, dst_path)
       command = "curl \
         --silent \
         --show-error \
@@ -108,7 +108,7 @@ module Hibiki
       2>&1"
       exit_status, output = Main::shell_exec(command)
       unless exit_status.success?
-        Raise HibikiDownloadException, "ts download faild, hibiki program:#{program.id}, exit_status:#{exit_status}, output:#{output}"
+        raise HibikiDownloadException, "ts download faild, hibiki program:#{program.id}, exit_status:#{exit_status}, output:#{output}"
       end
     end
 
