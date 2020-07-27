@@ -100,6 +100,14 @@ RUN wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube
 RUN wget https://github.com/yayugu/livedl/releases/download/20181215.36/livedl -O /usr/local/bin/livedl \
   && chmod a+rx /usr/local/bin/livedl
 
+#=========
+# QuickJS
+#=========
+RUN wget https://bellard.org/quickjs/binary_releases/quickjs-linux-x86_64-2020-07-05.zip -O /tmp/quickjs.zip \
+  && unzip /tmp/quickjs.zip -d /tmp/quickjs \
+  && mv /tmp/quickjs/qjs /usr/local/bin/qjs \
+  && chmod a+rx /usr/local/bin/qjs
+
 #============
 # Timezone
 # see: https://bugs.launchpad.net/ubuntu/+source/tzdata/+bug/1554806

@@ -1,64 +1,89 @@
 require 'net/http'
 require 'time'
 require 'pp'
-require 'digest/md5'
 require 'moji'
+require 'tempfile'
+require 'json'
 
 module Onsen
   class Program < Struct.new(:title, :number, :update_date, :file_url, :personality)
   end
 
   class Scraping
+    def initialize
+      @a = Mechanize.new
+      @a.user_agent_alias = 'Windows Chrome'
+    end
+
     def main
       get_program_list
     end
 
     def get_program_list
-      dom = get_dom()
-      parse_dom(dom).reject do |program|
+      programs = get_programs()
+      parse_programs(programs).reject do |program|
         program == nil
       end
     end
 
-    def parse_dom(dom)
-      programs = dom.css('program')
-      programs.to_a.map do |program|
+    def parse_programs(programs)
+      programs.map do |program|
         parse_program(program)
       end
     end
 
-    def parse_program(dom)
-      title = Moji.normalize_zen_han(dom.css('title').text)
-      number = dom.css('program_number').text
-      update_date_str = dom.css('up_date').text
+    def parse_program(program)
+      content = program['contents'].find do |content|
+        content['latest'] && !content['premium']
+      end
+      return nil if content.nil?
+
+      title = Moji.normalize_zen_han(program['title'])
+      number = content['title']
+      update_date_str = content['delivery_date']
       if update_date_str == ""
         return nil
       end
       update_date = Time.parse(update_date_str)
 
-      # well known file type: mp3, mp4(movie)
-      file_url = dom.css('iphone_url').text
+      file_url = content['streaming_url']
       if file_url == ""
         return nil
       end
 
-      personality = Moji.normalize_zen_han(dom.css('actor_tag').text)
+      personality = program['performers'].map do |performer|
+        Moji.normalize_zen_han(performer['name'])
+      end.join(',')
       Program.new(title, number, update_date, file_url, personality)
     end
 
-    def get_dom()
-      url = "http://www.onsen.ag/app/programs.xml"
-      code_date = Time.now.strftime("%w%d%H")
-      code = Digest::MD5.hexdigest("onsen#{code_date}")
-      res = Net::HTTP.post_form(
-        URI.parse(url),
-        'code' => code,
-        'file_name' => "regular_1"
-      )
-      unless res.kind_of?(Net::HTTPSuccess)
-        Rails.logger.error "onsen scraping error: #{url}, #{res.code}"
+    def get_programs()
+      url = "https://www.onsen.ag/"
+      res = @a.get(url)
+      script = res.search("script").find do |element|
+        element.text.start_with?('window.__NUXT__')
       end
-      Nokogiri::XML.parse(res.body)
+
+      ctx = Tempfile.create("script") do |f|
+        f.puts "window={};#{script.text};console.log(JSON.stringify(window.__NUXT__));"
+        output = eval_js(f.path)
+        output.nil? ? nil : JSON.parse(output)
+      end
+
+      return [] if ctx.nil?
+      programs = ctx['state']['programs']['programs']
+      # mon - sun
+      (1..6).map { |n| programs[n.to_s] }.flatten
+    end
+
+    def eval_js(path)
+      command = "qjs #{path}"
+      exit_status, output = Main::shell_exec(command)
+      unless exit_status.success?
+        Rails.logger.error "eval js failed. exit_status:#{exit_status}"
+        return nil
+      end
+      output
     end
   end
 end

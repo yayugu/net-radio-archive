@@ -33,6 +33,7 @@ Net Radio Archive
   - ※最新のffmpegの導入は面倒であることが多いです。自分はLinuxではstatic buildを使っています。 http://qiita.com/yayugu/items/d7f6a15a6f988064f51c
   - Macではhomebrewで導入できるバージョンで問題ありません
 - livedl
+- QuickJS
 - (ラジコエリアフリー利用者のみ)
   - ラジコプレミアム会員のアカウント
 - (AG-ON Premiumのみ)
@@ -48,7 +49,7 @@ Net Radio Archive
 # Ubuntuの場合:
 $ # Mysqlは5.6以外でも可
 $ # Ubuntu 14.04だとrubyのversionが古いのでお好きな方法orこの辺(https://www.brightbox.com/blog/2016/01/06/ruby-2-3-ubuntu-packages/ ) を参考に新しめなバージョンをインストールしてください
-$ sudo apt-get install rtmpdump swftools ruby git mysql-server-5.6 mysql-client-5.6 libmysqld-dev
+$ sudo apt-get install rtmpdump swftools ruby git mysql-server-5.6 mysql-client-5.6 libmysqld-dev unzip
 $ sudo service mysql start # WSLだとっぽい表示がでるかもしれませんがプロセスが起動していればOK
 
 $ # libavがインストールされている場合には削除してから
@@ -60,6 +61,11 @@ $ wget https://github.com/yayugu/livedl/releases/download/20181107.38/livedl
 $ sudo cp ./livedl /usr/local/bin/livedl
 $ sudo chmod +x /usr/local/bin/livedl
 # 取得したコンパイル済みバイナリが正常に動かない場合は、ここから(https://github.com/himananiito/livedl)ソースを取得して自前でコンパイルし、上記パスにインストールする
+
+$ wget https://bellard.org/quickjs/binary_releases/quickjs-linux-x86_64-2020-07-05.zip
+$ unzip quickjs-linux-x86_64-2020-07-05.zip -d ./quickjs-linux-x86_64-2020-07-05
+$ sudo cp ./quickjs-linux-x86_64-2020-07-05/qjs /usr/local/bin/qjs
+$ sudo chmod +x /usr/local/bin/qjs
 
 $ git clone https://github.com/yayugu/net-radio-archive.git
 $ cd net-radio-archive
