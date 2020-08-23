@@ -23,7 +23,7 @@ module Onsen
 
     def filepath(program)
       date = program.date.strftime('%Y_%m_%d')
-      title = "#{date}_#{program.title}_#{program.personality}"
+      title = "#{date}_#{program.title}_#{program.number}_#{program.personality}"
       Main::file_path_working(CH_NAME, title, 'mp4')
     end
   end

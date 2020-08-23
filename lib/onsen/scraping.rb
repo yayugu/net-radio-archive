@@ -2,8 +2,6 @@ require 'net/http'
 require 'time'
 require 'pp'
 require 'moji'
-require 'tempfile'
-require 'json'
 
 module Onsen
   class Program < Struct.new(:title, :number, :update_date, :file_url, :personality)
@@ -39,7 +37,7 @@ module Onsen
       return nil if content.nil?
 
       title = Moji.normalize_zen_han(program['title'])
-      number = content['title']
+      number = Moji.normalize_zen_han(content['title'])
       update_date_str = content['delivery_date']
       if update_date_str == ""
         return nil
@@ -58,32 +56,9 @@ module Onsen
     end
 
     def get_programs()
-      url = "https://www.onsen.ag/"
+      url = "https://www.onsen.ag/web_api/programs"
       res = @a.get(url)
-      script = res.search("script").find do |element|
-        element.text.start_with?('window.__NUXT__')
-      end
-
-      ctx = Tempfile.create("script") do |f|
-        f.puts "window={};#{script.text};console.log(JSON.stringify(window.__NUXT__));"
-        output = eval_js(f.path)
-        output.nil? ? nil : JSON.parse(output)
-      end
-
-      return [] if ctx.nil?
-      programs = ctx['state']['programs']['programs']
-      # mon - sun
-      (1..6).map { |n| programs[n.to_s] }.flatten
-    end
-
-    def eval_js(path)
-      command = "qjs #{path}"
-      exit_status, output = Main::shell_exec(command)
-      unless exit_status.success?
-        Rails.logger.error "eval js failed. exit_status:#{exit_status}"
-        return nil
-      end
-      output
+      JSON.parse(res.body)
     end
   end
 end
