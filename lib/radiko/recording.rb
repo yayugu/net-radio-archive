@@ -102,14 +102,24 @@ module Radiko
 
     def m3u8_chunk(job)
       uri = "http://c-radiko.smartstream.ne.jp/#{job.ch}/_definst_/simul-stream.stream/playlist.m3u8"
-			p uri
-      res = HTTParty.get(uri, {
-        headers: {
-          'X-Radiko-Authtoken' => @auth_token
-        }
-      })
-      p res
-      @m3u8_url = /^https?:\/\/.+m3u8$/i.match(res.body)[0]
+      uri_alt = "http://f-radiko.smartstream.ne.jp/#{job.ch}/_definst_/simul-stream.stream/playlist.m3u8"
+      begin
+        p uri
+        res = HTTParty.get(uri, {
+          headers: {
+            'X-Radiko-Authtoken' => @auth_token
+          }
+        })
+        p res
+        @m3u8_url = /^https?:\/\/.+m3u8$/i.match(res.body)[0]
+      rescue => e
+        if uri != uri_alt
+          uri = uri_alt
+          retry
+        else
+          raise e
+        end
+      end
     end
 
     def download_hls(job)
