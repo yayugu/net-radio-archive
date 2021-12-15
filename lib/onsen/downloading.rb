@@ -6,8 +6,9 @@ module Onsen
       path = filepath(program)
       Main::prepare_working_dir(CH_NAME)
       arg = "\
-        -loglevel warning \
+        -loglevel error \
         -y \
+        -headers 'Referer: https://www.onsen.ag/' \
         -i #{Shellwords.escape(program.file_url)} \
         -vcodec libx264 -acodec copy -bsf:a aac_adtstoasc \
         #{Shellwords.escape(path)}"
