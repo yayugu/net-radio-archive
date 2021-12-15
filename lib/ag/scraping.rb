@@ -74,133 +74,55 @@ module Ag
         exit
       end
       programs.delete_if do |program|
-        program.title == '放送休止'
+        program.title == '番組休止中' || program.title == '放送休止'
       end
     end
-
 
     def scraping_page
-      res = HTTParty.get('http://www.agqr.jp/timetable/streaming.html')
+      target_date = Date.today.next_day
+      res = HTTParty.get("https://www.joqr.co.jp/qr/agdailyprogram/?date=#{target_date.strftime('%Y%m%d')}")
       dom = Nokogiri::HTML.parse(res.body)
-      tbody = dom.css('.timetb-ag tbody') # may be 30minutes belt
-      td_list_list = parse_broken_table(tbody)
-      two_dim_array = table_to_two_dim_array(td_list_list)
-      day_time_array = join_box_program(transpose(two_dim_array))
-      day_time_array.each_with_index.inject([]) do |programs, (programs_day, index)|
-        programs + parse_day(programs_day, index)
+      program_items = dom.css('.dailyProgram-itemBox')
+      parse_program(program_items, target_date.wday)
+    end
+
+    def parse_program(program_items, wday)
+      program_items.map do |item|
+        start_time = parse_start_time(item, wday)
+        minutes = parse_minutes(item, wday)
+        title = parse_title(item)
+        Program.new(start_time, minutes, title);
       end
     end
 
-    def parse_broken_table(tbody)
-      # time table HTML is broken!!!!!! some row aren't opened by <tr>.
-      td_list_list = []
-      td_list_tmp = []
-      tbody.children.each do |tag|
-        if tag.name == 'td'
-          td_list_tmp.push tag
-        elsif tag.name == 'tr' || tag.name == 'th'
-          unless td_list_tmp.empty?
-            td_list_list.push td_list_tmp
-            td_list_tmp = []
-          end
-          if tag.name == 'tr'
-            td_list_list.push tag.css('td')
-          end
-        end
-      end
-      unless td_list_tmp.empty?
-        td_list_list.push td_list_tmp
-      end
-      td_list_list
+    def parse_minutes(item, wday)
+      header_time = item.css('.dailyProgram-itemHeaderTime').text.strip
+      start_time, end_time = parse_header_time(header_time)
+      s = ProgramTime.parse(wday, start_time).next_on_air
+      e = ProgramTime.parse(wday, end_time).next_on_air
+      (e - s).floor / 60
     end
 
-    def parse_day(programs_day, index)
-      wday = (index + 1) % 7 # monday start
-      programs_day.map do |td|
-        parse_td_dom(td, wday)
-      end
+    def parse_header_time(header_time)
+      header_time.scan(/([0-9]+:[0-9]+) .+ ([0-9]+:[0-9]+)/).first
     end
 
-    def table_to_two_dim_array(td_list_list)
-      aa = []
-      span = {}
-      td_list_list.each_with_index do |td_list, row_n|
-        a = []
-        col_n = 0
-        td_list.each do |td|
-          while span[[row_n, col_n]]
-            a.push(nil)
-            col_n += 1
-          end
-          a.push(td)
-          cspan = 1
-          if td['colspan'] =~ /(\d+)/
-            cspan = $1.to_i
-          end
-          rspan = 1
-          if td['rowspan'] =~ /(\d+)/
-            rspan = $1.to_i
-          end
-          (row_n...(row_n + rspan)).each do |r|
-            (col_n...(col_n + cspan)).each do |c|
-              span[[r, c]] = true
-            end
-          end
-          col_n += 1
-        end
-        aa.push(a)
-      end
-      aa
+    def parse_start_time(item, wday)
+      header_time = item.css('.dailyProgram-itemHeaderTime').text.strip
+      start_time, _ = parse_header_time(header_time)
+      ProgramTime.parse(wday, start_time)
     end
 
-    def transpose(two_dim_array)
-      max_size = two_dim_array.max_by{|i| i.size }.size
-      filled = two_dim_array.map{|i| i.fill(nil, i.size...max_size) }
-      filled.transpose
-    end
-
-    def join_box_program(day_time_array)
-      day_time_array.map do |day|
-        day.inject([]) do |programs, td|
-          unless td
-            next programs
-          end
-          time = td.css('.time')[0].text
-          if time.include?('頃')
-            programs.last['rowspan'] = programs.last['rowspan'].to_i + td['rowspan'].to_i
-            next programs
-          end
-          programs << td
-        end
-      end
-    end
-
-    def parse_td_dom(td, wday)
-      start_time = parse_start_time(td, wday)
-      minutes = parse_minutes(td)
-      title = parse_title(td)
-      Program.new(start_time, minutes, title)
-    end
-
-    def parse_minutes(td)
-      rowspan = td.attribute('rowspan')
-      if !rowspan || rowspan.value.blank?
-        30
-      else
-        td.attribute('rowspan').value.to_i
-      end
-    end
-
-    def parse_start_time(td, wday)
-      ProgramTime.parse(wday, td.css('.time')[0].text)
-    end
-
-    def parse_title(td)
-      [td.css('.title-p')[0].text, td.css('.rp')[0].text].select do |text|
-        !text.gsub(/\s/, '').empty?
-      end.map do |text|
-        Moji.normalize_zen_han(text).strip
-      end.join(' ')
+    def parse_title(item)
+      title = item.css('.dailyProgram-itemTitle').text.strip
+      personality = item
+        .css('.dailyProgram-itemPersonality')
+        .text
+        .strip
+        .gsub(' ', '')
+        .gsub(',', '_')
+      title += "_#{personality}" unless personality.empty?
+      Moji.normalize_zen_han(title)
     end
   end
 end
